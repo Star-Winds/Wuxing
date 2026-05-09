@@ -1,0 +1,115 @@
+[gd_scene format=3 uid="uid://cjkkc8ugcg3od"]
+
+[ext_resource type="Script" uid="uid://cj6nawkmu23ge" path="res://deck_builder_ui.gd" id="1_deck_script"]
+[ext_resource type="Script" uid="uid://qbx6leqrvjvk" path="res://deck_builder_backpack_zone.gd" id="2_backpack_script"]
+
+[node name="DeckBuilderUI" type="Control" unique_id=2029115609]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_deck_script")
+
+[node name="Background" type="ColorRect" parent="." unique_id=521264646]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.06, 0.06, 0.08, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=901541339]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = 40.0
+offset_right = -50.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer" unique_id=1002874192]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "卡组构筑 (Deck Builder)"
+horizontal_alignment = 1
+
+[node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer" unique_id=955708378]
+layout_mode = 2
+size_flags_vertical = 3
+split_offsets = PackedInt32Array(420)
+split_offset = 420
+
+[node name="LeftPanel" type="PanelContainer" parent="VBoxContainer/HSplitContainer" unique_id=800873045]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/LeftPanel" unique_id=625418668]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HeaderLabel" type="Label" parent="VBoxContainer/HSplitContainer/LeftPanel/VBox" unique_id=2076932868]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "背包卡牌 (Backpack Cards)"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HSplitContainer/LeftPanel/VBox" unique_id=1900182759]
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("2_backpack_script")
+
+[node name="BackpackGrid" type="GridContainer" parent="VBoxContainer/HSplitContainer/LeftPanel/VBox/ScrollContainer" unique_id=1785604681]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+columns = 2
+
+[node name="RightPanel" type="PanelContainer" parent="VBoxContainer/HSplitContainer" unique_id=1896339201]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/RightPanel" unique_id=467434319]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HeaderLabel" type="Label" parent="VBoxContainer/HSplitContainer/RightPanel/VBox" unique_id=1738086711]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "已装备卡组 (Equipped Layout)"
+horizontal_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HSplitContainer/RightPanel/VBox" unique_id=483579280]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="RowsContainer" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/RightPanel/VBox/ScrollContainer" unique_id=1739247314]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 15
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1482928841]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="SaveButton" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=398687632]
+custom_minimum_size = Vector2(280, 55)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "保存并返回地图 (Save & Return to Map)"
+
+[node name="CancelButton" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=1270929466]
+custom_minimum_size = Vector2(280, 55)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "取消 (Cancel)"

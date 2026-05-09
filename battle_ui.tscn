@@ -1,0 +1,952 @@
+[gd_scene format=3 uid="uid://ci0jfud8qabws"]
+
+[ext_resource type="Script" uid="uid://d2e66c8dpla7o" path="res://card_slot.gd" id="1_slot"]
+[ext_resource type="Script" uid="uid://c0645lqq0lwsk" path="res://battle_ui.gd" id="2_ui"]
+
+[node name="BattleUI" type="Control" unique_id=2131753950]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_ui")
+
+[node name="MasterLayout" type="VBoxContainer" parent="." unique_id=674182859]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="TopSpacer" type="Control" parent="MasterLayout" unique_id=871320444]
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+
+[node name="MiddleArea" type="HBoxContainer" parent="MasterLayout" unique_id=1167995361]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 40
+
+[node name="SlotsContainer" type="VBoxContainer" parent="MasterLayout/MiddleArea" unique_id=303038873]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="SlotRow_1" type="HBoxContainer" parent="MasterLayout/MiddleArea/SlotsContainer" unique_id=88455239]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="MainSlot_1" type="Control" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_1" unique_id=285905146]
+custom_minimum_size = Vector2(200, 70)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("1_slot")
+
+[node name="Background" type="ColorRect" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_1/MainSlot_1" unique_id=1968950553]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_1/MainSlot_1" unique_id=2001409484]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 4.0
+offset_bottom = 24.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "Main Slot 1"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_1/MainSlot_1" unique_id=1330581992]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "Cost: 1  |  Dmg: 12  |  Shd: 6"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_1/MainSlot_1" unique_id=1180532971]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="SubSlot_1_1" type="Control" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_1" unique_id=197994983]
+custom_minimum_size = Vector2(80, 70)
+layout_mode = 2
+script = ExtResource("1_slot")
+is_sub_slot = true
+
+[node name="Background" type="ColorRect" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_1/SubSlot_1_1" unique_id=1437270752]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_1/SubSlot_1_1" unique_id=1618951765]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 4.0
+offset_bottom = 24.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "Sub 1"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_1/SubSlot_1_1" unique_id=1644682648]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 23.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "Atk: +4"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_1/SubSlot_1_1" unique_id=1039769681]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+flat = true
+
+[node name="SubSlot_1_2" type="Control" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_1" unique_id=1462207746]
+custom_minimum_size = Vector2(80, 70)
+layout_mode = 2
+script = ExtResource("1_slot")
+is_sub_slot = true
+
+[node name="Background" type="ColorRect" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_1/SubSlot_1_2" unique_id=155681755]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_1/SubSlot_1_2" unique_id=346127063]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 4.0
+offset_bottom = 24.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "Sub 2"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_1/SubSlot_1_2" unique_id=462525513]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 23.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "Atk: +5"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_1/SubSlot_1_2" unique_id=1335598035]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+flat = true
+
+[node name="SlotRow_2" type="HBoxContainer" parent="MasterLayout/MiddleArea/SlotsContainer" unique_id=1128336738]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="MainSlot_2" type="Control" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_2" unique_id=462486921]
+custom_minimum_size = Vector2(200, 70)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("1_slot")
+
+[node name="Background" type="ColorRect" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_2/MainSlot_2" unique_id=792963395]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_2/MainSlot_2" unique_id=34045837]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 4.0
+offset_bottom = 24.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "Main Slot 2"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_2/MainSlot_2" unique_id=385869035]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "Cost: 2  |  Dmg: 14  |  Shd: 7"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_2/MainSlot_2" unique_id=640339156]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="SubSlot_2_1" type="Control" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_2" unique_id=1064135025]
+custom_minimum_size = Vector2(80, 70)
+layout_mode = 2
+script = ExtResource("1_slot")
+is_sub_slot = true
+
+[node name="Background" type="ColorRect" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_2/SubSlot_2_1" unique_id=278355915]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_2/SubSlot_2_1" unique_id=1919938777]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 4.0
+offset_bottom = 24.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "Sub 1"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_2/SubSlot_2_1" unique_id=1587918766]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 23.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "Atk: +4"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_2/SubSlot_2_1" unique_id=868895329]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+flat = true
+
+[node name="SubSlot_2_2" type="Control" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_2" unique_id=991802488]
+custom_minimum_size = Vector2(80, 70)
+layout_mode = 2
+script = ExtResource("1_slot")
+is_sub_slot = true
+
+[node name="Background" type="ColorRect" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_2/SubSlot_2_2" unique_id=1531978349]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_2/SubSlot_2_2" unique_id=1482134518]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 4.0
+offset_bottom = 24.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "Sub 2"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_2/SubSlot_2_2" unique_id=1305860788]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 23.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "Atk: +5"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_2/SubSlot_2_2" unique_id=619289809]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+flat = true
+
+[node name="SlotRow_3" type="HBoxContainer" parent="MasterLayout/MiddleArea/SlotsContainer" unique_id=1491363795]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="MainSlot_3" type="Control" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_3" unique_id=2024646265]
+custom_minimum_size = Vector2(200, 70)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("1_slot")
+
+[node name="Background" type="ColorRect" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_3/MainSlot_3" unique_id=1755286634]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_3/MainSlot_3" unique_id=1994691849]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 4.0
+offset_bottom = 24.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "Main Slot 3"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_3/MainSlot_3" unique_id=1779526499]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "Cost: 3  |  Dmg: 16  |  Shd: 8"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_3/MainSlot_3" unique_id=576043340]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="SubSlot_3_1" type="Control" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_3" unique_id=1149027917]
+custom_minimum_size = Vector2(80, 70)
+layout_mode = 2
+script = ExtResource("1_slot")
+is_sub_slot = true
+
+[node name="Background" type="ColorRect" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_3/SubSlot_3_1" unique_id=1215715219]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_3/SubSlot_3_1" unique_id=229640710]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 4.0
+offset_bottom = 24.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "Sub 1"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_3/SubSlot_3_1" unique_id=857737457]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 23.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "Atk: +4"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_3/SubSlot_3_1" unique_id=300468598]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+flat = true
+
+[node name="SubSlot_3_2" type="Control" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_3" unique_id=1482614935]
+custom_minimum_size = Vector2(80, 70)
+layout_mode = 2
+script = ExtResource("1_slot")
+is_sub_slot = true
+
+[node name="Background" type="ColorRect" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_3/SubSlot_3_2" unique_id=1257590897]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_3/SubSlot_3_2" unique_id=646392594]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 4.0
+offset_bottom = 24.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "Sub 2"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_3/SubSlot_3_2" unique_id=1005158113]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 23.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "Atk: +5"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_3/SubSlot_3_2" unique_id=35990014]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+flat = true
+
+[node name="SlotRow_4" type="HBoxContainer" parent="MasterLayout/MiddleArea/SlotsContainer" unique_id=1819539100]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="MainSlot_4" type="Control" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_4" unique_id=477175521]
+custom_minimum_size = Vector2(200, 70)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("1_slot")
+
+[node name="Background" type="ColorRect" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_4/MainSlot_4" unique_id=1424608874]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_4/MainSlot_4" unique_id=52796008]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 4.0
+offset_bottom = 24.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "Main Slot 4"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_4/MainSlot_4" unique_id=316884771]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "Cost: 4  |  Dmg: 18  |  Shd: 9"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_4/MainSlot_4" unique_id=1029566335]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="SubSlot_4_1" type="Control" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_4" unique_id=493998904]
+custom_minimum_size = Vector2(80, 70)
+layout_mode = 2
+script = ExtResource("1_slot")
+is_sub_slot = true
+
+[node name="Background" type="ColorRect" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_4/SubSlot_4_1" unique_id=838715787]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_4/SubSlot_4_1" unique_id=1891181766]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 4.0
+offset_bottom = 24.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "Sub 1"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_4/SubSlot_4_1" unique_id=1675561059]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 23.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "Atk: +4"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_4/SubSlot_4_1" unique_id=1364666214]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+flat = true
+
+[node name="SubSlot_4_2" type="Control" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_4" unique_id=1866986920]
+custom_minimum_size = Vector2(80, 70)
+layout_mode = 2
+script = ExtResource("1_slot")
+is_sub_slot = true
+
+[node name="Background" type="ColorRect" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_4/SubSlot_4_2" unique_id=1520762060]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_4/SubSlot_4_2" unique_id=627670320]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 4.0
+offset_bottom = 24.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "Sub 2"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_4/SubSlot_4_2" unique_id=274533899]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 23.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "Atk: +5"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_4/SubSlot_4_2" unique_id=1749228549]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+flat = true
+
+[node name="SlotRow_5" type="HBoxContainer" parent="MasterLayout/MiddleArea/SlotsContainer" unique_id=1833761236]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="MainSlot_5" type="Control" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_5" unique_id=1241768952]
+custom_minimum_size = Vector2(200, 70)
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("1_slot")
+
+[node name="Background" type="ColorRect" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_5/MainSlot_5" unique_id=2080886497]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_5/MainSlot_5" unique_id=1927116043]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 4.0
+offset_bottom = 24.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "Main Slot 5"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_5/MainSlot_5" unique_id=2039629952]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "Cost: 5  |  Dmg: 20  |  Shd: 10"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_5/MainSlot_5" unique_id=196025745]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
+[node name="SubSlot_5_1" type="Control" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_5" unique_id=369961898]
+custom_minimum_size = Vector2(80, 70)
+layout_mode = 2
+script = ExtResource("1_slot")
+is_sub_slot = true
+
+[node name="Background" type="ColorRect" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_5/SubSlot_5_1" unique_id=739211977]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_5/SubSlot_5_1" unique_id=1945298171]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 4.0
+offset_bottom = 24.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "Sub 1"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_5/SubSlot_5_1" unique_id=1573785297]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 23.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "Atk: +4"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_5/SubSlot_5_1" unique_id=1035281942]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+flat = true
+
+[node name="SubSlot_5_2" type="Control" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_5" unique_id=179572759]
+custom_minimum_size = Vector2(80, 70)
+layout_mode = 2
+script = ExtResource("1_slot")
+is_sub_slot = true
+
+[node name="Background" type="ColorRect" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_5/SubSlot_5_2" unique_id=86000519]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_5/SubSlot_5_2" unique_id=1408780853]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 4.0
+offset_bottom = 24.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 12
+text = "Sub 2"
+horizontal_alignment = 1
+
+[node name="StatsLabel" type="Label" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_5/SubSlot_5_2" unique_id=1903072429]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -2.0
+offset_bottom = 23.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 12
+text = "Atk: +5"
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="MasterLayout/MiddleArea/SlotsContainer/SlotRow_5/SubSlot_5_2" unique_id=1599099968]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+disabled = true
+flat = true
+
+[node name="PlayerStatusBar" type="PanelContainer" parent="MasterLayout" unique_id=297711917]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MasterLayout/PlayerStatusBar" unique_id=858991588]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MasterLayout/PlayerStatusBar/MarginContainer" unique_id=638710831]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="PlayerStatusContainer" type="HBoxContainer" parent="MasterLayout/PlayerStatusBar/MarginContainer/HBoxContainer" unique_id=1320140991]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="EndTurnButton" type="Button" parent="MasterLayout/PlayerStatusBar/MarginContainer/HBoxContainer" unique_id=840368630]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 40)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 16
+text = "End Turn"
+
+[node name="PaymentPanel" type="PanelContainer" parent="." unique_id=741985919]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -100.0
+offset_right = 200.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PaymentPanel" unique_id=1575217419]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="TitleLabel" type="Label" parent="PaymentPanel/VBoxContainer" unique_id=2096433803]
+layout_mode = 2
+text = "Allocate Resources"
+horizontal_alignment = 1
+
+[node name="ResourceSliders" type="VBoxContainer" parent="PaymentPanel/VBoxContainer" unique_id=522023323]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PaymentPanel/VBoxContainer" unique_id=1438590747]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="RemainingLabel" type="Label" parent="PaymentPanel/VBoxContainer/HBoxContainer" unique_id=1677694065]
+layout_mode = 2
+text = "Remaining Cost: X"
+
+[node name="ConfirmButton" type="Button" parent="PaymentPanel/VBoxContainer/HBoxContainer" unique_id=1399074558]
+layout_mode = 2
+text = "Confirm Activation"
+
+[node name="CancelButton" type="Button" parent="PaymentPanel/VBoxContainer/HBoxContainer" unique_id=1306964461]
+layout_mode = 2
+text = "Cancel"
+
+[node name="ReservePanel" type="PanelContainer" parent="." unique_id=30985380]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -150.0
+offset_right = 300.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ReservePanel" unique_id=1803616573]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="TitleLabel" type="Label" parent="ReservePanel/VBoxContainer" unique_id=1868999000]
+layout_mode = 2
+text = "Zaohua Liuzhuan (Choose 1)"
+horizontal_alignment = 1
+
+[node name="OptionsContainer" type="HBoxContainer" parent="ReservePanel/VBoxContainer" unique_id=1395434978]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="CancelButton" type="Button" parent="ReservePanel/VBoxContainer" unique_id=257964072]
+layout_mode = 2
+text = "Cancel"
+
+[node name="EnemyCenter" type="CenterContainer" parent="MasterLayout/MiddleArea"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="EnemyEntity" type="PanelContainer" parent="MasterLayout/MiddleArea/EnemyCenter" unique_id=2045464321]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 240)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MasterLayout/MiddleArea/EnemyCenter/EnemyEntity" unique_id=721164146]
+layout_mode = 0
+theme_override_constants/separation = 10
+
+[node name="IntentLabel" type="Label" parent="MasterLayout/MiddleArea/EnemyCenter/EnemyEntity/VBoxContainer" unique_id=73416720]
+layout_mode = 0
+theme_override_colors/font_color = Color(1, 0.3, 0.3, 1)
+text = "Intent: Attack 8"
+horizontal_alignment = 1
+
+[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/EnemyCenter/EnemyEntity/VBoxContainer" unique_id=1156712400]
+layout_mode = 0
+text = "竹叶青 (Wood)"
+horizontal_alignment = 1
+
+[node name="EnemyStatsLabel" type="Label" parent="MasterLayout/MiddleArea/EnemyCenter/EnemyEntity/VBoxContainer" unique_id=346788644]
+layout_mode = 0
+text = "HP: 32/32 | Shield: 0"
+horizontal_alignment = 1
+
+[node name="StatusContainer" type="HBoxContainer" parent="MasterLayout/MiddleArea/EnemyCenter/EnemyEntity/VBoxContainer" unique_id=1604479138]
+unique_name_in_owner = true
+layout_mode = 0
+theme_override_constants/separation = 6
+alignment = 1

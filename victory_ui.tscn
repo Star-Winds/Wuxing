@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://b5e78pjwq3lhg"]
+
+[ext_resource type="Script" uid="uid://bxkdqys0vxau2" path="res://victory_ui.gd" id="1_victory_script"]
+
+[node name="VictoryUI" type="Control" unique_id=1827481190]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_victory_script")
+
+[node name="Background" type="ColorRect" parent="." unique_id=524751581]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.08, 0.1, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1095598533]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 60.0
+offset_top = 50.0
+offset_right = -60.0
+offset_bottom = -50.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer" unique_id=1426440957]
+layout_mode = 2
+theme_override_font_sizes/font_size = 42
+text = "战斗胜利! (Victory)"
+horizontal_alignment = 1
+
+[node name="RewardsLabel" type="Label" parent="VBoxContainer" unique_id=272427700]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "获得: 20 金币 (Gold) & 5 随机元素 (Random Elements)"
+horizontal_alignment = 1
+
+[node name="CardsContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=2069239844]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="SkipButton" type="Button" parent="VBoxContainer" unique_id=23675791]
+custom_minimum_size = Vector2(300, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+text = "跳过并返回地图 (Skip & Return to Map)"

@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://globalhuduid"]
+[gd_scene format=3 uid="uid://globalhuduid"]
 
-[ext_resource type="Script" path="res://global_hud.gd" id="1_hud"]
+[ext_resource type="Script" uid="uid://d4iyl8talk5pw" path="res://Autoloads/global_hud.gd" id="1_hud"]
 
 [node name="GlobalHUD" type="CanvasLayer"]
 process_mode = 3

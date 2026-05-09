@@ -135,7 +135,7 @@ func _on_reaction_peek_pressed() -> void:
 		deck_overlay_instance = null
 		
 	# Instantiate reaction overlay as an overlay
-	reaction_overlay_instance = load("res://reaction_overlay.tscn").instantiate()
+	reaction_overlay_instance = load("res://UI/reaction_overlay.tscn").instantiate()
 	add_child(reaction_overlay_instance)
 	# Move it below the HUD elements but above the game
 	move_child(reaction_overlay_instance, 0)

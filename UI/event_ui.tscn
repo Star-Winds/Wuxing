@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://cx6pjdwq5m7re"]
 
-[ext_resource type="Script" path="res://event_ui.gd" id="1_event_script"]
+[ext_resource type="Script" uid="uid://dnmcwwss0b5rd" path="res://UI/event_ui.gd" id="1_event_script"]
 
-[node name="EventUI" type="Control"]
+[node name="EventUI" type="Control" unique_id=867876172]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_event_script")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=2011921247]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -20,7 +20,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.08, 0.08, 0.1, 1)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1269423571]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -34,13 +34,13 @@ grow_vertical = 2
 theme_override_constants/separation = 30
 alignment = 1
 
-[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="VBoxContainer" unique_id=1657035374]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "炮 (Event) - 奇遇"
 horizontal_alignment = 1
 
-[node name="DescLabel" type="RichTextLabel" parent="VBoxContainer"]
+[node name="DescLabel" type="RichTextLabel" parent="VBoxContainer" unique_id=1209838674]
 custom_minimum_size = Vector2(600, 220)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -48,7 +48,7 @@ theme_override_font_sizes/normal_font_size = 22
 bbcode_enabled = true
 text = "你发现了一尊废弃的八卦炉，炉心仍有微弱的火光跳动。炉灰中似乎掩埋着什么..."
 
-[node name="ChoicesContainer" type="VBoxContainer" parent="VBoxContainer"]
+[node name="ChoicesContainer" type="VBoxContainer" parent="VBoxContainer" unique_id=278424282]
 layout_mode = 2
 theme_override_constants/separation = 16
 alignment = 1

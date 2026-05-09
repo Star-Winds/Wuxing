@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cx4vjdwram7rn"]
 
-[ext_resource type="Script" uid="uid://chl16dce6ikri" path="res://workshop_ui.gd" id="1_workshop_script"]
+[ext_resource type="Script" uid="uid://chl16dce6ikri" path="res://UI/workshop_ui.gd" id="1_workshop_script"]
 
 [node name="WorkshopUI" type="Control" unique_id=370823416]
 layout_mode = 3

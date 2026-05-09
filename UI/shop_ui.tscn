@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://dt7j4vkw2k8s2"]
 
-[ext_resource type="Script" path="res://shop_ui.gd" id="1_shop_script"]
+[ext_resource type="Script" uid="uid://bu6kod08cm0pq" path="res://UI/shop_ui.gd" id="1_shop_script"]
 
-[node name="ShopUI" type="Control"]
+[node name="ShopUI" type="Control" unique_id=1348815954]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_shop_script")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=614319738]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -20,7 +20,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.08, 0.08, 0.1, 1)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1918168751]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -34,50 +34,47 @@ grow_vertical = 2
 theme_override_constants/separation = 30
 alignment = 1
 
-[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="VBoxContainer" unique_id=742010412]
 layout_mode = 2
-theme_override_font_colors/font_color = Color(1, 0.843, 0, 1)
 theme_override_font_sizes/font_size = 40
 text = "马 (Shop) - 神秘商人"
 horizontal_alignment = 1
 
-[node name="StatusLabel" type="Label" parent="VBoxContainer"]
+[node name="StatusLabel" type="Label" parent="VBoxContainer" unique_id=1335953542]
 layout_mode = 2
-theme_override_font_colors/font_color = Color(0.85, 0.85, 0.9, 1)
 theme_override_font_sizes/font_size = 24
 text = "Current Gold: 150 | Current Aether: 81"
 horizontal_alignment = 1
 
-[node name="ButtonsContainer" type="VBoxContainer" parent="VBoxContainer"]
+[node name="ButtonsContainer" type="VBoxContainer" parent="VBoxContainer" unique_id=688437217]
 layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
 
-[node name="BuyAetherButton" type="Button" parent="VBoxContainer/ButtonsContainer"]
+[node name="BuyAetherButton" type="Button" parent="VBoxContainer/ButtonsContainer" unique_id=1022900067]
 custom_minimum_size = Vector2(480, 60)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 20
 text = "购买以太 (Buy 5 Aether - Cost: 50 Gold)"
 
-[node name="BuyElementsButton" type="Button" parent="VBoxContainer/ButtonsContainer"]
+[node name="BuyElementsButton" type="Button" parent="VBoxContainer/ButtonsContainer" unique_id=285019183]
 custom_minimum_size = Vector2(480, 60)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 20
 text = "购买五行包 (Buy 2 of all basic elements - Cost: 40 Gold)"
 
-[node name="BuyCardButton" type="Button" parent="VBoxContainer/ButtonsContainer"]
+[node name="BuyCardButton" type="Button" parent="VBoxContainer/ButtonsContainer" unique_id=1063763351]
 custom_minimum_size = Vector2(480, 60)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 20
 text = "购买随机卡牌 (Buy Random Card - Cost: 30 Gold)"
 
-[node name="LeaveButton" type="Button" parent="VBoxContainer/ButtonsContainer"]
+[node name="LeaveButton" type="Button" parent="VBoxContainer/ButtonsContainer" unique_id=1670106691]
 custom_minimum_size = Vector2(480, 60)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_font_colors/font_color = Color(1, 0.35, 0.35, 1)
 theme_override_font_sizes/font_size = 20
 text = "离开商店 (Leave)"

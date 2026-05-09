@@ -11,15 +11,15 @@ config_version=5
 [application]
 
 config/name="WuXing"
-run/main_scene="res://main_menu_ui.tscn"
+run/main_scene="res://UI/main_menu_ui.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-GameManager="*res://game_manager.gd"
-PauseOverlay="*res://pause_overlay.tscn"
-GlobalHUD="*res://global_hud.tscn"
+GameManager="*res://Autoloads/game_manager.gd"
+PauseOverlay="*res://Autoloads/pause_overlay.tscn"
+GlobalHUD="*res://Autoloads/global_hud.tscn"
 
 [physics]
 

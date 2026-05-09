@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://btp8r8p5p1ndn"]
 
-[ext_resource type="Script" path="res://map_ui.gd" id="1_ui"]
+[ext_resource type="Script" uid="uid://xa5i80tf7vga" path="res://map_ui.gd" id="1_ui"]
 
-[node name="MapUI" type="Control"]
+[node name="MapUI" type="Control" unique_id=1573752862]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ui")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=2128633339]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -20,7 +20,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.1, 0.1, 0.12, 1)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1779095453]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -33,18 +33,18 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 40
 
-[node name="WorldLabel" type="Label" parent="VBoxContainer"]
+[node name="WorldLabel" type="Label" parent="VBoxContainer" unique_id=549687285]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "World 1 - Node 1/16"
 horizontal_alignment = 1
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=72056240]
 layout_mode = 2
 size_flags_vertical = 3
 vertical_scroll_mode = 0
 
-[node name="NodesContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer"]
+[node name="NodesContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer" unique_id=202338708]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

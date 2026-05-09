@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cjkkc8ugcg3od"]
 
-[ext_resource type="Script" uid="uid://cj6nawkmu23ge" path="res://deck_builder_ui.gd" id="1_deck_script"]
-[ext_resource type="Script" uid="uid://qbx6leqrvjvk" path="res://deck_builder_backpack_zone.gd" id="2_backpack_script"]
+[ext_resource type="Script" uid="uid://cj6nawkmu23ge" path="res://UI/deck_builder_ui.gd" id="1_deck_script"]
+[ext_resource type="Script" uid="uid://qbx6leqrvjvk" path="res://Components/deck_builder_backpack_zone.gd" id="2_backpack_script"]
 
 [node name="DeckBuilderUI" type="Control" unique_id=2029115609]
 layout_mode = 3

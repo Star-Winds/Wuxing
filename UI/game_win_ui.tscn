@@ -1,15 +1,15 @@
-[gd_scene load_steps=2 format=3 uid="uid://gameoveruid"]
+[gd_scene format=3 uid="uid://gamewinuid"]
 
-[ext_resource type="Script" path="res://game_over_ui.gd" id="1_gameover"]
+[ext_resource type="Script" uid="uid://bo7sroyjcf00k" path="res://UI/game_win_ui.gd" id="1_gamewin"]
 
-[node name="GameOverUI" type="Control"]
+[node name="GameWinUI" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_gameover")
+script = ExtResource("1_gamewin")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -18,25 +18,26 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -100.0
-offset_right = 200.0
-offset_bottom = 100.0
+offset_left = -300.0
+offset_top = -150.0
+offset_right = 300.0
+offset_bottom = 150.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
 
 [node name="TitleLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
 theme_override_font_sizes/font_size = 64
-text = "身死道消 (Game Over)"
+text = "大功告成 (Game Victory!)"
 horizontal_alignment = 1
 
-[node name="StatsLabel" type="Label" parent="VBoxContainer"]
+[node name="DescLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
-text = "Reached World: X"
+theme_override_font_sizes/font_size = 24
+text = "恭喜你成功突破五行，掌控万物，得道成仙！
+You have successfully completed all 3 Worlds!"
 horizontal_alignment = 1
 
 [node name="MenuButton" type="Button" parent="VBoxContainer"]

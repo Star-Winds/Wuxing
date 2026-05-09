@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://ci0jfud8qabws"]
 
-[ext_resource type="Script" uid="uid://d2e66c8dpla7o" path="res://card_slot.gd" id="1_slot"]
-[ext_resource type="Script" uid="uid://c0645lqq0lwsk" path="res://battle_ui.gd" id="2_ui"]
+[ext_resource type="Script" uid="uid://d2e66c8dpla7o" path="res://Components/card_slot.gd" id="1_slot"]
+[ext_resource type="Script" uid="uid://c0645lqq0lwsk" path="res://UI/battle_ui.gd" id="2_ui"]
 
 [node name="BattleUI" type="Control" unique_id=2131753950]
 layout_mode = 3

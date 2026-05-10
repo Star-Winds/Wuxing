@@ -8,4 +8,4 @@ func _ready() -> void:
 
 func _on_menu_pressed() -> void:
 	GameManager.reset_run()
-	get_tree().change_scene_to_file("res://main_menu_ui.tscn")
+	get_tree().change_scene_to_file("res://UI/main_menu_ui.tscn")

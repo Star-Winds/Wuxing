@@ -78,9 +78,9 @@ func _load_json_data(file_path: String) -> Dictionary:
 func _ready() -> void:
 	GlobalHUD.set_scene_name("战斗 (Battle)")
 	# Load Databases from JSON
-	card_db = _load_json_data("res://card_database.json")
-	reaction_db = _load_json_data("res://reaction_database.json")
-	array_db = _load_json_data("res://array_database.json")
+	card_db = _load_json_data("res://Databases/card_database.json")
+	reaction_db = _load_json_data("res://Databases/reaction_database.json")
+	array_db = _load_json_data("res://Databases/array_database.json")
 	card_database = card_db
 	reaction_matrix = reaction_db
 	
@@ -105,7 +105,7 @@ func _ready() -> void:
 	elif "Elite" in node_type or "士" in node_type:
 		category = "elite"
 		
-	var enemy_db = _load_json_data("res://enemy_database.json")
+	var enemy_db = _load_json_data("res://Databases/enemy_database.json")
 	if enemy_db.has(category):
 		var enemies = enemy_db[category]
 		if not enemies.is_empty():
@@ -967,7 +967,7 @@ func _trigger_game_over() -> void:
 	_update_resource_ui()
 	if has_node("/root/GlobalHUD"):
 		GlobalHUD.close_all_overlays()
-	get_tree().change_scene_to_file("res://game_over_ui.tscn")
+	get_tree().change_scene_to_file("res://UI/game_over_ui.tscn")
 
 func _trigger_victory() -> void:
 	print("VICTORY! Enemy Defeated.")
@@ -997,7 +997,7 @@ func _trigger_victory() -> void:
 func _go_to_loot() -> void:
 	if has_node("/root/GlobalHUD"):
 		GlobalHUD.close_all_overlays()
-	get_tree().change_scene_to_file("res://victory_ui.tscn")
+	get_tree().change_scene_to_file("res://UI/victory_ui.tscn")
 
 func _update_enemy_intent() -> void:
 	var intent_type = enemy_turn_counter % 3

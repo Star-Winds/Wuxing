@@ -1,4 +1,4 @@
-# res://deck_builder_card.gd
+# res://Components/deck_builder_card.gd
 extends Button
 
 var card_id: String = ""

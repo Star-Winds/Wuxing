@@ -11,7 +11,7 @@ var slots_map: Dictionary = {} # Maps row_idx -> {"main": main_slot_node, "subs"
 func _ready() -> void:
 	add_to_group("deck_builder_root")
 	# 1. Load cards database
-	card_database = _load_json_data("res://card_database.json")
+	card_database = _load_json_data("res://Databases/card_database.json")
 	
 	# 2. Build Equipped rows dynamically (Rows 1 to 5)
 	_build_equipped_rows()
@@ -121,7 +121,7 @@ func _create_slot_node(type: String, row_idx: int, sub_idx: int) -> PanelContain
 	slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	
 	# Attach script
-	slot.set_script(load("res://deck_builder_slot.gd"))
+	slot.set_script(load("res://Components/deck_builder_slot.gd"))
 	slot.slot_type = type
 	slot.row_index = row_idx
 	slot.sub_slot_index = sub_idx
@@ -245,7 +245,7 @@ func update_backpack_view() -> void:
 		card_btn.add_theme_stylebox_override("normal", style)
 		
 		# Set drag-and-drop helper script
-		card_btn.set_script(load("res://deck_builder_card.gd"))
+		card_btn.set_script(load("res://Components/deck_builder_card.gd"))
 		card_btn.card_id = card_id
 		card_btn.card_name = card_data.get("name", card_id)
 		card_btn.is_equipped = false
@@ -288,7 +288,7 @@ func _on_save_pressed() -> void:
 	if is_overlay:
 		queue_free()
 	else:
-		get_tree().change_scene_to_file("res://map_ui.tscn")
+		get_tree().change_scene_to_file("res://UI/map_ui.tscn")
 
 func _on_cancel_pressed() -> void:
 	print("Cancel deck editing.")
@@ -296,4 +296,4 @@ func _on_cancel_pressed() -> void:
 	if is_overlay:
 		queue_free()
 	else:
-		get_tree().change_scene_to_file("res://map_ui.tscn")
+		get_tree().change_scene_to_file("res://UI/map_ui.tscn")

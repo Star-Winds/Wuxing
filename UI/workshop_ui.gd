@@ -122,4 +122,4 @@ func _on_btn_craft_armor_pressed() -> void:
 
 func _on_btn_leave_pressed() -> void:
 	GameManager.current_node_index += 1
-	get_tree().change_scene_to_file("res://map_ui.tscn")
+	get_tree().change_scene_to_file("res://UI/map_ui.tscn")

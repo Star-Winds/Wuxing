@@ -59,7 +59,7 @@ func _display_card_options() -> void:
 	for child in cards_container.get_children():
 		child.queue_free()
 		
-	var card_db = _load_json_data("res://card_database.json")
+	var card_db = _load_json_data("res://Databases/card_database.json")
 	if card_db.is_empty():
 		print("Error: Card database empty or could not be loaded!")
 		return
@@ -110,10 +110,10 @@ func _return_to_map() -> void:
 		
 		if GameManager.current_world > 3:
 			print("All 3 Worlds Completed! Transitioning to Game Victory Screen.")
-			get_tree().change_scene_to_file("res://game_win_ui.tscn")
+			get_tree().change_scene_to_file("res://UI/game_win_ui.tscn")
 			return
 		
-	get_tree().change_scene_to_file("res://map_ui.tscn")
+	get_tree().change_scene_to_file("res://UI/map_ui.tscn")
 
 func _load_json_data(file_path: String) -> Dictionary:
 	if not FileAccess.file_exists(file_path):
@@ -205,7 +205,7 @@ func _show_swap_menu() -> void:
 	for child in swap_grid.get_children():
 		child.queue_free()
 		
-	var card_db = _load_json_data("res://card_database.json")
+	var card_db = _load_json_data("res://Databases/card_database.json")
 	
 	for i in range(GameManager.reserve_cards.size()):
 		var card_id = GameManager.reserve_cards[i]

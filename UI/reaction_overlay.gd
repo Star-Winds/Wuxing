@@ -1,4 +1,4 @@
-# res://reaction_overlay.gd
+# res://UI/reaction_overlay.gd
 extends Control
 
 @onready var close_button: Button = %CloseButton
@@ -44,7 +44,7 @@ func _populate_reactions() -> void:
 	for child in list_container.get_children():
 		child.queue_free()
 		
-	var db = _load_json_data("res://reaction_database.json")
+	var db = _load_json_data("res://Databases/reaction_database.json")
 	if db.is_empty():
 		var err_label = Label.new()
 		err_label.text = "Failed to load reaction database."

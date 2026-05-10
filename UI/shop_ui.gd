@@ -81,4 +81,4 @@ func _on_buy_card_pressed() -> void:
 func _leave_shop() -> void:
 	print("Leaving shop.")
 	GameManager.current_node_index += 1
-	get_tree().change_scene_to_file("res://map_ui.tscn")
+	get_tree().change_scene_to_file("res://UI/map_ui.tscn")

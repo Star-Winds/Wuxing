@@ -88,7 +88,7 @@ func _on_map_peek_pressed() -> void:
 		reaction_overlay_instance = null
 		
 	# Instantiate map as an overlay
-	map_overlay_instance = load("res://map_ui.tscn").instantiate()
+	map_overlay_instance = load("res://UI/map_ui.tscn").instantiate()
 	add_child(map_overlay_instance)
 	# Move it below the HUD elements but above the game
 	move_child(map_overlay_instance, 0)
@@ -114,7 +114,7 @@ func _on_deck_peek_pressed() -> void:
 		reaction_overlay_instance = null
 		
 	# Instantiate deck builder as an overlay
-	deck_overlay_instance = load("res://deck_builder_ui.tscn").instantiate()
+	deck_overlay_instance = load("res://UI/deck_builder_ui.tscn").instantiate()
 	add_child(deck_overlay_instance)
 	# Move it below the HUD elements but above the game
 	move_child(deck_overlay_instance, 0)

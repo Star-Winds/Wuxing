@@ -56,4 +56,4 @@ func _on_leave_selected() -> void:
 
 func _leave_rest() -> void:
 	GameManager.current_node_index += 1
-	get_tree().change_scene_to_file("res://map_ui.tscn")
+	get_tree().change_scene_to_file("res://UI/map_ui.tscn")

@@ -69,12 +69,12 @@ func _ready() -> void:
 func _on_node_selected(node_type: String) -> void:
 	print("Entering node: ", node_type)
 	if "车" in node_type or "Workshop" in node_type:
-		get_tree().change_scene_to_file("res://workshop_ui.tscn")
+		get_tree().change_scene_to_file("res://UI/workshop_ui.tscn")
 	elif "炮" in node_type or "Event" in node_type:
-		get_tree().change_scene_to_file("res://event_ui.tscn")
+		get_tree().change_scene_to_file("res://UI/event_ui.tscn")
 	elif "象" in node_type or "Rest" in node_type:
-		get_tree().change_scene_to_file("res://rest_ui.tscn")
+		get_tree().change_scene_to_file("res://UI/rest_ui.tscn")
 	elif "马" in node_type or "Shop" in node_type:
-		get_tree().change_scene_to_file("res://shop_ui.tscn")
+		get_tree().change_scene_to_file("res://UI/shop_ui.tscn")
 	else:
-		get_tree().change_scene_to_file("res://battle_ui.tscn")
+		get_tree().change_scene_to_file("res://UI/battle_ui.tscn")

@@ -8,4 +8,4 @@ func _ready() -> void:
 	menu_button.pressed.connect(_on_menu_pressed)
 
 func _on_menu_pressed() -> void:
-	get_tree().change_scene_to_file("res://main_menu_ui.tscn")
+	get_tree().change_scene_to_file("res://UI/main_menu_ui.tscn")

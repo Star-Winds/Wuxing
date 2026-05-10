@@ -1,4 +1,4 @@
-# res://deck_builder_slot.gd
+# res://Components/deck_builder_slot.gd
 extends PanelContainer
 
 var slot_type: String = "" # "main" or "sub"

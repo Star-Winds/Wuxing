@@ -1,4 +1,4 @@
-# res://deck_builder_backpack_zone.gd
+# res://Components/deck_builder_backpack_zone.gd
 extends ScrollContainer
 
 func _can_drop_data(_position: Vector2, data) -> bool:

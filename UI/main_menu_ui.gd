@@ -10,7 +10,7 @@ func _ready() -> void:
 
 func _on_start_pressed() -> void:
 	GameManager.reset_run()
-	get_tree().change_scene_to_file("res://map_ui.tscn")
+	get_tree().change_scene_to_file("res://UI/map_ui.tscn")
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()

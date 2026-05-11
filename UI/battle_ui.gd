@@ -1,5 +1,8 @@
 extends Control
 
+# --- Battle Manager ---
+@export var battle_manager: Node
+
 # --- Resource Pool Data ---
 var player_shield: int = 0
 
@@ -20,12 +23,9 @@ var pending_play_slot: CardSlot = null
 var card_database: Dictionary = {}
 var is_game_over: bool = false
 var element_colors: Dictionary = {}
-var reaction_matrix: Dictionary = {}
 var card_db: Dictionary = {}	
-var reaction_db: Dictionary = {}
 var player_statuses: Dictionary = {}
 var enemy_statuses: Dictionary = {}
-var should_reactivate: bool = false
 
 var array_db: Dictionary = {}
 var is_array_activated: bool = false
@@ -77,24 +77,13 @@ func _load_json_data(file_path: String) -> Dictionary:
 
 func _ready() -> void:
 	GlobalHUD.set_scene_name("战斗 (Battle)")
+	
 	# Load Databases from JSON
 	card_db = _load_json_data("res://Databases/card_database.json")
-	reaction_db = _load_json_data("res://Databases/reaction_database.json")
 	array_db = _load_json_data("res://Databases/array_database.json")
 	card_database = card_db
-	reaction_matrix = reaction_db
 	
-	array_button = Button.new()
-	array_button.text = "阵法: 未就绪"
-	array_button.disabled = true
-	array_button.pressed.connect(_on_array_button_pressed)
-	array_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	array_button.offset_left = 20
-	array_button.offset_top = 105 # Pushed further down to clear 2-tier Global HUD
-	array_button.custom_minimum_size = Vector2(150, 40)
-	add_child(array_button)
-	
-	# Dynamically determine node type and load enemy
+	# Dynamic encounter loading
 	var node_type = ""
 	if GameManager.current_node_index < GameManager.current_map_path.size():
 		node_type = GameManager.current_map_path[GameManager.current_node_index]
@@ -117,7 +106,6 @@ func _ready() -> void:
 			base_attack_damage = chosen.get("intent_base_dmg", 8)
 			print("Dynamic encounter loaded Category: ", category, " -> Enemy: ", enemy_name)
 
-	
 	element_colors = {
 		"火": Color("#E64A19"),
 		"木": Color("#43A047"),
@@ -127,7 +115,7 @@ func _ready() -> void:
 		"以太": Color("#9C27B0")
 	}
 	
-	# Connect signals
+	# Connect local signals
 	if end_turn_button:
 		end_turn_button.pressed.connect(_on_end_turn_pressed)
 	if confirm_activation_button:
@@ -137,7 +125,7 @@ func _ready() -> void:
 	if reserve_cancel_btn:
 		reserve_cancel_btn.pressed.connect(_on_reserve_cancel)
 		
-	# Setup card slots and connect activation_requested signals
+	# Setup card slots and connect signals
 	_initialize_card_slots()
 	
 	if enemy_entity:
@@ -155,6 +143,40 @@ func _ready() -> void:
 		target_btn.flat = true
 		enemy_entity.add_child(target_btn)
 		target_btn.pressed.connect(_on_enemy_targeted)
+
+	# Instantiate / Find Battle Manager
+	if not battle_manager:
+		battle_manager = get_node_or_null("BattleManager")
+		if not battle_manager:
+			var bm_script = load("res://Systems/battle_manager.gd")
+			battle_manager = Node.new()
+			battle_manager.name = "BattleManager"
+			battle_manager.set_script(bm_script)
+			add_child(battle_manager)
+			
+	# Connect Battle Manager Signals
+	battle_manager.stats_updated.connect(_on_stats_updated)
+	battle_manager.status_updated.connect(_on_status_updated)
+	battle_manager.reaction_triggered.connect(_on_reaction_triggered)
+	battle_manager.battle_ended.connect(_on_battle_ended)
+	battle_manager.activate_random_subslot_requested.connect(_on_activate_random_subslot_requested)
+	
+	# Initialize Battle State in Manager (Safe to trigger signals now that enemy_entity is ready)
+	battle_manager.initialize_battle(enemy_name, enemy_element, enemy_max_hp, base_attack_damage, card_db)
+	
+	# Setup array button
+	array_button = Button.new()
+	array_button.text = "阵法: 未就绪"
+	array_button.disabled = true
+	array_button.pressed.connect(_on_array_button_pressed)
+	array_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	array_button.offset_left = 20
+	array_button.offset_top = 105
+	array_button.custom_minimum_size = Vector2(150, 40)
+	add_child(array_button)
+	
+	enemy_turn_counter = battle_manager.enemy_turn_counter
+	enemy_atk_buff = battle_manager.enemy_atk_buff
 	
 	_update_end_turn_button()
 	_update_resource_ui()
@@ -162,7 +184,7 @@ func _ready() -> void:
 	_update_enemy_intent()
 	_update_status_displays()
 	
-	# Apply premium glassmorphic/flat styling to player_status_bar
+	# Styling
 	if player_status_bar:
 		var style = StyleBoxFlat.new()
 		style.bg_color = Color(0.08, 0.08, 0.1, 0.85)
@@ -181,10 +203,42 @@ func _ready() -> void:
 	debug_kill_btn.offset_bottom = 100
 	debug_kill_btn.pressed.connect(_on_debug_instakill_pressed)
 	add_child(debug_kill_btn)
-	# -------------------------------
+
+# --- Battle Manager Signal Listeners ---
+func _on_stats_updated(player_hp: int, p_player_shield: int, p_enemy_hp: int, p_enemy_shield: int) -> void:
+	player_shield = p_player_shield
+	enemy_hp = p_enemy_hp
+	enemy_shield = p_enemy_shield
+	enemy_atk_buff = battle_manager.enemy_atk_buff
 	
+	if enemy_entity:
+		enemy_entity.hp = enemy_hp
+		enemy_entity.shield = enemy_shield
 
+	_update_enemy_ui()
+	_update_resource_ui()
 
+func _on_status_updated(target: String, status_dict: Dictionary) -> void:
+	if target == "player":
+		player_statuses = status_dict
+	elif target == "enemy":
+		enemy_statuses = status_dict
+	_update_status_displays()
+
+func _on_reaction_triggered(reaction_name: String, reaction_color: Color) -> void:
+	_spawn_floating_text(reaction_name + "!", reaction_color)
+
+func _on_battle_ended(is_victory: bool) -> void:
+	is_game_over = true
+	if is_victory:
+		_trigger_victory()
+	else:
+		_trigger_game_over()
+
+func _on_activate_random_subslot_requested() -> void:
+	_activate_random_subslot()
+
+# --- Interface Logic ---
 func _initialize_card_slots() -> void:
 	var slots_data = GameManager.active_deck_layout
 	
@@ -231,7 +285,6 @@ func _initialize_card_slots() -> void:
 				sub_slot.stats_label.text = "Buff: +" + str(sub_val)
 				sub_slot._update_visuals()
 
-	# Listen to activation signals on all Main Slots and add Swap buttons
 	for row in slots_container.get_children():
 		if row is HBoxContainer:
 			for slot in row.get_children():
@@ -387,161 +440,25 @@ func _on_enemy_targeted(card_id: String = "", enemy_node: Node = null) -> void:
 				pending_play_slot = null
 			return
 			
-		var card_data = card_db[card_id]
-		var type = card_data["main_slot"]["type"]
-		
-		var main_slot_data = card_data.get("main_slot", {})
-		
-		# Trigger non-stat sub-slot effects (like generate_element) at card play
+		# Gather active sub slots to pass to manager
+		var active_sub_ids = []
 		if pending_play_slot:
 			for sub_slot in pending_play_slot.sub_slots:
 				if sub_slot.current_state == CardSlot.SlotState.ACTIVATED:
 					var sub_id = sub_slot.get_meta("card_id", "")
-					if sub_id != "" and card_db.has(sub_id):
-						var sub_card_data = card_db[sub_id]
-						var sub_slot_data = sub_card_data.get("sub_slot", {})
-						var sub_type = sub_slot_data.get("type", "")
-						if sub_type == "generate_element":
-							_add_element(sub_slot_data.get("stat", ""), sub_slot_data.get("value", 0))
+					if sub_id != "":
+						active_sub_ids.append(sub_id)
 
-		# Apply Shield (if any)
-		if type == "shield" or type == "damage_and_shield":
-			# Step A: Base Value & Sub-slot Merge for Shield
-			var final_value = main_slot_data.get("value", main_slot_data.get("shield_value", 0))
-			if pending_play_slot:
-				for sub_slot in pending_play_slot.sub_slots:
-					if sub_slot.current_state == CardSlot.SlotState.ACTIVATED:
-						var sub_id = sub_slot.get_meta("card_id", "")
-						if sub_id != "" and card_db.has(sub_id):
-							var sub_card_data = card_db[sub_id]
-							var sub_slot_data = sub_card_data.get("sub_slot", {})
-							var sub_stat = sub_slot_data.get("stat", "")
-							var sub_val = sub_slot_data.get("value", 0)
-							if sub_stat == "shield":
-								final_value += sub_val
-								
-			player_shield += final_value
-			print("Player gained ", final_value, " shield.")
-			
-		# Apply Damage (if any)
-		if type == "damage" or type == "damage_and_shield":
-			# Step A: Base Value & Sub-slot Merge for Damage
-			var final_value = main_slot_data.get("value", main_slot_data.get("damage_value", 0))
-			if pending_play_slot:
-				for sub_slot in pending_play_slot.sub_slots:
-					if sub_slot.current_state == CardSlot.SlotState.ACTIVATED:
-						var sub_id = sub_slot.get_meta("card_id", "")
-						if sub_id != "" and card_db.has(sub_id):
-							var sub_card_data = card_db[sub_id]
-							var sub_slot_data = sub_card_data.get("sub_slot", {})
-							var sub_stat = sub_slot_data.get("stat", "")
-							var sub_val = sub_slot_data.get("value", 0)
-							if sub_stat == "damage":
-								final_value += sub_val
-
-			var damage = final_value
-			
-			if GameManager.acquired_equipment.has("小刀"):
-				damage += 3
-				print("小刀 equipment triggered! +3 Damage")
-			
-			# Step B: Strict Main-Slot Reaction Lookup
-			# Crucial Rule: attacker_element = card_data.element (Main Slot ONLY)
-			var attacker_element = card_data.get("element", "")
-			
-			if player_statuses.has("elemental_infusion") and player_statuses["elemental_infusion"] is Dictionary:
-				attacker_element = player_statuses["elemental_infusion"].get("element", "")
-				damage += player_statuses["elemental_infusion"].get("value", 0)
-				print("Elemental Infusion Active! Attack changed to " + attacker_element)
-			
-			var reaction_triggered: bool = false
-			var reaction_name: String = ""
-			var reaction_color: Color = Color.WHITE
-			
-			if element_colors.has(attacker_element):
-				reaction_color = element_colors[attacker_element]
-				
-			var target_element = enemy_node.element if enemy_node and "element" in enemy_node else enemy_element
-			
-			# Reaction Lookup
-			var reaction = null
-			if reaction_db.has(attacker_element) and reaction_db[attacker_element].has(target_element):
-				reaction = reaction_db[attacker_element][target_element]
-				reaction_name = reaction.get("name", "")
-				reaction_triggered = true
-				
-			# Execution
-			var is_true_damage = false
-			should_reactivate = false
-			if reaction_triggered and reaction != null:
-				match reaction.get("type", ""):
-					"damage_mult":
-						damage = int(damage * reaction.get("value", 1.0))
-						print("Elemental Reaction: ", reaction_name, "! Damage multiplied!")
-					"shield_break_then_damage":
-						if enemy_node and "shield" in enemy_node:
-							enemy_node.shield = 0
-						enemy_shield = 0
-						print("Elemental Reaction: ", reaction_name, "! Shield broken!")
-					"true_damage":
-						is_true_damage = true
-						if "value" in reaction:
-							damage += reaction.get("value", 0)
-						print("Elemental Reaction: ", reaction_name, "! True damage bypasses shield!")
-					"composite":
-						for sub_effect in reaction.get("effects", []):
-							_execute_reaction_effect(sub_effect, enemy_node, card_data)
-					_:
-						_execute_reaction_effect(reaction, enemy_node, card_data)
-						
-				_spawn_floating_text(reaction_name + "!", reaction_color)
-				
-			# Apply Frail status modifier (damage x 1.5)
-			if enemy_statuses.has("frail"):
-				damage = int(damage * 1.5)
-				print("Enemy is frail! Incoming damage increased.")
-				
-			# Apply Damage to HP / Shield
-			var final_applied_damage = damage
-			if is_true_damage:
-				if enemy_node and "hp" in enemy_node:
-					enemy_node.hp -= final_applied_damage
-				else:
-					enemy_hp -= final_applied_damage
-			else:
-				var current_shield = enemy_node.shield if enemy_node and "shield" in enemy_node else enemy_shield
-				if current_shield > 0:
-					if final_applied_damage >= current_shield:
-						final_applied_damage -= current_shield
-						current_shield = 0
-					else:
-						current_shield -= final_applied_damage
-						final_applied_damage = 0
-				
-				var current_hp = enemy_node.hp if enemy_node and "hp" in enemy_node else enemy_hp
-				current_hp -= final_applied_damage
-				
-				if enemy_node:
-					if "shield" in enemy_node: enemy_node.shield = current_shield
-					if "hp" in enemy_node: enemy_node.hp = current_hp
-				enemy_shield = current_shield
-				enemy_hp = current_hp
-				
-			print("Dealt ", final_value, " (Final: ", damage, ") damage to Enemy.")
-			
-			var final_enemy_hp = enemy_node.hp if enemy_node and "hp" in enemy_node else enemy_hp
-			if final_enemy_hp <= 0:
-				_trigger_victory()
-				
-		_update_resource_ui()
-		_update_enemy_ui()
+		# Execute on Battle Manager
+		battle_manager.play_card(card_id, active_sub_ids, enemy_node)
 		
+		# UI Reset & reactivation
 		if pending_play_slot:
 			var slot_to_finalize = pending_play_slot
 			slot_to_finalize._finalize_play()
 			pending_play_slot = null
 			
-			if should_reactivate:
+			if battle_manager.should_reactivate:
 				slot_to_finalize.current_state = CardSlot.SlotState.INACTIVE
 				slot_to_finalize._update_visuals()
 				for sub_slot in slot_to_finalize.sub_slots:
@@ -549,59 +466,8 @@ func _on_enemy_targeted(card_id: String = "", enemy_node: Node = null) -> void:
 					sub_slot._update_visuals()
 				print("淬火! Card reset to INACTIVE for repayment.")
 
-func _execute_reaction_effect(effect: Dictionary, enemy_node: Node, _card_data: Dictionary) -> void:
-	match effect.get("type", ""):
-		"apply_status":
-			var target = effect.get("target", "enemy")
-			var target_node = enemy_node if target == "enemy" else self
-			var duration = effect.get("duration", 2)
-			var val = effect.get("value", 0.0)
-			_apply_status(target_node, effect.get("status_id", ""), duration, val, effect.get("element", ""))
-		"generate_element":
-			_add_element(effect.get("element", ""), effect.get("value", 0))
-		"generate_random_element":
-			var exclude = effect.get("exclude", "")
-			var val = effect.get("value", 2)
-			_generate_random_elements(val, exclude)
-		"reactivate_card":
-			should_reactivate = true
-			print("淬火! Scheduled card reactivation.")
-		"steal_element":
-			_add_element("以太", effect.get("value", 1))
-			print("吸纳! Stole element from enemy.")
-		"apply_buff":
-			var target = effect.get("target", "player")
-			var target_node = self if target == "player" else enemy_node
-			var duration = effect.get("duration", -1)
-			var val = effect.get("value", 0.0)
-			_apply_status(target_node, effect.get("buff_id", ""), duration, val, effect.get("element", ""))
-		"add_shield":
-			player_shield += effect.get("value", 0)
-			_update_resource_ui()
-		"global_persistent_buff":
-			_apply_status(self, effect.get("buff_id", ""), -1, effect.get("value", 0.0))
-		"heal_player":
-			GameManager.current_health = min(GameManager.max_health, GameManager.current_health + effect.get("value", 4))
-			_update_resource_ui()
-			print("固本! Healed player by ", effect.get("value", 4))
-		"activate_random_subslot":
-			_activate_random_subslot()
-
-func _add_element(element: String, amount: int) -> void:
-	match element:
-		"金": GameManager.element_metal += amount
-		"木": GameManager.element_wood += amount
-		"水": GameManager.element_water += amount
-		"火": GameManager.element_fire += amount
-		"土": GameManager.element_earth += amount
-		"以太": GameManager.aether += amount
-		"all":
-			GameManager.element_metal += amount
-			GameManager.element_wood += amount
-			GameManager.element_water += amount
-			GameManager.element_fire += amount
-			GameManager.element_earth += amount
-	_update_resource_ui()
+		_update_resource_ui()
+		_update_enemy_ui()
 
 func check_five_elements_array() -> void:
 	if GameManager.active_five_elements_array == "" or is_array_activated: return
@@ -633,19 +499,9 @@ func _on_array_button_pressed() -> void:
 	var array_id = GameManager.active_five_elements_array
 	if array_db.has(array_id):
 		var effects = array_db[array_id].get("effects", [])
-		for effect in effects:
-			_execute_reaction_effect(effect, enemy_entity, {})
+		battle_manager.execute_array_effects(effects)
 			
 	_spawn_floating_text("阵法发动！", Color.CYAN)
-
-func _generate_random_elements(amount: int, exclude: String) -> void:
-	var elements = ["金", "木", "水", "火", "土"]
-	if exclude != "":
-		elements.erase(exclude)
-	for i in range(amount):
-		var chosen = elements[randi() % elements.size()]
-		_add_element(chosen, 1)
-		print("润泽! Gained 1 ", chosen)
 
 func _activate_random_subslot() -> void:
 	var inactive_subs = []
@@ -659,27 +515,6 @@ func _activate_random_subslot() -> void:
 		chosen.current_state = CardSlot.SlotState.ACTIVATED
 		chosen._update_visuals()
 		print("过载! Activated sub-slot: ", chosen.name)
-
-func _apply_status(target, status_id: String, duration: int, value: float = 0.0, element: String = "") -> void:
-	var target_dict = null
-	var target_name = ""
-	if target is String:
-		target_name = target
-	else:
-		target_name = "enemy" if target == enemy_entity else "player"
-		
-	if target_name == "enemy":
-		target_dict = enemy_statuses
-	else:
-		target_dict = player_statuses
-		
-	target_dict[status_id] = {
-		"duration": duration,
-		"value": value if value != null else 0.0,
-		"element": element if element != null else ""
-	}
-	print("Applied status: ", status_id, " to ", target_name, " for ", duration, " turns (value: ", value, ")")
-	_update_status_displays()
 
 func _spawn_floating_text(text: String, color: Color) -> void:
 	var label = Label.new()
@@ -710,22 +545,19 @@ func _on_replace_button_pressed(slot_node: CardSlot) -> void:
 		
 	current_replace_slot = slot_node
 	
-	# Randomly pick up to 3 options
-	var options = []
 	var pool = reserve_cards.duplicate()
 	pool.shuffle()
 	
+	var options = []
 	for i in range(min(3, pool.size())):
 		options.append(pool[i])
 		
-	# Clear old options
 	for child in reserve_options.get_children():
 		child.queue_free()
 		
-	# Populate new options
 	for card_id in options:
 		if not card_database.has(card_id):
-			print("CRITICAL: Swap failed. ID '", card_id, "' not found in card_database.json")
+			print("CRITICAL: Swap failed. ID '", card_id, "' not found")
 			continue
 			
 		var btn = Button.new()
@@ -742,20 +574,17 @@ func _on_reserve_option_selected(card_id: String) -> void:
 		print("Not enough Aether to swap! Need 5.")
 		return
 		
-	# Deduct Aether
 	GameManager.aether -= 5
 	_update_resource_ui()
 	
-	# Swap cards
 	var old_card_id = current_replace_slot.get_meta("card_id", "")
 	if old_card_id != "":
 		reserve_cards.append(old_card_id)
 		
 	reserve_cards.erase(card_id)
 	
-	# Update slot
 	if not card_database.has(card_id):
-		print("CRITICAL: Swap failed. ID '", card_id, "' not found in card_database.json")
+		print("CRITICAL: Swap failed. ID '", card_id, "' not found")
 		return
 		
 	current_replace_slot.set_meta("card_id", card_id)
@@ -780,7 +609,6 @@ func _on_reserve_cancel() -> void:
 func _on_end_turn_pressed() -> void:
 	if is_game_over: return
 	print("=== END TURN ===")
-	player_shield = 0 # Shield decay at turn end
 	
 	if not has_manually_activated:
 		GameManager.element_metal += 5
@@ -788,34 +616,29 @@ func _on_end_turn_pressed() -> void:
 		GameManager.element_water += 5
 		GameManager.element_fire += 5
 		GameManager.element_earth += 5
-		print("Yin Qi Ru Ti activated! Rewarded 5 to all basic elements.")
+		print("Yin Qi Ru Ti activated! Rewarded 5 elements.")
 		
-	# Progress enemy intent
-	_execute_enemy_intent()
-	enemy_turn_counter += 1
+	battle_manager.end_turn()
+	
+	enemy_turn_counter = battle_manager.enemy_turn_counter
+	enemy_atk_buff = battle_manager.enemy_atk_buff
+	
 	_update_enemy_intent()
 	
-	# Reset state of PLAYED slots to INACTIVE
 	for row in slots_container.get_children():
 		if row is HBoxContainer:
 			for slot in row.get_children():
 				if slot is CardSlot:
 					slot.reset_turn()
 					
-	# Reset activation tracking
 	has_manually_activated = false
 	_update_end_turn_button()
 	_update_resource_ui()
 	_update_status_displays()
-	print("New turn started. PLAYED slots reset to INACTIVE. ACTIVATED slots persist.")
+	print("New turn started.")
 	print(export_state_to_json())
 
 func _update_enemy_ui() -> void:
-	if enemy_entity and "hp" in enemy_entity:
-		enemy_hp = enemy_entity.hp
-		enemy_shield = enemy_entity.shield
-		enemy_element = enemy_entity.element
-		
 	enemy_name_label.text = "%s (%s)" % [enemy_name, enemy_element]
 	enemy_stats_label.text = "HP: %d/%d | Shield: %d" % [enemy_hp, enemy_max_hp, enemy_shield]
 	
@@ -824,141 +647,6 @@ func _update_enemy_ui() -> void:
 		enemy_name_label.modulate = color
 		if enemy_entity:
 			enemy_entity.self_modulate = color
-
-func _execute_enemy_intent() -> void:
-	if is_game_over: return
-	
-	if enemy_entity and "hp" in enemy_entity:
-		enemy_hp = enemy_entity.hp
-		enemy_shield = enemy_entity.shield
-		enemy_element = enemy_entity.element
-		
-	# Apply burn damage first
-	if enemy_statuses.has("burn"):
-		var burn_dmg = 3
-		enemy_hp -= burn_dmg
-		print("Enemy takes ", burn_dmg, " Burn damage.")
-		enemy_statuses["burn"]["duration"] -= 1
-		if enemy_statuses["burn"]["duration"] <= 0:
-			enemy_statuses.erase("burn")
-			
-	if enemy_hp <= 0:
-		if enemy_entity and "hp" in enemy_entity:
-			enemy_entity.hp = enemy_hp
-		_trigger_victory()
-		return
-		
-	enemy_shield = 0 # Enemy shield resets BEFORE resolving new intent
-	var intent_type = enemy_turn_counter % 3
-	
-	# Check stun_attack
-	var is_stunned = false
-	if enemy_statuses.has("stun_attack") and intent_type == 0:
-		is_stunned = true
-		print("Enemy attack is Stunned/Intercepted by '阻截'!")
-		enemy_statuses["stun_attack"]["duration"] -= 1
-		if enemy_statuses["stun_attack"]["duration"] <= 0:
-			enemy_statuses.erase("stun_attack")
-			
-	match intent_type:
-		0:
-			if not is_stunned:
-				var damage = base_attack_damage + enemy_atk_buff
-				# Apply Weak status multiplier
-				if enemy_statuses.has("weak"):
-					damage = int(damage * 0.75)
-					print("Enemy is weakened! Damage reduced.")
-					
-				print("Enemy attacking for ", damage, " damage!")
-				
-				# Player damage reduction buff (alloy / 合金)
-				if player_statuses.has("damage_reduction"):
-					damage = max(0, damage - 1)
-					print("Player '合金' reduced damage by 1.")
-				
-				# Rattan Armor (藤甲) passive logic
-				if GameManager.acquired_equipment.has("藤甲"):
-					if enemy_element == "火":
-						damage += 4
-						print("藤甲弱点！受到额外4点火属性伤害！")
-					else:
-						damage = max(0, damage - 4)
-						print("藤甲坚固！抵挡了4点伤害！")
-					
-				if player_shield >= damage:
-					player_shield -= damage
-				else:
-					var leftover = damage - player_shield
-					player_shield = 0
-					GameManager.current_health -= leftover
-					
-					# Retaliate Generate (余烬)
-					if player_statuses.has("retaliate_generate"):
-						_add_element("火", 1)
-						print("Player '余烬' triggered! Gained 1 Fire.")
-						
-					# Thorns (坚韧)
-					if player_statuses.has("thorns"):
-						var thorns_dmg = 3
-						enemy_hp -= thorns_dmg
-						print("Player '坚韧' Thorns dealt ", thorns_dmg, " damage to enemy.")
-						if enemy_hp <= 0:
-							if enemy_entity and "hp" in enemy_entity:
-								enemy_entity.hp = enemy_hp
-							_trigger_victory()
-							return
-							
-					if GameManager.current_health <= 0:
-						_trigger_game_over()
-		1:
-			var shd_gain = 15
-			# Apply Slow status multiplier
-			if enemy_statuses.has("slow"):
-				shd_gain = int(shd_gain * 0.5)
-				print("Enemy is slowed! Shield gain halved.")
-			enemy_shield += shd_gain
-			print("Enemy defended, gained ", shd_gain, " shield!")
-		2:
-			enemy_atk_buff += 3
-			print("Enemy buffed, gained 3 ATK!")
-			
-	# Apply bleed damage after enemy action
-	if enemy_statuses.has("bleed"):
-		var bleed_dmg = 4
-		enemy_hp -= bleed_dmg
-		print("Enemy takes ", bleed_dmg, " Bleed damage.")
-		enemy_statuses["bleed"]["duration"] -= 1
-		if enemy_statuses["bleed"]["duration"] <= 0:
-			enemy_statuses.erase("bleed")
-		if enemy_hp <= 0:
-			if enemy_entity and "hp" in enemy_entity:
-				enemy_entity.hp = enemy_hp
-			_trigger_victory()
-			return
-			
-	# Decay other statuses at end of enemy turn
-	for status_id in enemy_statuses.keys():
-		if enemy_statuses[status_id] is Dictionary and status_id in ["frail", "weak", "slow"]:
-			enemy_statuses[status_id]["duration"] = enemy_statuses[status_id].get("duration", 0) - 1
-			if enemy_statuses[status_id]["duration"] <= 0:
-				enemy_statuses.erase(status_id)
-				
-	for status_id in player_statuses.keys():
-		if player_statuses[status_id] is Dictionary:
-			var dur = player_statuses[status_id].get("duration", -1)
-			if dur != -1:
-				player_statuses[status_id]["duration"] = dur - 1
-				if player_statuses[status_id]["duration"] <= 0:
-					player_statuses.erase(status_id)
-				
-	# Sync back to enemy_entity fields
-	if enemy_entity and "hp" in enemy_entity:
-		enemy_entity.hp = enemy_hp
-		enemy_entity.shield = enemy_shield
-		
-	_update_resource_ui()
-	_update_enemy_ui()
-	_update_status_displays()
 
 func _trigger_game_over() -> void:
 	print("GAME OVER")
@@ -969,7 +657,6 @@ func _trigger_game_over() -> void:
 	if has_node("/root/GlobalHUD"):
 		GlobalHUD.close_all_overlays()
 	
-	# 使用 GameManager 已有的变量和跳转函数 [cite: 1, 2]
 	GameManager.switch_to_scene(GameManager.game_over_scene)
 
 func _trigger_victory() -> void:
@@ -979,13 +666,11 @@ func _trigger_victory() -> void:
 	if target_btn:
 		target_btn.disabled = true
 		
-	# Create a dynamic "Collect Loot" Button centered on screen
 	var loot_btn = Button.new()
 	loot_btn.text = "收集战利品 (Collect Loot)"
 	loot_btn.custom_minimum_size = Vector2(250, 60)
 	loot_btn.add_theme_font_size_override("font_size", 20)
 	
-	# Center it on screen
 	loot_btn.set_anchors_preset(Control.PRESET_CENTER)
 	loot_btn.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	loot_btn.grow_vertical = Control.GROW_DIRECTION_BOTH
@@ -1000,8 +685,6 @@ func _trigger_victory() -> void:
 func _go_to_loot() -> void:
 	if has_node("/root/GlobalHUD"):
 		GlobalHUD.close_all_overlays()
-	
-	# 使用 GameManager 已有的变量和跳转函数 [cite: 1, 2]
 	GameManager.switch_to_scene(GameManager.victory_scene)
 
 func _update_enemy_intent() -> void:
@@ -1072,19 +755,16 @@ func _update_status_displays() -> void:
 	if not enemy_status_container or not player_status_container:
 		return
 		
-	# Clear existing children
 	for child in enemy_status_container.get_children():
 		child.queue_free()
 	for child in player_status_container.get_children():
 		child.queue_free()
 		
-	# Populate enemy statuses
 	for status_id in enemy_statuses.keys():
 		var data = enemy_statuses[status_id]
 		if data is Dictionary:
 			_create_status_badge(status_id, data, enemy_status_container)
 			
-	# Populate player statuses
 	for status_id in player_statuses.keys():
 		var data = player_statuses[status_id]
 		if data is Dictionary:
@@ -1094,11 +774,9 @@ func _create_status_badge(status_id: String, status_data: Dictionary, container:
 	var info = STATUS_INFO.get(status_id, {"name": status_id.capitalize(), "emoji": "✨", "color": Color(0.5, 0.5, 0.5)})
 	
 	var panel = PanelContainer.new()
-	
-	# Flat stylebox for the badge background
 	var style = StyleBoxFlat.new()
 	style.bg_color = info["color"]
-	style.bg_color.a = 0.22 # Semi-transparent colored background
+	style.bg_color.a = 0.22
 	style.border_width_left = 1
 	style.border_width_right = 1
 	style.border_width_top = 1
@@ -1131,6 +809,6 @@ func _on_debug_instakill_pressed() -> void:
 	if is_game_over: 
 		return
 	print("DEBUG: Insta-kill triggered!")
-	enemy_hp = 0
-	_update_enemy_ui()
-	_trigger_victory()
+	battle_manager.enemy_hp = 0
+	battle_manager.emit_stats()
+	battle_manager._trigger_victory()

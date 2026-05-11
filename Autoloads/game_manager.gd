@@ -97,3 +97,45 @@ func reset_run() -> void:
 	
 	current_world = 1
 	generate_new_world()
+
+var equipped_reactions: Dictionary = {}
+
+func _ready() -> void:
+	_initialize_default_reactions()
+
+func _initialize_default_reactions() -> void:
+	equipped_reactions.clear()
+	var file = FileAccess.open("res://Databases/reaction_database.json", FileAccess.READ)
+	if file:
+		var content = file.get_as_text()
+		file.close()
+		var db = JSON.parse_string(content)
+		if db is Dictionary:
+			var elements = ["火", "水", "木", "金", "土"]
+			for i in range(elements.size()):
+				for j in range(i + 1, elements.size()):
+					var e1 = elements[i]
+					var e2 = elements[j]
+					
+					var sorted_elements = [e1, e2]
+					sorted_elements.sort()
+					var key = sorted_elements[0] + "_" + sorted_elements[1]
+					
+					# Default logic: Use alphabetically first element attacking second element
+					if db.has(sorted_elements[0]) and db[sorted_elements[0]].has(sorted_elements[1]):
+						var reaction_data = db[sorted_elements[0]][sorted_elements[1]]
+						var new_reaction = ReactionEffect.new()
+						var comb_typed: Array[String] = []
+						comb_typed.append(sorted_elements[0])
+						comb_typed.append(sorted_elements[1])
+						new_reaction.combination = comb_typed
+						new_reaction.reaction_name = reaction_data.get("name", "")
+						new_reaction.description = reaction_data.get("description", "")
+						new_reaction.effect = reaction_data.duplicate()
+						
+						equipped_reactions[key] = new_reaction
+
+func learn_new_reaction(new_reaction_res: ReactionEffect) -> void:
+	var key = new_reaction_res.get_combination_key()
+	if key != "":
+		equipped_reactions[key] = new_reaction_res

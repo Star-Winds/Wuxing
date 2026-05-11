@@ -49,53 +49,46 @@ func _populate_reactions() -> void:
 	for child in list_container.get_children():
 		child.queue_free()
 		
-	# 注意：如果你的数据库路径未来也会变，建议也将其放入 GameManager 的 @export 中
-	var db = _load_json_data("res://Databases/reaction_database.json")
-	if db.is_empty():
-		_show_error("无法加载反应数据库。")
+	if GameManager.equipped_reactions.is_empty():
+		_show_error("无法加载反应数据（GameManager 未初始化）。")
 		return
 		
-	var element_order = ["金", "木", "水", "火", "土"]
+	# 1. 创建章节标题
+	var header = RichTextLabel.new()
+	header.fit_content = true
+	header.bbcode_enabled = true
+	header.text = "[font_size=18][b]已装备元素反应 :[/b][/font_size]"
+	list_container.add_child(header)
 	
-	for attacker in element_order:
-		if not db.has(attacker): continue
-			
-		var attacker_color = ELEMENT_COLORS.get(attacker, "#FFFFFF")
+	# 2. 创建容器面板 (视觉优化)
+	var panel = _create_styled_panel()
+	var section_vbox = VBoxContainer.new()
+	section_vbox.add_theme_constant_override("separation", 8)
+	panel.add_child(section_vbox)
+	list_container.add_child(panel)
+	
+	# 3. 填充具体反应
+	for key in GameManager.equipped_reactions.keys():
+		var r_res = GameManager.equipped_reactions[key]
+		var e1 = r_res.combination[0]
+		var e2 = r_res.combination[1]
+		var e1_color = ELEMENT_COLORS.get(e1, "#FFFFFF")
+		var e2_color = ELEMENT_COLORS.get(e2, "#FFFFFF")
+		var r_name = r_res.reaction_name
+		var r_desc = r_res.description
 		
-		# 1. 创建章节标题
-		var header = RichTextLabel.new()
-		header.fit_content = true
-		header.bbcode_enabled = true
-		header.text = "[font_size=18][color=%s][b]● %s 属性触发的反应 :[/b][/color][/font_size]" % [attacker_color, attacker]
-		list_container.add_child(header)
+		var item = RichTextLabel.new()
+		item.fit_content = true
+		item.bbcode_enabled = true
+		item.text = "   [color=%s][%s][/color] & [color=%s][%s][/color]  [b][color=#FFEB3B]【%s】[/color][/b] : [color=#ECEFF1]%s[/color]" % [
+			e1_color, e1, e2_color, e2, r_name, r_desc
+		]
+		section_vbox.add_child(item)
 		
-		# 2. 创建容器面板 (视觉优化)
-		var panel = _create_styled_panel()
-		var section_vbox = VBoxContainer.new()
-		section_vbox.add_theme_constant_override("separation", 8)
-		panel.add_child(section_vbox)
-		list_container.add_child(panel)
-		
-		# 3. 填充具体反应
-		var reactions = db[attacker]
-		for defender in reactions.keys():
-			var r_data = reactions[defender]
-			var defender_color = ELEMENT_COLORS.get(defender, "#FFFFFF")
-			var r_name = r_data.get("name", "未知")
-			var r_desc = r_data.get("description", "无描述")
-			
-			var item = RichTextLabel.new()
-			item.fit_content = true
-			item.bbcode_enabled = true
-			item.text = "   [color=%s][%s][/color] ➔ [color=%s][%s][/color]  [b][color=#FFEB3B]【%s】[/color][/b] : [color=#ECEFF1]%s[/color]" % [
-				attacker_color, attacker, defender_color, defender, r_name, r_desc
-			]
-			section_vbox.add_child(item)
-			
-		# 4. 间距控制
-		var spacer = Control.new()
-		spacer.custom_minimum_size = Vector2(0, 10)
-		list_container.add_child(spacer)
+	# 4. 间距控制
+	var spacer = Control.new()
+	spacer.custom_minimum_size = Vector2(0, 10)
+	list_container.add_child(spacer)
 
 # --- 辅助样式方法 (保持代码整洁) ---
 

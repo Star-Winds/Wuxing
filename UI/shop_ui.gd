@@ -11,9 +11,10 @@ func _ready() -> void:
 	var vbox = get_node_or_null("VBoxContainer")
 	if vbox:
 		vbox.offset_top = 100
+	
 	_update_ui()
 	
-	# Connect button signals
+	# 连接按钮信号
 	buy_aether_button.pressed.connect(_on_buy_aether_pressed)
 	buy_elements_button.pressed.connect(_on_buy_elements_pressed)
 	buy_card_button.pressed.connect(_on_buy_card_pressed)
@@ -31,12 +32,10 @@ func _update_ui() -> void:
 			GameManager.element_earth
 		]
 	
-	# Optionally keep button availability updated based on gold (though once bought they remain disabled)
-	# But we only disable them upon purchase as requested (can only buy once).
-	# To make it user-friendly, we can also check if they can afford them, or just rely on the click check.
 	_check_affordability()
 
 func _check_affordability() -> void:
+	# 若余额不足且按钮尚未因购买被禁用，则置灰文字
 	if GameManager.gold < 50 and not buy_aether_button.disabled:
 		buy_aether_button.add_theme_color_override("font_color", Color("#888888"))
 	if GameManager.gold < 40 and not buy_elements_button.disabled:
@@ -48,11 +47,8 @@ func _on_buy_aether_pressed() -> void:
 	if GameManager.gold >= 50:
 		GameManager.gold -= 50
 		GameManager.aether += 5
-		print("Successfully purchased 5 Aether! (Current Gold: %d)" % GameManager.gold)
 		buy_aether_button.disabled = true
 		_update_ui()
-	else:
-		print("Not enough Gold to buy Aether!")
 
 func _on_buy_elements_pressed() -> void:
 	if GameManager.gold >= 40:
@@ -62,23 +58,21 @@ func _on_buy_elements_pressed() -> void:
 		GameManager.element_water += 2
 		GameManager.element_fire += 2
 		GameManager.element_earth += 2
-		print("Successfully purchased Element Pack! (Current Gold: %d)" % GameManager.gold)
 		buy_elements_button.disabled = true
 		_update_ui()
-	else:
-		print("Not enough Gold to buy Element Pack!")
 
 func _on_buy_card_pressed() -> void:
 	if GameManager.gold >= 30:
 		GameManager.gold -= 30
 		GameManager.backpack_cards.append("fire_law_001")
-		print("Card fire_law_001 added to backpack! (Current Gold: %d)" % GameManager.gold)
 		buy_card_button.disabled = true
 		_update_ui()
-	else:
-		print("Not enough Gold to buy Card!")
 
+# --- 核心修改部分 ---
 func _leave_shop() -> void:
-	print("Leaving shop.")
+	# 1. 推进地图索引
 	GameManager.current_node_index += 1
-	get_tree().change_scene_to_file("res://UI/map_ui.tscn")
+	
+	# 2. 调用重构后的全局场景切换逻辑
+	# 确保 GameManager 的 map_scene 已在编辑器中赋值
+	GameManager.switch_to_scene(GameManager.map_scene)

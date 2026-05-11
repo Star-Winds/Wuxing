@@ -21,7 +21,7 @@ var card_database: Dictionary = {}
 var is_game_over: bool = false
 var element_colors: Dictionary = {}
 var reaction_matrix: Dictionary = {}
-var card_db: Dictionary = {}
+var card_db: Dictionary = {}	
 var reaction_db: Dictionary = {}
 var player_statuses: Dictionary = {}
 var enemy_statuses: Dictionary = {}
@@ -965,9 +965,12 @@ func _trigger_game_over() -> void:
 	is_game_over = true
 	GameManager.current_health = 0
 	_update_resource_ui()
+	
 	if has_node("/root/GlobalHUD"):
 		GlobalHUD.close_all_overlays()
-	get_tree().change_scene_to_file("res://UI/game_over_ui.tscn")
+	
+	# 使用 GameManager 已有的变量和跳转函数 [cite: 1, 2]
+	GameManager.switch_to_scene(GameManager.game_over_scene)
 
 func _trigger_victory() -> void:
 	print("VICTORY! Enemy Defeated.")
@@ -997,7 +1000,9 @@ func _trigger_victory() -> void:
 func _go_to_loot() -> void:
 	if has_node("/root/GlobalHUD"):
 		GlobalHUD.close_all_overlays()
-	get_tree().change_scene_to_file("res://UI/victory_ui.tscn")
+	
+	# 使用 GameManager 已有的变量和跳转函数 [cite: 1, 2]
+	GameManager.switch_to_scene(GameManager.victory_scene)
 
 func _update_enemy_intent() -> void:
 	var intent_type = enemy_turn_counter % 3

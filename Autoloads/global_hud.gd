@@ -1,5 +1,12 @@
 extends CanvasLayer
 
+# --- 资源注册表 ---
+# 在 GlobalHUD.tscn 的检查器中拖入对应的场景文件
+@export_group("悬浮层资源")
+@export var map_ui_scene: PackedScene
+@export var deck_builder_scene: PackedScene
+@export var reaction_overlay_scene: PackedScene
+
 @onready var hp_lbl: Label = %HPLabel
 @onready var aether_lbl: Label = %AetherLabel
 @onready var metal_lbl: Label = %MetalLabel
@@ -19,7 +26,7 @@ var deck_overlay_instance: Node = null
 var reaction_overlay_instance: Node = null
 
 func _ready() -> void:
-	visible = false # Starts hidden when the game boots
+	visible = false 
 	settings_btn.pressed.connect(_on_settings_pressed)
 	map_btn.pressed.connect(_on_map_peek_pressed)
 	deck_btn.pressed.connect(_on_deck_peek_pressed)
@@ -30,7 +37,6 @@ func _process(_delta: float) -> void:
 	update_display()
 
 func update_display() -> void:
-	# 1. Update HP & Shield (queries current scene for combat shield)
 	var hp_text = "HP: %d/%d" % [GameManager.current_health, GameManager.max_health]
 	var current_scene = get_tree().current_scene
 	if current_scene and "player_shield" in current_scene:
@@ -39,7 +45,6 @@ func update_display() -> void:
 			hp_text += " (+%d 护盾)" % shield
 	hp_lbl.text = hp_text
 	
-	# 2. Update Elements & Gold
 	aether_lbl.text = "以太: %d" % GameManager.aether
 	metal_lbl.text = "金: %d" % GameManager.element_metal
 	wood_lbl.text = "木: %d" % GameManager.element_wood
@@ -51,94 +56,56 @@ func update_display() -> void:
 func set_scene_name(scene_name: String) -> void:
 	if scene_name_label:
 		scene_name_label.text = "当前场景: " + scene_name
-		
-	# Automatically close map peek overlay when transitioning to a new room
-	if map_overlay_instance != null:
-		map_overlay_instance.queue_free()
-		map_overlay_instance = null
-		
-	# Automatically close deck peek overlay when transitioning to a new room
-	if deck_overlay_instance != null:
-		deck_overlay_instance.queue_free()
-		deck_overlay_instance = null
-
-	# Automatically close reaction peek overlay when transitioning to a new room
-	if reaction_overlay_instance != null:
-		reaction_overlay_instance.queue_free()
-		reaction_overlay_instance = null
+	close_all_overlays()
 
 func _on_map_peek_pressed() -> void:
-	# If map is already open as peek, close it
 	if map_overlay_instance != null:
 		map_overlay_instance.queue_free()
 		map_overlay_instance = null
 		return
 		
-	# Prevent opening map peek if we are ACTUALLY on the real map screen
+	# 使用资源引用进行判断，避免字符串比对
 	var cur = get_tree().current_scene
-	if cur.name == "MapUI" or (cur.scene_file_path != "" and "map_ui" in cur.scene_file_path):
+	if cur.scene_file_path == map_ui_scene.resource_path:
 		return 
 		
-	# Close other overlays if open
-	if deck_overlay_instance != null:
-		deck_overlay_instance.queue_free()
-		deck_overlay_instance = null
-	if reaction_overlay_instance != null:
-		reaction_overlay_instance.queue_free()
-		reaction_overlay_instance = null
-		
-	# Instantiate map as an overlay
-	map_overlay_instance = load("res://UI/map_ui.tscn").instantiate()
-	add_child(map_overlay_instance)
-	# Move it below the HUD elements but above the game
-	move_child(map_overlay_instance, 0)
+	close_all_overlays()
+	
+	# 使用实例化方法，彻底废弃 load()
+	if map_ui_scene:
+		map_overlay_instance = map_ui_scene.instantiate()
+		add_child(map_overlay_instance)
+		move_child(map_overlay_instance, 0)
 
 func _on_deck_peek_pressed() -> void:
-	# If deck overlay is already open, close it
 	if deck_overlay_instance != null:
 		deck_overlay_instance.queue_free()
 		deck_overlay_instance = null
 		return
 		
-	# Prevent opening deck peek if we are ACTUALLY on the real deck builder scene
 	var cur = get_tree().current_scene
-	if cur.name == "DeckBuilderUI" or (cur.scene_file_path != "" and "deck_builder" in cur.scene_file_path):
+	if cur.scene_file_path == deck_builder_scene.resource_path:
 		return 
 		
-	# Close other overlays if open
-	if map_overlay_instance != null:
-		map_overlay_instance.queue_free()
-		map_overlay_instance = null
-	if reaction_overlay_instance != null:
-		reaction_overlay_instance.queue_free()
-		reaction_overlay_instance = null
-		
-	# Instantiate deck builder as an overlay
-	deck_overlay_instance = load("res://UI/deck_builder_ui.tscn").instantiate()
-	add_child(deck_overlay_instance)
-	# Move it below the HUD elements but above the game
-	move_child(deck_overlay_instance, 0)
+	close_all_overlays()
+	
+	if deck_builder_scene:
+		deck_overlay_instance = deck_builder_scene.instantiate()
+		add_child(deck_overlay_instance)
+		move_child(deck_overlay_instance, 0)
 
 func _on_reaction_peek_pressed() -> void:
-	# If reaction overlay is already open, close it
 	if reaction_overlay_instance != null:
 		reaction_overlay_instance.queue_free()
 		reaction_overlay_instance = null
 		return
 		
-	# Close other overlays if open
-	if map_overlay_instance != null:
-		map_overlay_instance.queue_free()
-		map_overlay_instance = null
-	if deck_overlay_instance != null:
-		deck_overlay_instance.queue_free()
-		deck_overlay_instance = null
-		
-	# Instantiate reaction overlay as an overlay
-	reaction_overlay_instance = load("res://UI/reaction_overlay.tscn").instantiate()
-	add_child(reaction_overlay_instance)
-	# Move it below the HUD elements but above the game
-	move_child(reaction_overlay_instance, 0)
+	close_all_overlays()
+	
+	if reaction_overlay_scene:
+		reaction_overlay_instance = reaction_overlay_scene.instantiate()
+		add_child(reaction_overlay_instance)
+		move_child(reaction_overlay_instance, 0)
 
 func _on_settings_pressed() -> void:
 	PauseOverlay.toggle_pause()

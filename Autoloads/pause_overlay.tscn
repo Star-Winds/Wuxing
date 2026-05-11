@@ -2,12 +2,12 @@
 
 [ext_resource type="Script" uid="uid://bbwg6qs5hi6d0" path="res://Autoloads/pause_overlay.gd" id="1_pause"]
 
-[node name="PauseOverlay" type="CanvasLayer"]
+[node name="PauseOverlay" type="CanvasLayer" unique_id=593226842]
 process_mode = 3
 layer = 100
 script = ExtResource("1_pause")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=471558005]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -15,31 +15,31 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.7)
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1482573883]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=233644225]
 layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
 
-[node name="TitleLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=2053373823]
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "设置 / 暂停 (Paused)"
 horizontal_alignment = 1
 
-[node name="ResumeButton" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="ResumeButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=239605877]
 custom_minimum_size = Vector2(250, 50)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "继续游戏 (Resume)"
 
-[node name="AbandonButton" type="Button" parent="CenterContainer/VBoxContainer"]
+[node name="AbandonButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=118631554]
 custom_minimum_size = Vector2(250, 50)
 layout_mode = 2
 theme_override_font_sizes/font_size = 24

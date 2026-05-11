@@ -23,37 +23,30 @@ func _update_ui() -> void:
 func _on_heal_selected() -> void:
 	var heal_amount = 30
 	GameManager.current_health = min(GameManager.max_health, GameManager.current_health + heal_amount)
-	print("Healed for %d HP! (Current HP: %d/%d)" % [heal_amount, GameManager.current_health, GameManager.max_health])
+	# 调用 GlobalHUD 更新顶部显示（如果有此方法）
 	_leave_rest()
 
 func _on_nature_selected() -> void:
-	var elements = ["Metal", "Wood", "Water", "Fire", "Earth"]
-	var gained_counts = {
-		"Metal": 0,
-		"Wood": 0,
-		"Water": 0,
-		"Fire": 0,
-		"Earth": 0
-	}
+	# 优化：直接循环增加
 	for i in range(10):
-		var choice = elements[randi() % elements.size()]
-		gained_counts[choice] += 1
-		
-	GameManager.element_metal += gained_counts["Metal"]
-	GameManager.element_wood += gained_counts["Wood"]
-	GameManager.element_water += gained_counts["Water"]
-	GameManager.element_fire += gained_counts["Fire"]
-	GameManager.element_earth += gained_counts["Earth"]
+		var choice = randi() % 5
+		match choice:
+			0: GameManager.element_metal += 1
+			1: GameManager.element_wood += 1
+			2: GameManager.element_water += 1
+			3: GameManager.element_fire += 1
+			4: GameManager.element_earth += 1
 	
-	print("Gained elements: Metal +%d, Wood +%d, Water +%d, Fire +%d, Earth +%d" % [
-		gained_counts["Metal"], gained_counts["Wood"], gained_counts["Water"], gained_counts["Fire"], gained_counts["Earth"]
-	])
 	_leave_rest()
 
 func _on_leave_selected() -> void:
-	print("Left campfire safely.")
 	_leave_rest()
 
+# --- 核心修改部分 ---
 func _leave_rest() -> void:
+	# 1. 推进地图索引
 	GameManager.current_node_index += 1
-	get_tree().change_scene_to_file("res://UI/map_ui.tscn")
+	
+	# 2. 使用重构后的全局引用跳转回地图
+	# 确保在 GameManager 的 Inspector 中已将 map_ui.tscn 拖入 map_scene 槽位
+	GameManager.switch_to_scene(GameManager.map_scene)

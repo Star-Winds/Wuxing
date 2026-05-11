@@ -1,3 +1,4 @@
+# workshop_ui.gd
 extends Control
 
 @onready var resource_label: Label = $VBoxContainer/ResourceLabel
@@ -11,22 +12,15 @@ func _ready() -> void:
 	if vbox:
 		vbox.offset_top = 100
 		
-		# Prevent duplicates if the scene file already contains these nodes
-		var existing_btn = vbox.get_node_or_null("BtnLeave")
-		if existing_btn:
-			existing_btn.queue_free()
-		var existing_spacer = vbox.get_node_or_null("Spacer")
-		if existing_spacer:
-			existing_spacer.queue_free()
-		var existing_b_spacer = vbox.get_node_or_null("BottomSpacer")
-		if existing_b_spacer:
-			existing_b_spacer.queue_free()
+		# 清理旧的冗余节点
+		for node_name in ["BtnLeave", "Spacer", "BottomSpacer"]:
+			var node = vbox.get_node_or_null(node_name)
+			if node: node.queue_free()
 			
-		# 1. Use Godot's native layout engine to push the crafting UI upwards
-		# Create a massive invisible spacer at the bottom of the VBox
+		# 创建底部占位空间
 		var bottom_spacer = Control.new()
 		bottom_spacer.name = "BottomSpacer"
-		bottom_spacer.custom_minimum_size = Vector2(0, 180) # Reserve 180 pixels at the bottom
+		bottom_spacer.custom_minimum_size = Vector2(0, 180)
 		bottom_spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		vbox.add_child(bottom_spacer)
 	
@@ -35,91 +29,77 @@ func _ready() -> void:
 	btn_craft_knife.pressed.connect(_on_btn_craft_knife_pressed)
 	btn_craft_armor.pressed.connect(_on_btn_craft_armor_pressed)
 	
-	# 2. Create the top-level CanvasLayer
+	# 创建悬浮层用于放置离开按钮
 	var emergency_layer = CanvasLayer.new()
 	emergency_layer.layer = 128
 	add_child(emergency_layer)
 	
-	# 3. Create the Leave Button
 	var leave_btn = Button.new()
 	leave_btn.text = "【返回地图】离开车间"
 	leave_btn.name = "ForceLeaveBtn"
 	leave_btn.add_theme_font_size_override("font_size", 24)
-	leave_btn.mouse_filter = Control.MOUSE_FILTER_STOP
-	
-	# 1. Add to the layer first
 	emergency_layer.add_child(leave_btn)
 	
-	# 2. Force the button size to ensure math is accurate
+	# 按钮布局数学计算
 	var btn_width = 300
 	var btn_height = 80
 	leave_btn.custom_minimum_size = Vector2(btn_width, btn_height)
-	leave_btn.size = Vector2(btn_width, btn_height)
 	
-	# 3. Wait exactly one frame to ensure the Viewport layout is fully initialized by the engine
 	await get_tree().process_frame
-	
-	# 4. Get the true screen resolution dynamically
 	var screen_size = get_viewport_rect().size
+	leave_btn.position = Vector2((screen_size.x - btn_width) / 2.0, screen_size.y - btn_height - 40.0)
 	
-	# 5. Calculate Center-X and Bottom-Y math manually
-	var target_x = (screen_size.x - btn_width) / 2.0
-	var target_y = screen_size.y - btn_height - 40.0 # 40 pixels padding from the bottom edge
-	
-	# 6. Apply absolute position
-	leave_btn.position = Vector2(target_x, target_y)
-	
-	# 7. Connect progression logic
+	# 连接重构后的离开逻辑
 	leave_btn.pressed.connect(_on_btn_leave_pressed)
 
 func _update_ui() -> void:
 	if resource_label:
 		resource_label.text = "当前 金: %d | 木: %d" % [GameManager.element_metal, GameManager.element_wood]
 		
-	# Update buttons depending on purchase state
-	if GameManager.acquired_equipment.has("小刀"):
-		btn_craft_knife.disabled = true
-		btn_craft_knife.text = "已打造"
+	# 更新按钮状态
+	_update_craft_button(btn_craft_knife, "小刀")
+	_update_craft_button(btn_craft_armor, "藤甲")
+
+# 辅助函数：更新打造按钮样式
+func _update_craft_button(btn: Button, item_name: String) -> void:
+	if GameManager.acquired_equipment.has(item_name):
+		btn.disabled = true
+		btn.text = "已打造"
 	else:
-		btn_craft_knife.disabled = false
-		btn_craft_knife.text = "打造"
-		
-	if GameManager.acquired_equipment.has("藤甲"):
-		btn_craft_armor.disabled = true
-		btn_craft_armor.text = "已打造"
-	else:
-		btn_craft_armor.disabled = false
-		btn_craft_armor.text = "打造"
+		btn.disabled = false
+		btn.text = "打造"
 
 func _on_btn_craft_knife_pressed() -> void:
 	if GameManager.element_metal >= 17:
 		GameManager.element_metal -= 17
 		GameManager.acquired_equipment.append("小刀")
-		print("Crafted 小刀 (Knife)!")
 		_update_ui()
 	else:
-		btn_craft_knife.text = "金元素不足"
-		btn_craft_knife.disabled = true
-		await get_tree().create_timer(1.0).timeout
-		if not GameManager.acquired_equipment.has("小刀"):
-			btn_craft_knife.text = "打造"
-			btn_craft_knife.disabled = false
+		_show_temp_error(btn_craft_knife, "金元素不足")
 
 func _on_btn_craft_armor_pressed() -> void:
 	if GameManager.element_metal >= 15 and GameManager.element_wood >= 2:
 		GameManager.element_metal -= 15
 		GameManager.element_wood -= 2
 		GameManager.acquired_equipment.append("藤甲")
-		print("Crafted 藤甲 (Armor)!")
 		_update_ui()
 	else:
-		btn_craft_armor.text = "资源不足"
-		btn_craft_armor.disabled = true
-		await get_tree().create_timer(1.0).timeout
-		if not GameManager.acquired_equipment.has("藤甲"):
-			btn_craft_armor.text = "打造"
-			btn_craft_armor.disabled = false
+		_show_temp_error(btn_craft_armor, "资源不足")
 
+# 辅助函数：展示临时错误文本
+func _show_temp_error(btn: Button, msg: String) -> void:
+	var old_text = btn.text
+	btn.text = msg
+	btn.disabled = true
+	await get_tree().create_timer(1.0).timeout
+	btn.text = old_text
+	btn.disabled = false
+
+# --- 核心修改部分 ---
 func _on_btn_leave_pressed() -> void:
+	# 1. 推进地图索引
 	GameManager.current_node_index += 1
-	get_tree().change_scene_to_file("res://UI/map_ui.tscn")
+	
+	# 2. 调用重构后的全局场景切换逻辑
+	# 确保在 GameManager 检查器中已为 map_scene 变量赋值
+	GameManager.switch_to_scene(GameManager.map_scene)

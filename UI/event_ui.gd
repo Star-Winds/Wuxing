@@ -8,57 +8,49 @@ func _ready() -> void:
 	var vbox = get_node_or_null("VBoxContainer")
 	if vbox:
 		vbox.offset_top = 100
-	# Set description text
+	
+	# 设置描述文本
 	if desc_label:
 		desc_label.text = "你发现了一尊废弃的八卦炉，炉心仍有微弱的火光跳动。炉灰中似乎掩埋着什么...\n\n(You find an abandoned alchemy furnace, a weak fire still flickers in the core. Something seems buried in the ashes...)"
 		
-	# Populate choice buttons
+	# 动态生成选项
 	if choices_container:
 		for child in choices_container.get_children():
 			child.queue_free()
 			
-		# Choice 1: Absorption
-		var btn_absorb = Button.new()
-		btn_absorb.text = "1. 吸收炉火 (Gain 8 Fire, Lose 10 HP)"
-		btn_absorb.custom_minimum_size = Vector2(400, 50)
-		btn_absorb.theme_type_variation = "Button"
-		if GameManager.current_health <= 10:
-			btn_absorb.disabled = true
-			btn_absorb.text += " - [生命值不足 (Insufficient HP)]"
-		else:
-			btn_absorb.pressed.connect(_on_absorb_selected)
-		choices_container.add_child(btn_absorb)
-		
-		# Choice 2: Scavenge
-		var btn_scavenge = Button.new()
-		btn_scavenge.text = "2. 仔细搜刮 (Gain 2 Aether)"
-		btn_scavenge.custom_minimum_size = Vector2(400, 50)
-		btn_scavenge.pressed.connect(_on_scavenge_selected)
-		choices_container.add_child(btn_scavenge)
-		
-		# Choice 3: Leave
-		var btn_leave = Button.new()
-		btn_leave.text = "3. 默默离开 (Leave safely)"
-		btn_leave.custom_minimum_size = Vector2(400, 50)
-		btn_leave.pressed.connect(_on_leave_selected)
-		choices_container.add_child(btn_leave)
+		_add_choice("1. 吸收炉火 (Gain 8 Fire, Lose 10 HP)", _on_absorb_selected, GameManager.current_health <= 10)
+		_add_choice("2. 仔细搜刮 (Gain 2 Aether)", _on_scavenge_selected)
+		_add_choice("3. 默默离开 (Leave safely)", _on_leave_selected)
+
+# 辅助函数：快速添加按钮
+func _add_choice(text: String, callback: Callable, is_disabled: bool = false) -> void:
+	var btn = Button.new()
+	btn.text = text
+	btn.custom_minimum_size = Vector2(400, 50)
+	if is_disabled:
+		btn.disabled = true
+		btn.text += " - [生命值不足]"
+	else:
+		btn.pressed.connect(callback)
+	choices_container.add_child(btn)
 
 func _on_absorb_selected() -> void:
-	if GameManager.current_health > 10:
-		GameManager.current_health -= 10
-		GameManager.element_fire += 8
-		print("Successfully absorbed furnace fire! Gained 8 Fire, lost 10 HP.")
-		_leave_event()
+	GameManager.current_health -= 10
+	GameManager.element_fire += 8
+	_leave_event()
 
 func _on_scavenge_selected() -> void:
 	GameManager.aether += 2
-	print("Successfully scavenged! Gained 2 Aether.")
 	_leave_event()
 
 func _on_leave_selected() -> void:
-	print("Left safely.")
 	_leave_event()
 
+# --- 核心修改部分 ---
 func _leave_event() -> void:
+	# 1. 仅仅递增节点索引（因为 Boss 之后才会重置，Event 不会是结束点）
 	GameManager.current_node_index += 1
-	get_tree().change_scene_to_file("res://UI/map_ui.tscn")
+	
+	# 2. 使用重构后的全局变量进行跳转
+	# 确保你在 GameManager 的 Inspector 面板中已将 map_ui.tscn 拖入 map_scene 槽位
+	GameManager.switch_to_scene(GameManager.map_scene)

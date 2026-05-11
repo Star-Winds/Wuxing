@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://bbn4311t4t7tf"]
+
+[ext_resource type="Script" uid="uid://cjil4ujrj6ps6" path="res://Autoloads/game_manager.gd" id="1_rtikh"]
+[ext_resource type="PackedScene" uid="uid://mainmenuuid" path="res://UI/main_menu_ui.tscn" id="2_wonnl"]
+[ext_resource type="PackedScene" uid="uid://btp8r8p5p1ndn" path="res://UI/map_ui.tscn" id="3_todhx"]
+[ext_resource type="PackedScene" uid="uid://ci0jfud8qabws" path="res://UI/battle_ui.tscn" id="4_1vh4i"]
+[ext_resource type="PackedScene" uid="uid://dt7j4vkw2k8s2" path="res://UI/shop_ui.tscn" id="5_uy0p8"]
+[ext_resource type="PackedScene" uid="uid://ci8rjdwq2m4rf" path="res://UI/rest_ui.tscn" id="6_os8ja"]
+[ext_resource type="PackedScene" uid="uid://cx6pjdwq5m7re" path="res://UI/event_ui.tscn" id="7_02vln"]
+[ext_resource type="PackedScene" uid="uid://cx4vjdwram7rn" path="res://UI/workshop_ui.tscn" id="8_5vy1w"]
+[ext_resource type="PackedScene" uid="uid://b5e78pjwq3lhg" path="res://UI/victory_ui.tscn" id="9_fqmx1"]
+[ext_resource type="PackedScene" uid="uid://gameoveruid" path="res://UI/game_over_ui.tscn" id="10_7vusd"]
+[ext_resource type="PackedScene" uid="uid://gamewinuid" path="res://UI/game_win_ui.tscn" id="11_1vh4i"]
+[ext_resource type="PackedScene" uid="uid://cjkkc8ugcg3od" path="res://UI/deck_builder_ui.tscn" id="12_uy0p8"]
+[ext_resource type="PackedScene" uid="uid://c8uyshmptt66b" path="res://UI/reaction_overlay.tscn" id="13_uy0p8"]
+
+[node name="GameManager" type="Node2D" unique_id=2106088501]
+script = ExtResource("1_rtikh")
+main_menu_scene = ExtResource("2_wonnl")
+map_scene = ExtResource("3_todhx")
+battle_scene = ExtResource("4_1vh4i")
+shop_scene = ExtResource("5_uy0p8")
+rest_scene = ExtResource("6_os8ja")
+event_scene = ExtResource("7_02vln")
+workshop_scene = ExtResource("8_5vy1w")
+victory_scene = ExtResource("9_fqmx1")
+game_over_scene = ExtResource("10_7vusd")
+game_win_scene = ExtResource("11_1vh4i")
+deck_builder_scene = ExtResource("12_uy0p8")
+reaction_overlay_scene = ExtResource("13_uy0p8")

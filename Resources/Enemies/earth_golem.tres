@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Resources/Scripts/EnemyData.gd" id="1_enemy"]
+
+[resource]
+script = ExtResource("1_enemy")
+id = "earth_golem"
+enemy_name = "厚土傀儡"
+element = "土"
+max_hp = 85
+intent_base_dmg = 15

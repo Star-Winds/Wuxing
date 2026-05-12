@@ -806,6 +806,42 @@ grow_vertical = 2
 disabled = true
 flat = true
 
+[node name="EnemyCenter" type="CenterContainer" parent="MasterLayout/MiddleArea" unique_id=1695859999]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="EnemyEntity" type="PanelContainer" parent="MasterLayout/MiddleArea/EnemyCenter" unique_id=2045464321]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 240)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MasterLayout/MiddleArea/EnemyCenter/EnemyEntity" unique_id=721164146]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IntentLabel" type="Label" parent="MasterLayout/MiddleArea/EnemyCenter/EnemyEntity/VBoxContainer" unique_id=73416720]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.3, 0.3, 1)
+text = "Intent: Attack 8"
+horizontal_alignment = 1
+
+[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/EnemyCenter/EnemyEntity/VBoxContainer" unique_id=1156712400]
+layout_mode = 2
+text = "竹叶青 (Wood)"
+horizontal_alignment = 1
+
+[node name="EnemyStatsLabel" type="Label" parent="MasterLayout/MiddleArea/EnemyCenter/EnemyEntity/VBoxContainer" unique_id=346788644]
+layout_mode = 2
+text = "HP: 32/32 | Shield: 0"
+horizontal_alignment = 1
+
+[node name="StatusContainer" type="HBoxContainer" parent="MasterLayout/MiddleArea/EnemyCenter/EnemyEntity/VBoxContainer" unique_id=1604479138]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
 [node name="PlayerStatusBar" type="PanelContainer" parent="MasterLayout" unique_id=297711917]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 100)
@@ -914,39 +950,3 @@ alignment = 1
 [node name="CancelButton" type="Button" parent="ReservePanel/VBoxContainer" unique_id=257964072]
 layout_mode = 2
 text = "Cancel"
-
-[node name="EnemyCenter" type="CenterContainer" parent="MasterLayout/MiddleArea"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="EnemyEntity" type="PanelContainer" parent="MasterLayout/MiddleArea/EnemyCenter" unique_id=2045464321]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(250, 240)
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MasterLayout/MiddleArea/EnemyCenter/EnemyEntity" unique_id=721164146]
-layout_mode = 0
-theme_override_constants/separation = 10
-
-[node name="IntentLabel" type="Label" parent="MasterLayout/MiddleArea/EnemyCenter/EnemyEntity/VBoxContainer" unique_id=73416720]
-layout_mode = 0
-theme_override_colors/font_color = Color(1, 0.3, 0.3, 1)
-text = "Intent: Attack 8"
-horizontal_alignment = 1
-
-[node name="NameLabel" type="Label" parent="MasterLayout/MiddleArea/EnemyCenter/EnemyEntity/VBoxContainer" unique_id=1156712400]
-layout_mode = 0
-text = "竹叶青 (Wood)"
-horizontal_alignment = 1
-
-[node name="EnemyStatsLabel" type="Label" parent="MasterLayout/MiddleArea/EnemyCenter/EnemyEntity/VBoxContainer" unique_id=346788644]
-layout_mode = 0
-text = "HP: 32/32 | Shield: 0"
-horizontal_alignment = 1
-
-[node name="StatusContainer" type="HBoxContainer" parent="MasterLayout/MiddleArea/EnemyCenter/EnemyEntity/VBoxContainer" unique_id=1604479138]
-unique_name_in_owner = true
-layout_mode = 0
-theme_override_constants/separation = 6
-alignment = 1

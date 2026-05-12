@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_nc3t0"]
+
+[resource]
+script = ExtResource("1_nc3t0")
+id = "Water_012"
+card_name = "如水"
+element = "水"
+description = "本回合内，所有已释放的卡牌可重新激活一次。"
+cost_water = 3
+main_type = "utility"
+main_value = 1
+main_description = "本回合内，所有已释放的卡牌可重新激活一次。"
+sub_type = "utility"
+sub_value = 1
+sub_description = "主槽卡牌每回合可以额外激活一次。"

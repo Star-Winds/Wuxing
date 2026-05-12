@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_b3a6d"]
+
+[resource]
+script = ExtResource("1_b3a6d")
+id = "Earth_007"
+card_name = "墙"
+element = "土"
+description = "获得10点护盾。"
+cost_earth = 3
+main_type = "shield"
+main_value = 10
+main_description = "获得10点护盾。"
+sub_type = "buff"
+sub_value = 2
+sub_description = "主槽卡牌获得护盾时，额外+2护盾。"

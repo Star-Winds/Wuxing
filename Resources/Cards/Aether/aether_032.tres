@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_wl3wg"]
+
+[resource]
+script = ExtResource("1_wl3wg")
+id = "Aether_032"
+card_name = "混元归一"
+element = "以太"
+description = "造成相当于本局战斗中你消耗的所有元素总量5％的伤害。"
+cost_aether = 8
+main_description = "造成相当于本局战斗中你消耗的所有元素总量5％的伤害。"
+sub_type = "generate_element"
+sub_value = 20
+sub_description = "主槽卡牌伤害 of 20％转化为随机元素返还。"

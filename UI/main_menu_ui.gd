@@ -13,12 +13,12 @@ func _ready() -> void:
 		quit_button.pressed.connect(_on_quit_pressed)
 
 func _on_start_pressed() -> void:
-	# 1. 初始化游戏数据（重置血量、金钱、生成第一层地图等）
-	GameManager.reset_run()
-	
-	# 2. 使用重构后的全局变量跳转到地图场景
-	# 确保在 GameManager 的 Inspector 中已将 map_ui.tscn 拖入 map_scene 槽位
-	GameManager.switch_to_scene(GameManager.map_scene)
+	# 1. 跳转到初始卡组选择界面
+	var selection_scene = load("res://UI/initial_deck_selection_ui.tscn")
+	if selection_scene:
+		get_tree().change_scene_to_packed(selection_scene)
+	else:
+		printerr("Failed to load initial_deck_selection_ui.tscn")
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()

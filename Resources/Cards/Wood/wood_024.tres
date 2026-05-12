@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_hjycl"]
+
+[resource]
+script = ExtResource("1_hjycl")
+id = "Wood_024"
+card_name = "缠绕"
+element = "木"
+description = "造成4点木伤，赋予敌方“流血3”，持续2回合。"
+cost_wood = 3
+main_type = "status_apply"
+main_value = 4
+main_description = "造成4点木伤，赋予敌方“流血3”，持续2回合。"
+sub_type = "condition_damage"
+sub_value = 1
+sub_description = "主槽卡牌对处于“流血”状态的敌人，每层流血使伤害+1。"
+status_id = "bleed"
+status_amount = 3
+status_duration = 2

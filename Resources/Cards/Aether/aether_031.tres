@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_lmcqa"]
+
+[resource]
+script = ExtResource("1_lmcqa")
+id = "Aether_031"
+card_name = "移形换位"
+element = "以太"
+description = "从卡包随机展示3张牌，选择1张替换任意一个当前未激活的副槽卡牌。"
+cost_aether = 2
+main_type = "utility"
+main_value = 3
+main_description = "从卡包随机展示3张牌，选择1张替换任意一个当前未激活的副槽卡牌。"
+sub_type = "utility"
+sub_value = 1
+sub_description = "主槽卡牌打出时，若本回合尚未激活此副槽所属主槽，可将此副槽卡牌与主槽卡牌互换位置。"

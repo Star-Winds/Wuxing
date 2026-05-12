@@ -1,0 +1,251 @@
+[gd_scene format=3 uid="uid://d17ea4q710373"]
+
+[ext_resource type="Script" path="res://UI/initial_deck_selection_ui.gd" id="1_selection"]
+
+[node name="InitialDeckSelectionUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_selection")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0666667, 0.0784314, 0.0980392, 1)
+
+[node name="AmbientGlow" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -250.0
+offset_right = 300.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.188235, 0.121569, 0.254902, 0.156863)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="TitleGroup" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/VBoxContainer/TitleGroup"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.960784, 0.768627, 0.282353, 1)
+theme_override_font_sizes/font_size = 48
+text = "选择你的造化法脉 (Choose Your Path)"
+horizontal_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="CenterContainer/VBoxContainer/TitleGroup"]
+custom_minimum_size = Vector2(800, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.701961, 0.721569, 0.780392, 1)
+theme_override_font_sizes/font_size = 18
+text = "不同的法脉将赋予你 15 张对应的初始五行卡牌，构建最初的卡组以开始你的五行造化之旅。"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ArchetypesContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="WaterFireCard" type="Panel" parent="CenterContainer/VBoxContainer/ArchetypesContainer"]
+custom_minimum_size = Vector2(280, 380)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/VBoxContainer/ArchetypesContainer/WaterFireCard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="IconLabel" type="Label" parent="CenterContainer/VBoxContainer/ArchetypesContainer/WaterFireCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.258824, 0.647059, 0.960784, 1)
+theme_override_font_sizes/font_size = 32
+text = "水 ☯ 火"
+horizontal_alignment = 1
+
+[node name="NameLabel" type="Label" parent="CenterContainer/VBoxContainer/ArchetypesContainer/WaterFireCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "水火法脉"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer/ArchetypesContainer/WaterFireCard/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+custom_minimum_size = Vector2(180, 0)
+
+[node name="DescLabel" type="Label" parent="CenterContainer/VBoxContainer/ArchetypesContainer/WaterFireCard/VBox"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.643137, 0.67451, 0.741176, 1)
+theme_override_font_sizes/font_size = 15
+text = "注重五行中的“水火既济”之理。\n\n擅长爆烈火伤与灵动恢复，高额爆发与续航并存。"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="SelectButton" type="Button" parent="CenterContainer/VBoxContainer/ArchetypesContainer/WaterFireCard"]
+custom_minimum_size = Vector2(200, 44)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -64.0
+offset_right = 100.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 18
+text = "选择此法脉"
+
+[node name="EarthWoodCard" type="Panel" parent="CenterContainer/VBoxContainer/ArchetypesContainer"]
+custom_minimum_size = Vector2(280, 380)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/VBoxContainer/ArchetypesContainer/EarthWoodCard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="IconLabel" type="Label" parent="CenterContainer/VBoxContainer/ArchetypesContainer/EarthWoodCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.298039, 0.827451, 0.447059, 1)
+theme_override_font_sizes/font_size = 32
+text = "土 ☯ 木"
+horizontal_alignment = 1
+
+[node name="NameLabel" type="Label" parent="CenterContainer/VBoxContainer/ArchetypesContainer/EarthWoodCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "土木法脉"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer/ArchetypesContainer/EarthWoodCard/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+custom_minimum_size = Vector2(180, 0)
+
+[node name="DescLabel" type="Label" parent="CenterContainer/VBoxContainer/ArchetypesContainer/EarthWoodCard/VBox"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.643137, 0.67451, 0.741176, 1)
+theme_override_font_sizes/font_size = 15
+text = "体悟大地之稳重与万物复苏。\n\n擅长破土而出的坚实护盾，附带流血与荆棘反震。"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="SelectButton" type="Button" parent="CenterContainer/VBoxContainer/ArchetypesContainer/EarthWoodCard"]
+custom_minimum_size = Vector2(200, 44)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -64.0
+offset_right = 100.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 18
+text = "选择此法脉"
+
+[node name="ChaosCard" type="Panel" parent="CenterContainer/VBoxContainer/ArchetypesContainer"]
+custom_minimum_size = Vector2(280, 380)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/VBoxContainer/ArchetypesContainer/ChaosCard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="IconLabel" type="Label" parent="CenterContainer/VBoxContainer/ArchetypesContainer/ChaosCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.854902, 0.352941, 0.941176, 1)
+theme_override_font_sizes/font_size = 32
+text = "☯ 混沌 ☯"
+horizontal_alignment = 1
+
+[node name="NameLabel" type="Label" parent="CenterContainer/VBoxContainer/ArchetypesContainer/ChaosCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "混沌道途"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer/ArchetypesContainer/ChaosCard/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+custom_minimum_size = Vector2(180, 0)
+
+[node name="DescLabel" type="Label" parent="CenterContainer/VBoxContainer/ArchetypesContainer/ChaosCard/VBox"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.643137, 0.67451, 0.741176, 1)
+theme_override_font_sizes/font_size = 15
+text = "天地未开，混沌之始。\n\n完全随心所欲，融合所有金木水火土以太元素，创造无限可能。"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="SelectButton" type="Button" parent="CenterContainer/VBoxContainer/ArchetypesContainer/ChaosCard"]
+custom_minimum_size = Vector2(200, 44)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -64.0
+offset_right = 100.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 18
+text = "选择此道途"

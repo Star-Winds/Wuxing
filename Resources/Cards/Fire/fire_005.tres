@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_jrqji"]
+
+[resource]
+script = ExtResource("1_jrqji")
+id = "Fire_005"
+card_name = "死灰复燃"
+description = "仅可在本回合已打出至少1张火系卡牌后激活。复制上一张打出的火系卡牌效果的50％。"
+main_type = "utility"
+main_value = 50
+main_description = "仅可在本回合已打出至少1张火系卡牌后激活。复制上一张打出的火系卡牌效果的50％。"
+sub_type = "generate_element"
+sub_value = 1
+sub_element_type = "火"
+sub_description = "主槽卡牌打出时，若本回合已打出过火系卡牌，返还1点火元素。"

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_2dwer"]
+
+[resource]
+script = ExtResource("1_2dwer")
+id = "Water_016"
+card_name = "水爆"
+element = "水"
+description = "造成52点水元素伤害，你的卡牌包中每有一张非水元素的卡，该卡的消耗减少1点。"
+cost_water = 30
+main_value = 52
+main_description = "造成52点水元素伤害，你的卡牌包中每有一张非水元素的卡，该卡的消耗减少1点。"
+sub_type = "utility"
+sub_value = 1
+sub_description = "主槽卡牌如果是非水元素，消耗减少1点。"

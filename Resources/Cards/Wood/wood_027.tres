@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_tya4w"]
+
+[resource]
+script = ExtResource("1_tya4w")
+id = "Wood_027"
+card_name = "万物生"
+element = "木"
+description = "本回合每激活一张卡牌，回复1点生命并随机获得1点基础元素。"
+cost_wood = 4
+main_type = "utility"
+main_value = 1
+main_description = "本回合每激活一张卡牌，回复1点生命并随机获得1点基础元素。"
+sub_type = "heal"
+sub_value = 2
+sub_description = "主槽卡牌激活时，若你已激活3张以上卡牌，回复2点生命。"

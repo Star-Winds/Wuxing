@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_6y85u"]
+
+[resource]
+script = ExtResource("1_6y85u")
+id = "Wood_023"
+card_name = "逢春"
+element = "木"
+description = "回复5点生命。"
+cost_wood = 3
+main_type = "heal"
+main_value = 5
+main_description = "回复5点生命。"
+sub_type = "heal"
+sub_value = 1
+sub_description = "主槽卡牌打出时，回复1点生命。"

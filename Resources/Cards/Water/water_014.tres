@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_wyf6r"]
+
+[resource]
+script = ExtResource("1_wyf6r")
+id = "Water_014"
+card_name = "困泽"
+element = "水"
+description = "敌方本回合无法行动，但你下回合只能激活至多3张卡牌。"
+cost_water = 4
+main_type = "status_apply"
+main_description = "敌方本回合无法行动，但你下回合只能激活至多3张卡牌。"
+sub_type = "condition_damage"
+sub_value = 4
+sub_description = "主槽卡牌对处于“减速”状态的敌人伤害+4。"
+status_id = "slow"
+status_amount = 1
+status_duration = 1

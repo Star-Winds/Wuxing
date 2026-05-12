@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_qay6s"]
+
+[resource]
+script = ExtResource("1_qay6s")
+id = "Metal_018"
+card_name = "针"
+element = "金"
+description = "随机激活一个当前未激活的副槽卡牌，使其本回合可独立打出。"
+cost_metal = 3
+main_type = "special_action"
+main_value = 1
+main_description = "随机激活一个当前未激活的副槽卡牌，使其本回合可独立打出。"
+sub_type = "special_action"
+sub_value = 1
+sub_description = "主槽卡牌打出时，触发一次“火与金”元素反应。"
+status_id = "overload"

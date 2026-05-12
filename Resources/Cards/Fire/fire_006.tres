@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_wn0cr"]
+
+[resource]
+script = ExtResource("1_wn0cr")
+id = "Fire_006"
+card_name = "火攻"
+description = "造成9火元素伤害。"
+cost_fire = 2
+main_value = 9
+main_description = "造成9火元素伤害。"
+sub_type = "buff"
+sub_value = 2
+sub_description = "主槽卡牌的最终伤害增加2；"

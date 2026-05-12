@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_3oovl"]
+
+[resource]
+script = ExtResource("1_3oovl")
+id = "Wood_026"
+card_name = "荆棘"
+element = "木"
+description = "获得“反震4”，持续2回合。若本牌已激活超过1回合未打出，反震+2。"
+cost_wood = 3
+main_type = "status_apply"
+main_description = "获得“反震4”，持续2回合。若本牌已激活超过1回合未打出，反震+2。"
+sub_type = "status_apply"
+sub_value = 1
+sub_description = "主槽卡牌获得“反震1”。"
+status_id = "reflect"
+status_amount = 4
+status_duration = 2

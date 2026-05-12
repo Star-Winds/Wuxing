@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_orh53"]
+
+[resource]
+script = ExtResource("1_orh53")
+id = "Earth_008"
+card_name = "撼地"
+element = "土"
+description = "造成6点土伤，并强制改变敌方当前意图为“防守”。"
+cost_earth = 4
+main_type = "special_action"
+main_value = 6
+main_description = "造成6点土伤，并强制改变敌方当前意图为“防守”。"
+sub_type = "shield"
+sub_value = 3
+sub_description = "主槽卡牌打出时，若敌方意图为“进攻”，获得3点护盾。"
+status_id = "change_enemy_intent"

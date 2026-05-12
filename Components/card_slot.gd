@@ -85,11 +85,7 @@ func _update_visuals() -> void:
 # --- 其余逻辑 ---
 func _on_button_pressed() -> void:
 	if is_sub_slot or not card_data: return
-	if current_state == SlotState.INACTIVE:
-		activation_requested.emit(self)
-	elif current_state == SlotState.ACTIVATED:
-		var battle_ui = get_tree().root.find_child("BattleUI", true, false)
-		if battle_ui: battle_ui.set("pending_play_slot", self)
+	activation_requested.emit(self)
 
 func _activate_confirmed():
 	current_state = SlotState.ACTIVATED
@@ -102,6 +98,11 @@ func _finalize_play():
 	_update_visuals()
 	if not is_sub_slot:
 		for s in sub_slots: s._finalize_play()
+		if card_data and (card_data.is_exhaust or card_data.single_use):
+			print("卡牌具有消耗/一次性属性，从本回合卡槽中移除: ", card_data.card_name)
+			set_card(null)
+			for s in sub_slots:
+				s.set_card(null)
 
 func reset_turn() -> void:
 	if current_state == SlotState.PLAYED:

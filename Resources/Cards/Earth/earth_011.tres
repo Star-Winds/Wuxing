@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_mucis"]
+
+[resource]
+script = ExtResource("1_mucis")
+id = "Earth_011"
+card_name = "泰山崩"
+element = "土"
+description = "消耗你当前持有的所有护盾，每消耗2点护盾，造成3点土元素伤害。"
+cost_earth = 5
+main_type = "condition_damage"
+main_description = "消耗你当前持有的所有护盾，每消耗2点护盾，造成3点土元素伤害。"
+sub_type = "condition_damage"
+sub_description = "主槽卡牌造成伤害时，若你持有护盾，消耗2点护盾使伤害+3。"
+status_id = "player_has_shield"
+status_amount = 3

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_svmdt"]
+
+[resource]
+script = ExtResource("1_svmdt")
+id = "Fire_004"
+card_name = "焚天"
+description = "造成8点火伤。"
+cost_fire = 5
+main_value = 8
+main_description = "造成8点火伤。"
+sub_type = "special_action"
+sub_description = "主槽卡牌会先清除敌方所有护盾，再结算伤害。"
+status_id = "shield_break"

@@ -4,39 +4,7 @@ extends Node
 const CARD_DATA_CONST = preload("res://Resources/Scripts/Card_data.gd")
 const ENEMY_DATA_CONST = preload("res://Resources/Scripts/EnemyData.gd")
 
-# --- 五行反应映射定义 ---
-const REACTION_MAP = {
-	"火": {
-		"水": {"name": "蒸腾", "color": Color("#FF5252")},
-		"土": {"name": "烧制", "color": Color("#FF8A65")},
-		"木": {"name": "焚烬", "color": Color("#FF3D00")},
-		"金": {"name": "熔炼", "color": Color("#FF7043")},
-	},
-	"水": {
-		"木": {"name": "润泽", "color": Color("#4FC3F7")},
-		"火": {"name": "熄灭", "color": Color("#29B6F6")},
-		"土": {"name": "泥沼", "color": Color("#8D6E63")},
-		"金": {"name": "淬火", "color": Color("#26C6DA")},
-	},
-	"木": {
-		"火": {"name": "添柴", "color": Color("#66BB6A")},
-		"土": {"name": "破土", "color": Color("#8D6E63")},
-		"水": {"name": "吸纳", "color": Color("#26A69A")},
-		"金": {"name": "坚韧", "color": Color("#9CCC65")},
-	},
-	"金": {
-		"水": {"name": "涌泉", "color": Color("#FFD54F")},
-		"木": {"name": "伐断", "color": Color("#A1887F")},
-		"土": {"name": "合金", "color": Color("#FFCA28")},
-		"火": {"name": "过载", "color": Color("#FF8F00")},
-	},
-	"土": {
-		"金": {"name": "埋藏", "color": Color("#BCAAA4")},
-		"水": {"name": "阻截", "color": Color("#8D6E63")},
-		"火": {"name": "余烬", "color": Color("#FF7043")},
-		"木": {"name": "固本", "color": Color("#81C784")},
-	}
-}
+# --- 五行反应映射已重构为基于资源的 ReactionData 动态加载 ---
 
 # --- 状态变量 ---
 var current_enemy: EnemyData
@@ -185,16 +153,21 @@ func play_card(main_card: CardData, sub_cards: Array, target: Node = null) -> vo
 				enemy_element_layers -= 1
 				print("  [元素反应] 异元素接触 (卡牌 ", card_el, " + 敌人 ", target_el, ") -> 消耗 1 层附着, 剩余: ", enemy_element_layers, " 层")
 				
-				if REACTION_MAP.has(card_el) and REACTION_MAP[card_el].has(target_el):
-					var r_info = REACTION_MAP[card_el][target_el]
-					var r_name = r_info["name"]
-					
-					# 触发五行反应
-					var mods = _trigger_reaction(r_name, main_card)
-					if mods.has("damage_multiplier"):
-						damage_multiplier = mods["damage_multiplier"]
-					if mods.has("true_damage"):
-						true_damage_to_deal = mods["true_damage"]
+				var el_arr = [card_el, target_el]
+				el_arr.sort()
+				var combo_key = el_arr[0] + "_" + el_arr[1]
+				
+				if GameManager.equipped_reactions.has(combo_key):
+					var reaction = GameManager.equipped_reactions[combo_key]
+					if reaction is ReactionData:
+						# 触发五行反应
+						var mods = _trigger_reaction(reaction, main_card)
+						if mods.has("damage_multiplier"):
+							damage_multiplier = mods["damage_multiplier"]
+						if mods.has("true_damage"):
+							true_damage_to_deal = mods["true_damage"]
+				else:
+					print("  [元素反应] 未装备对应元素反应 (", combo_key, ")")
 				
 				# 如果层数归零，清除附着
 				if enemy_element_layers <= 0:
@@ -359,18 +332,12 @@ func _find_card_slots_recursive(node: Node, list: Array) -> void:
 
 
 # --- 五行反应核心执行逻辑 (Task 2 & 3) ---
-func _trigger_reaction(reaction_name: String, _current_card: CardData) -> Dictionary:
+func _trigger_reaction(reaction: ReactionData, _current_card: CardData) -> Dictionary:
+	if reaction == null: return {}
+	var reaction_name = reaction.reaction_name
 	print("  >>> [五行反应触发] 反应名称: ", reaction_name, " <<<")
 	
-	# 根据反应名匹配颜色
-	var color = Color("#FFFFFF")
-	for c_el in REACTION_MAP:
-		for t_el in REACTION_MAP[c_el]:
-			if REACTION_MAP[c_el][t_el]["name"] == reaction_name:
-				color = REACTION_MAP[c_el][t_el]["color"]
-				break
-				
-	reaction_triggered.emit(reaction_name, color)
+	reaction_triggered.emit(reaction_name, reaction.reaction_color)
 	
 	var modifiers: Dictionary = {}
 	

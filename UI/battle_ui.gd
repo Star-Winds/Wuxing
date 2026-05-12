@@ -427,10 +427,36 @@ func _update_enemy_intent() -> void:
 			intent_lbl.text = "Intent: Buff (+3 Atk)"
 
 func _on_reaction_triggered(reaction_name: String, reaction_color: Color) -> void:
-	# 显示五行反应特效
-	var overlay = GameManager.reaction_overlay_scene.instantiate()
-	add_child(overlay)
-	overlay.show_reaction(reaction_name, reaction_color)
+	# 直接生成飘字标签，不再调用图鉴面板
+	var label = Label.new()
+	label.text = "【" + reaction_name + "】"
+	
+	# --- 视觉强化 (Vibe Formatting) ---
+	label.add_theme_font_size_override("font_size", 36)
+	# 使用 BattleManager 传过来的专属五行颜色
+	label.add_theme_color_override("font_color", reaction_color)
+	label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 1))
+	label.add_theme_constant_override("outline_size", 8)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	
+	# --- 位置计算 ---
+	# 默认在屏幕中心（敌人附近）生成，加入随机偏移防止多次反应重叠
+	var screen_center = get_viewport_rect().size / 2.0
+	var random_offset = Vector2(randf_range(-40.0, 40.0), randf_range(-30.0, 30.0))
+	label.position = screen_center + random_offset - Vector2(50, 80)
+	
+	add_child(label)
+	
+	# --- 丝滑飘字动画 ---
+	var tween = create_tween()
+	tween.set_parallel(true) # 并行执行上升和渐隐
+	# 向上漂浮 100 像素
+	tween.tween_property(label, "position:y", label.position.y - 100, 1.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	# 透明度渐变消失
+	tween.tween_property(label, "modulate:a", 0.0, 1.5).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	
+	# 动画结束后自动销毁节点
+	tween.chain().tween_callback(label.queue_free)
 
 func _on_battle_ended(is_victory: bool) -> void:
 	is_game_over = true

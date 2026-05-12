@@ -188,17 +188,25 @@ func update_backpack_view() -> void:
 				
 	# 3. Calculate remaining available cards in backpack
 	var available_cards: Array[CardData] = []
+	var temp_equipped = equipped_cards.duplicate()
 	for card in GameManager.backpack_cards:
 		if card == null:
 			continue
 		if card is CardData:
-			if not equipped_cards.has(card):
+			var idx = temp_equipped.find(card)
+			if idx == -1:
 				available_cards.append(card)
+			else:
+				temp_equipped.remove_at(idx)
 		elif card is String and card != "":
 			# Fallback if backpack contains String IDs
 			var card_res = ResourceManager.get_card_data(card)
-			if card_res and not equipped_cards.has(card_res):
-				available_cards.append(card_res)
+			if card_res:
+				var idx = temp_equipped.find(card_res)
+				if idx == -1:
+					available_cards.append(card_res)
+				else:
+					temp_equipped.remove_at(idx)
 			
 	# 4. Create draggable card buttons for available cards
 	for card_data_obj in available_cards:

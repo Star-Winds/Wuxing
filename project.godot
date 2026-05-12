@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+ResourceManager="*res://Autoloads/resource_manager.gd"
 PauseOverlay="*res://Autoloads/pause_overlay.tscn"
 GlobalHUD="*res://Autoloads/global_hud.tscn"
 GameManager="*uid://bbn4311t4t7tf"

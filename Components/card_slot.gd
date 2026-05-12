@@ -1,135 +1,109 @@
 extends Control
 class_name CardSlot
 
-signal activation_requested(slot: CardSlot, cost_dict: Dictionary)
+# --- 新增引用，解决启动解析报错 ---
+const CARD_DATA_CONST = preload("res://Resources/Scripts/Card_data.gd")
 
-enum SlotState {
-	INACTIVE,
-	ACTIVATED,
-	PLAYED
-}
+# --- 信号 ---
+signal activation_requested(slot: CardSlot)
 
+# --- 枚举 ---
+enum SlotState { INACTIVE, ACTIVATED, PLAYED }
+
+# --- 变量 ---
 var current_state: SlotState = SlotState.INACTIVE
-var cost_dict: Dictionary = {}
+var card_data: CardData = null 
 
 @export var is_sub_slot: bool = false
-
-@onready var background: ColorRect = $Background
-@onready var name_label: Label = $NameLabel
-@onready var stats_label: Label = $StatsLabel
-@onready var button: Button = $Button
-
 var sub_slots: Array[CardSlot] = []
+
+# --- 节点引用 (使用可选链或安全检查) ---
+@onready var background: ColorRect = get_node_or_null("Background")
+@onready var name_label: Label = get_node_or_null("NameLabel")
+@onready var stats_label: Label = get_node_or_null("StatsLabel")
+@onready var button: Button = get_node_or_null("Button")
 
 func _ready() -> void:
 	if button:
 		button.pressed.connect(_on_button_pressed)
-		
-	# Sub-slots are now siblings in the same HBoxContainer row
-	if not is_sub_slot and get_parent() is HBoxContainer:
-		for child in get_parent().get_children():
+	
+	# 安全检查父节点
+	var parent = get_parent()
+	if parent and parent is HBoxContainer and not is_sub_slot:
+		for child in parent.get_children():
 			if child is CardSlot and child != self:
 				sub_slots.append(child)
 				
 	_update_visuals()
 
-func _on_button_pressed() -> void:
-	if is_sub_slot:
-		return # Sub-slots cannot be clicked independently
-		
+# --- 外部设置接口 ---
+func set_card(new_card_data: CardData) -> void:
+	card_data = new_card_data
+	
+	# 保险 1：如果节点还没 Ready，绝对不操作 UI 节点
+	if not is_node_ready():
+		await ready
+	
+	# 保险 2：再次检查节点是否在树中
+	if not is_inside_tree(): return
+
+	if card_data:
+		if name_label: name_label.text = card_data.card_name
+		if stats_label:
+			stats_label.text = str(card_data.sub_value) if is_sub_slot else str(card_data.main_value)
+	else:
+		if name_label: name_label.text = ""
+		if stats_label: stats_label.text = ""
+	
+	_update_visuals()
+
+# --- 视觉更新逻辑 ---
+func _update_visuals() -> void:
+	# 保险 3：终极拦截，如果关键节点不存在，直接停止
+	if background == null or not is_inside_tree():
+		return
+	
+	var element_color: Color = Color(0.2, 0.2, 0.2)
+	
+	# 检查 CardData 和引用是否存在
+	if card_data:
+		# 优先尝试从 GameManager 获取颜色，或者通过 find_child 寻找
+		var battle_ui = get_tree().root.find_child("BattleUI", true, false)
+		if battle_ui and "ELEMENT_COLORS" in battle_ui:
+			element_color = battle_ui.ELEMENT_COLORS.get(card_data.element, element_color)
+		elif "ELEMENT_COLORS" in GameManager: # 备选方案
+			element_color = GameManager.ELEMENT_COLORS.get(card_data.element, element_color)
+			
 	match current_state:
 		SlotState.INACTIVE:
-			activation_requested.emit(self, cost_dict)
+			background.color = Color(element_color, 0.2)
 		SlotState.ACTIVATED:
-			var battle_ui = get_node_or_null("/root/BattleUI")
-			if battle_ui:
-				battle_ui.pending_play_slot = self
-				print("Waiting for target...")
+			background.color = element_color
 		SlotState.PLAYED:
-			print("Card in cooldown.")
+			background.color = Color(0.05, 0.05, 0.05)
 
-func _activate_confirmed() -> void:
-	if not is_sub_slot:
-		print(name + " activation confirmed. (Resources deducted)")
+# --- 其余逻辑 ---
+func _on_button_pressed() -> void:
+	if is_sub_slot or not card_data: return
+	if current_state == SlotState.INACTIVE:
+		activation_requested.emit(self)
+	elif current_state == SlotState.ACTIVATED:
+		var battle_ui = get_tree().root.find_child("BattleUI", true, false)
+		if battle_ui: battle_ui.set("pending_play_slot", self)
+
+func _activate_confirmed():
 	current_state = SlotState.ACTIVATED
 	_update_visuals()
-	
 	if not is_sub_slot:
-		for sub_slot in sub_slots:
-			sub_slot._activate_confirmed()
+		for s in sub_slots: s._activate_confirmed()
 
-func _finalize_play() -> void:
+func _finalize_play():
 	current_state = SlotState.PLAYED
 	_update_visuals()
-	
 	if not is_sub_slot:
-		for sub_slot in sub_slots:
-			if sub_slot.current_state == SlotState.ACTIVATED:
-				sub_slot._finalize_play()
+		for s in sub_slots: s._finalize_play()
 
 func reset_turn() -> void:
-	# Only reset if PLAYED. ACTIVATED stays across turns.
 	if current_state == SlotState.PLAYED:
 		current_state = SlotState.INACTIVE
 		_update_visuals()
-
-func _update_visuals() -> void:
-	if not background: return
-	
-	var element_color: Color = Color(0.2, 0.2, 0.2)
-	var card_id = get_meta("card_id", "")
-	var battle_ui = get_node_or_null("/root/BattleUI")
-	
-	if battle_ui and card_id != "":
-		var card_database = battle_ui.card_database
-		if not card_database.has(card_id):
-			print("ERROR: Card ID '", card_id, "' not found in database! Defaulting to visual fallback.")
-			if name_label: name_label.text = "Missing Card"
-			return
-			
-	if battle_ui and card_id != "" and battle_ui.card_database.has(card_id):
-		var card_data = battle_ui.card_database[card_id]
-		var element = card_data.get("element", "")
-		if element != "" and battle_ui.element_colors.has(element):
-			element_color = battle_ui.element_colors[element]
-			
-	match current_state:
-		SlotState.INACTIVE:
-			if card_id != "":
-				background.color = Color(element_color, 0.2)
-			else:
-				background.color = Color(0.2, 0.2, 0.2)
-			if name_label: name_label.modulate = Color(1, 1, 1)
-		SlotState.ACTIVATED:
-			background.color = element_color
-			if name_label: name_label.modulate = Color(1, 1, 1)
-		SlotState.PLAYED:
-			background.color = Color(0.1, 0.1, 0.1)
-			if name_label: name_label.modulate = Color(0.5, 0.5, 0.5)
-
-func to_dict() -> Dictionary:
-	var state_str: String = "INACTIVE"
-	match current_state:
-		SlotState.INACTIVE:
-			state_str = "INACTIVE"
-		SlotState.ACTIVATED:
-			state_str = "ACTIVATED"
-		SlotState.PLAYED:
-			state_str = "PLAYED"
-	
-	var name_text: String = ""
-	if name_label:
-		name_text = name_label.text
-		
-	var sub_slots_array: Array = []
-	for sub_slot in sub_slots:
-		if sub_slot:
-			sub_slots_array.append(sub_slot.to_dict())
-			
-	return {
-		"card_id": get_meta("card_id", ""),
-		"name": name_text,
-		"is_sub_slot": is_sub_slot,
-		"current_state": state_str,
-		"sub_slots": sub_slots_array
-	}

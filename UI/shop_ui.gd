@@ -64,7 +64,14 @@ func _on_buy_elements_pressed() -> void:
 func _on_buy_card_pressed() -> void:
 	if GameManager.gold >= 30:
 		GameManager.gold -= 30
-		GameManager.backpack_cards.append("fire_law_001")
+		var card_res = ResourceManager.get_card_data("fire_law_001")
+		if card_res:
+			GameManager.backpack_cards.append(card_res)
+		else:
+			# Fallback to the first available card if not found
+			var all_keys = ResourceManager.all_cards.keys()
+			if not all_keys.is_empty():
+				GameManager.backpack_cards.append(ResourceManager.all_cards[all_keys[0]])
 		buy_card_button.disabled = true
 		_update_ui()
 

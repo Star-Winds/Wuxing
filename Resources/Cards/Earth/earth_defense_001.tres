@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardData" format=3 uid="uid://earth_defense_001"]
+
+[ext_resource type="Script" uid="uid://cpcuf3w41pmow" path="res://Resources/Scripts/Card_data.gd" id="1_earthd"]
+
+[resource]
+script = ExtResource("1_earthd")
+id = "Earth_D_001"
+card_name = "厚土之盾"
+element = "土"
+cost_earth = 2
+main_type = "shield"
+main_value = 8
+main_description = "获得 8 点护盾"
+sub_type = "buff"
+sub_value = 3
+sub_description = "主槽卡牌护盾 +3"
+metadata/_custom_type_script = "uid://cpcuf3w41pmow"

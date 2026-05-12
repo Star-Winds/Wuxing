@@ -1,19 +1,22 @@
 # res://Components/deck_builder_slot.gd
 extends PanelContainer
 
+const CARD_DATA_CONST = preload("res://Resources/Scripts/Card_data.gd")
+
 var slot_type: String = "" # "main" or "sub"
 var row_index: int = 0
 var sub_slot_index: int = 0 # 1 or 2
-var current_card_id: String = ""
+var card_data: CardData = null
+
+var current_card_id: String:
+	get:
+		return card_data.id if card_data else ""
 
 @onready var name_label: Label = $VBox/NameLabel
 @onready var stats_label: Label = $VBox/StatsLabel
 
 # Store pending card values for when _ready() runs
-var _pending_card_id: String = ""
-var _pending_name: String = ""
-var _pending_element: String = ""
-var _pending_desc: String = ""
+var _pending_card_data: CardData = null
 var _is_ready: bool = false
 
 func _ready() -> void:
@@ -28,19 +31,22 @@ func _ready() -> void:
 	add_theme_stylebox_override("panel", style)
 	
 	# Apply any card information that was set before _ready
-	set_card(_pending_card_id, _pending_name, _pending_element, _pending_desc)
+	if _pending_card_data:
+		set_card(_pending_card_data)
+	else:
+		_update_display()
 
-func set_card(card_id: String, c_name: String, element: String, desc: String) -> void:
-	current_card_id = card_id
-	_pending_card_id = card_id
-	_pending_name = c_name
-	_pending_element = element
-	_pending_desc = desc
+func set_card(new_card_data: CardData) -> void:
+	card_data = new_card_data
+	_pending_card_data = new_card_data
 	
 	if not _is_ready:
 		return
 		
-	if card_id == "":
+	_update_display()
+
+func _update_display() -> void:
+	if card_data == null:
 		if slot_type == "main":
 			name_label.text = "[Empty Main Slot]"
 		else:
@@ -48,12 +54,12 @@ func set_card(card_id: String, c_name: String, element: String, desc: String) ->
 		stats_label.text = "Drag card here"
 		self.self_modulate = Color(0.2, 0.2, 0.25, 0.8)
 	else:
-		name_label.text = c_name + " [" + element + "]"
-		stats_label.text = desc
+		name_label.text = card_data.card_name + " [" + card_data.element + "]"
+		stats_label.text = card_data.main_description if slot_type == "main" else card_data.sub_description
 		
 		# Set aesthetic color according to element
 		var color = Color(0.3, 0.3, 0.4, 1)
-		match element:
+		match card_data.element:
 			"火": color = Color(0.6, 0.2, 0.1, 1)
 			"木": color = Color(0.15, 0.5, 0.15, 1)
 			"水": color = Color(0.1, 0.3, 0.6, 1)
@@ -63,10 +69,10 @@ func set_card(card_id: String, c_name: String, element: String, desc: String) ->
 		self.self_modulate = color
 
 func clear_slot() -> void:
-	set_card("", "", "", "")
+	set_card(null)
 
 func _get_drag_data(_position: Vector2) -> Variant:
-	if current_card_id == "":
+	if card_data == null:
 		return null # Empty slot, nothing to drag
 		
 	# Create a beautiful visual drag preview using card name
@@ -78,7 +84,7 @@ func _get_drag_data(_position: Vector2) -> Variant:
 	
 	# Return the drag data packet
 	return {
-		"card_id": current_card_id,
+		"card_data": card_data,
 		"origin_type": "slot",
 		"origin_node": self,
 		"origin_slot": self,
@@ -86,10 +92,10 @@ func _get_drag_data(_position: Vector2) -> Variant:
 	}
 
 func _can_drop_data(_position: Vector2, data) -> bool:
-	return data is Dictionary and data.has("card_id")
+	return data is Dictionary and data.has("card_data")
 
 func _drop_data(_position: Vector2, data) -> void:
-	var dropped_card_id = data["card_id"]
+	var dropped_card_data = data["card_data"]
 	var origin_type = data["origin_type"]
 	var origin_slot = data["origin_slot"]
 	
@@ -98,19 +104,10 @@ func _drop_data(_position: Vector2, data) -> void:
 		origin_slot.clear_slot()
 		
 	# Update this slot
+	set_card(dropped_card_data)
+	
 	var ui_root = get_tree().get_first_node_in_group("deck_builder_root")
 	if ui_root:
-		var card_data = ui_root.card_database.get(dropped_card_id, {})
-		var c_name = card_data.get("name", dropped_card_id)
-		var c_elem = card_data.get("element", "")
-		var c_desc = ""
-		if slot_type == "main":
-			c_desc = card_data.get("main_slot", {}).get("description", "")
-		else:
-			c_desc = card_data.get("sub_slot", {}).get("description", "")
-			
-		set_card(dropped_card_id, c_name, c_elem, c_desc)
-		
 		# Refresh backpack
 		if ui_root.has_method("update_backpack_view"):
 			ui_root.update_backpack_view()

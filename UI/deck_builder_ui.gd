@@ -1,28 +1,27 @@
 extends Control
 
+const CARD_DATA_CONST = preload("res://Resources/Scripts/Card_data.gd")
+
 @onready var backpack_grid: GridContainer = %BackpackGrid
 @onready var rows_container: VBoxContainer = %RowsContainer
 @onready var save_button: Button = $VBoxContainer/HBoxContainer/SaveButton
 @onready var cancel_button: Button = $VBoxContainer/HBoxContainer/CancelButton
 
-var card_database: Dictionary = {}
 var slots_map: Dictionary = {} # Maps row_idx -> {"main": main_slot_node, "subs": [sub_1_node, sub_2_node]}
 
 func _ready() -> void:
 	add_to_group("deck_builder_root")
-	# 1. Load cards database
-	card_database = _load_json_data("res://Databases/card_database.json")
 	
-	# 2. Build Equipped rows dynamically (Rows 1 to 5)
+	# 1. Build Equipped rows dynamically (Rows 1 to 5)
 	_build_equipped_rows()
 	
-	# 3. Populate slots from GameManager.active_deck_layout
+	# 2. Populate slots from GameManager.active_deck_layout
 	_load_active_layout()
 	
-	# 4. Populate and display backpack cards
+	# 3. Populate and display backpack cards
 	update_backpack_view()
 	
-	# 5. Connect buttons
+	# 4. Connect buttons
 	save_button.pressed.connect(_on_save_pressed)
 	cancel_button.pressed.connect(_on_cancel_pressed)
 	
@@ -63,18 +62,6 @@ func _disable_input_recursive(node: Node) -> void:
 			node.disabled = true
 	for child in node.get_children():
 		_disable_input_recursive(child)
-
-func _load_json_data(file_path: String) -> Dictionary:
-	if not FileAccess.file_exists(file_path):
-		return {}
-	var file = FileAccess.open(file_path, FileAccess.READ)
-	if file == null: return {}
-	var content = file.get_as_text()
-	file.close()
-	var parsed = JSON.parse_string(content)
-	if parsed is Dictionary:
-		return parsed
-	return {}
 
 func _build_equipped_rows() -> void:
 	# Clear existing children
@@ -163,91 +150,64 @@ func _load_active_layout() -> void:
 		var row_slots = slots_map[row_idx]
 		
 		# Load main slot
-		var main_id = data.get("main", "")
-		if main_id != "" and card_database.has(main_id):
-			var card_data = card_database[main_id]
-			row_slots["main"].set_card(
-				main_id,
-				card_data.get("name", main_id),
-				card_data.get("element", ""),
-				card_data.get("main_slot", {}).get("description", "")
-			)
+		var main_card = data.get("main")
+		if main_card is CardData:
+			row_slots["main"].set_card(main_card)
+		elif main_card is String and main_card != "":
+			# Backward compatibility fallback
+			var card_res = ResourceManager.get_card_data(main_card)
+			if card_res:
+				row_slots["main"].set_card(card_res)
 			
 		# Load sub slots
 		var subs = data.get("subs", [])
 		for j in range(min(subs.size(), 2)):
-			var sub_id = subs[j]
-			if sub_id != "" and card_database.has(sub_id):
-				var card_data = card_database[sub_id]
-				row_slots["subs"][j].set_card(
-					sub_id,
-					card_data.get("name", sub_id),
-					card_data.get("element", ""),
-					card_data.get("sub_slot", {}).get("description", "")
-				)
+			var sub_card = subs[j]
+			if sub_card is CardData:
+				row_slots["subs"][j].set_card(sub_card)
+			elif sub_card is String and sub_card != "":
+				# Backward compatibility fallback
+				var card_res = ResourceManager.get_card_data(sub_card)
+				if card_res:
+					row_slots["subs"][j].set_card(card_res)
 
 func update_backpack_view() -> void:
 	# 1. Clear backpack grid
 	for child in backpack_grid.get_children():
 		child.queue_free()
 		
-	# 2. Collect all equipped card IDs
-	var equipped_ids = []
+	# 2. Collect all equipped card references
+	var equipped_cards: Array[CardData] = []
 	for row_idx in slots_map.keys():
 		var row_slots = slots_map[row_idx]
-		if row_slots["main"].current_card_id != "":
-			equipped_ids.append(row_slots["main"].current_card_id)
+		if row_slots["main"].card_data != null:
+			equipped_cards.append(row_slots["main"].card_data)
 		for sub_slot in row_slots["subs"]:
-			if sub_slot.current_card_id != "":
-				equipped_ids.append(sub_slot.current_card_id)
+			if sub_slot.card_data != null:
+				equipped_cards.append(sub_slot.card_data)
 				
 	# 3. Calculate remaining available cards in backpack
-	var available_cards = GameManager.backpack_cards.duplicate()
-	for eq_id in equipped_ids:
-		if available_cards.has(eq_id):
-			available_cards.erase(eq_id)
+	var available_cards: Array[CardData] = []
+	for card in GameManager.backpack_cards:
+		if card == null:
+			continue
+		if card is CardData:
+			if not equipped_cards.has(card):
+				available_cards.append(card)
+		elif card is String and card != "":
+			# Fallback if backpack contains String IDs
+			var card_res = ResourceManager.get_card_data(card)
+			if card_res and not equipped_cards.has(card_res):
+				available_cards.append(card_res)
 			
 	# 4. Create draggable card buttons for available cards
-	for card_id in available_cards:
-		if not card_database.has(card_id): continue
-		
-		var card_data = card_database[card_id]
-		var card_btn = Button.new()
-		card_btn.custom_minimum_size = Vector2(170, 110)
-		
-		# Style button base color according to element
-		var element = card_data.get("element", "")
-		var color = Color(0.2, 0.2, 0.22, 1)
-		match element:
-			"火": color = Color(0.5, 0.2, 0.15, 1)
-			"木": color = Color(0.15, 0.45, 0.2, 1)
-			"水": color = Color(0.15, 0.25, 0.5, 1)
-			"金": color = Color(0.5, 0.45, 0.15, 1)
-			"土": color = Color(0.35, 0.25, 0.2, 1)
-			"以太": color = Color(0.35, 0.15, 0.45, 1)
+	for card_data_obj in available_cards:
+		if card_data_obj == null:
+			continue
 			
-		card_btn.add_theme_color_override("font_color", Color.WHITE)
-		card_btn.add_theme_font_size_override("font_size", 15)
-		
-		var cost_str = _format_cost(card_data.get("cost", {}))
-		card_btn.text = "%s\n[%s]\nCost: %s" % [
-			card_data.get("name", card_id),
-			element,
-			cost_str
-		]
-		
-		var style = StyleBoxFlat.new()
-		style.bg_color = color
-		style.corner_radius_top_left = 6
-		style.corner_radius_top_right = 6
-		style.corner_radius_bottom_left = 6
-		style.corner_radius_bottom_right = 6
-		card_btn.add_theme_stylebox_override("normal", style)
-		
-		# Set drag-and-drop helper script
+		var card_btn = Button.new()
 		card_btn.set_script(load("res://Components/deck_builder_card.gd"))
-		card_btn.card_id = card_id
-		card_btn.card_name = card_data.get("name", card_id)
+		card_btn.set_card_data(card_data_obj)
 		card_btn.is_equipped = false
 		card_btn.origin_slot = null
 		
@@ -260,7 +220,8 @@ func _format_cost(cost_dict: Dictionary) -> String:
 	return ", ".join(result)
 
 func get_card_name(card_id: String) -> String:
-	return card_database.get(card_id, {}).get("name", card_id)
+	var card = ResourceManager.get_card_data(card_id)
+	return card.card_name if card else card_id
 
 func _on_save_pressed() -> void:
 	var is_overlay = (get_parent() != null and get_parent().name == "GlobalHUD")
@@ -270,15 +231,15 @@ func _on_save_pressed() -> void:
 		var new_layout: Array[Dictionary] = []
 		for i in range(1, 6):
 			var row_name = "SlotRow_" + str(i)
-			var main_id = slots_map[i]["main"].current_card_id
-			var sub1_id = slots_map[i]["subs"][0].current_card_id
-			var sub2_id = slots_map[i]["subs"][1].current_card_id
+			var main_card = slots_map[i]["main"].card_data
+			var sub1_card = slots_map[i]["subs"][0].card_data
+			var sub2_card = slots_map[i]["subs"][1].card_data
 			
 			# Save row layout structure
 			new_layout.append({
 				"row": row_name,
-				"main": main_id,
-				"subs": [sub1_id, sub2_id]
+				"main": main_card,
+				"subs": [sub1_card, sub2_card]
 			})
 			
 		GameManager.active_deck_layout.clear()

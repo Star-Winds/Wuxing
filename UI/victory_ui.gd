@@ -1,10 +1,12 @@
 extends Control
 
+const CARD_DATA_CONST = preload("res://Resources/Scripts/Card_data.gd")
+
 @onready var rewards_label: Label = $VBoxContainer/RewardsLabel
 @onready var cards_container: HBoxContainer = $VBoxContainer/CardsContainer
 @onready var skip_button: Button = $VBoxContainer/SkipButton
 
-var pending_card_id: String = ""
+var pending_card_data: CardData = null
 var pending_button: Button = null
 
 var swap_overlay: Panel
@@ -54,35 +56,34 @@ func _display_card_options() -> void:
 	for child in cards_container.get_children():
 		child.queue_free()
 		
-	var card_db = _load_json_data("res://Databases/card_database.json")
-	if card_db.is_empty(): return
+	var all_card_resources = ResourceManager.all_cards.values()
+	if all_card_resources.is_empty(): 
+		return
 		
-	var card_ids = card_db.keys()
-	card_ids.shuffle()
+	all_card_resources.shuffle()
 	
-	var selected_ids = []
-	for i in range(min(3, card_ids.size())):
-		selected_ids.append(card_ids[i])
+	var selected_cards = []
+	for i in range(min(3, all_card_resources.size())):
+		selected_cards.append(all_card_resources[i])
 		
-	for card_id in selected_ids:
-		var card_data = card_db[card_id]
+	for card_data in selected_cards:
 		var btn = Button.new()
-		var c_name = card_data.get("name", "Unknown Card")
-		var c_elem = card_data.get("element", "无")
+		var c_name = card_data.card_name
+		var c_elem = card_data.element
 		btn.text = "%s\n[%s属性]" % [c_name, c_elem]
 		btn.custom_minimum_size = Vector2(240, 200)
 		btn.add_theme_font_size_override("font_size", 16)
-		btn.pressed.connect(_on_card_reward_selected.bind(card_id, btn))
+		btn.pressed.connect(_on_card_reward_selected.bind(card_data, btn))
 		cards_container.add_child(btn)
 
-func _on_card_reward_selected(card_id: String, btn: Button) -> void:
+func _on_card_reward_selected(card_data: CardData, btn: Button) -> void:
 	if GameManager.reserve_cards.size() < GameManager.MAX_DECK_SIZE:
-		GameManager.reserve_cards.append(card_id)
-		GameManager.backpack_cards.append(card_id)
+		GameManager.reserve_cards.append(card_data)
+		GameManager.backpack_cards.append(card_data)
 		btn.disabled = true
 		btn.text += "\n(已获取)"
 	else:
-		pending_card_id = card_id
+		pending_card_data = card_data
 		pending_button = btn
 		_show_swap_menu()
 
@@ -105,15 +106,6 @@ func _return_to_map() -> void:
 	# 3. 使用重构后的变量跳转回大地图
 	GameManager.switch_to_scene(GameManager.map_scene)
 
-# --- 数据加载与覆盖层逻辑 (保持不变) ---
-
-func _load_json_data(file_path: String) -> Dictionary:
-	if not FileAccess.file_exists(file_path): return {}
-	var file = FileAccess.open(file_path, FileAccess.READ)
-	var content = file.get_as_text()
-	var parsed = JSON.parse_string(content)
-	return parsed if parsed is Dictionary else {}
-
 func _setup_swap_overlay() -> void:
 	swap_overlay = Panel.new()
 	swap_overlay.visible = false
@@ -121,16 +113,7 @@ func _setup_swap_overlay() -> void:
 	
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color(0.06, 0.06, 0.08, 0.96)
-	
-	# 替换这一行：分别设置四个边的宽度
 	style.set_border_width_all(4) 
-	
-	# 或者如果你想手动指定每一个边：
-	# style.border_width_left = 4
-	# style.border_width_top = 4
-	# style.border_width_right = 4
-	# style.border_width_bottom = 4
-	
 	style.border_color = Color(0.8, 0.2, 0.2, 0.8)
 	style.set_corner_radius_all(12)
 	swap_overlay.add_theme_stylebox_override("panel", style)
@@ -171,12 +154,11 @@ func _setup_swap_overlay() -> void:
 func _show_swap_menu() -> void:
 	for child in swap_grid.get_children():
 		child.queue_free()
-	var card_db = _load_json_data("res://Databases/card_database.json")
+		
 	for i in range(GameManager.reserve_cards.size()):
-		var card_id = GameManager.reserve_cards[i]
-		var card_data = card_db.get(card_id, {})
+		var card_data = GameManager.reserve_cards[i]
 		var btn = Button.new()
-		btn.text = "%s\n[%s属性]" % [card_data.get("name", card_id), card_data.get("element", "无")]
+		btn.text = "%s\n[%s属性]" % [card_data.card_name, card_data.element]
 		btn.custom_minimum_size = Vector2(160, 90)
 		btn.pressed.connect(_confirm_swap.bind(i))
 		swap_grid.add_child(btn)
@@ -184,7 +166,7 @@ func _show_swap_menu() -> void:
 
 func _confirm_swap(index: int) -> void:
 	GameManager.reserve_cards.remove_at(index)
-	GameManager.reserve_cards.append(pending_card_id)
+	GameManager.reserve_cards.append(pending_card_data)
 	GameManager.backpack_cards = GameManager.reserve_cards.duplicate()
 	pending_button.disabled = true
 	pending_button.text += "\n(已替换)"

@@ -21,6 +21,9 @@ ResourceManager="*res://Autoloads/resource_manager.gd"
 GlobalHUD="*res://Autoloads/global_hud.tscn"
 PauseOverlay="*res://Autoloads/pause_overlay.tscn"
 GameManager="*uid://bbn4311t4t7tf"
+RNGService="*res://Autoloads/rng_service.gd"
+SaveManager="*res://Autoloads/save_manager.gd"
+EventBus="*res://Autoloads/event_bus.gd"
 
 [physics]
 

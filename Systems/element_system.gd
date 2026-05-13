@@ -45,3 +45,16 @@ func set_element(el: String) -> void:
 func reset() -> void:
 	enemy_element = ""
 	enemy_element_layers = 0
+
+
+func to_dict() -> Dictionary:
+	return {
+		"enemy_element": enemy_element,
+		"enemy_element_layers": enemy_element_layers,
+	}
+
+
+func from_dict(d: Dictionary) -> void:
+	if d.is_empty(): return
+	enemy_element = d.get("enemy_element", enemy_element)
+	enemy_element_layers = d.get("enemy_element_layers", enemy_element_layers)

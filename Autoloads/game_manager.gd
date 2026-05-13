@@ -123,6 +123,10 @@ var current_world: int = 1
 var current_node_index: int = 0
 var current_map_path: Array[String] = []
 
+# --- 存档/读档标志 ---
+var _is_loading: bool = false
+var restore_data: Dictionary = {}
+
 
 func _ready() -> void:
 	# 初始化子模块
@@ -162,9 +166,9 @@ func reset_run() -> void:
 # ============================================================
 func switch_to_scene(target_scene: PackedScene) -> void:
 	if target_scene:
+		if not _is_loading:
+			SaveManager.save_game(0)
 		get_tree().change_scene_to_packed(target_scene)
-
-
 # ============================================================
 #  世界地图
 # ============================================================
@@ -172,7 +176,7 @@ func generate_new_world() -> void:
 	current_node_index = 0
 	current_map_path.clear()
 	for i in range(15):
-		current_map_path.append(NODE_TYPES[randi() % 7])
+		current_map_path.append(NODE_TYPES[RNGService.randi() % 7])
 	current_map_path.append("将/帅 (Boss)")
 
 func enter_current_node() -> void:
@@ -250,3 +254,24 @@ func _convert_string_references_to_resources() -> void:
 
 func update_player_stats() -> void:
 	pass
+
+
+func to_dict() -> Dictionary:
+	return {
+		"current_world": current_world,
+		"current_node_index": current_node_index,
+		"current_map_path": current_map_path.duplicate(),
+		"active_formation": active_formation.resource_path if active_formation else "",
+	}
+
+
+func from_dict(d: Dictionary) -> void:
+	if d.is_empty(): return
+	current_world = d.get("current_world", current_world)
+	current_node_index = d.get("current_node_index", current_node_index)
+	if d.has("current_map_path"): current_map_path = d["current_map_path"]
+	var formation_path: String = d.get("active_formation", "")
+	if formation_path != "" and ResourceLoader.exists(formation_path):
+		active_formation = load(formation_path)
+	else:
+		active_formation = null

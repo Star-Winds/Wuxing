@@ -63,3 +63,24 @@ func has_elements(costs: Dictionary) -> bool:
 		if available < costs[el]:
 			return false
 	return true
+
+
+func to_dict() -> Dictionary:
+	return {
+		"max_health": max_health,
+		"current_health": current_health,
+		"aether": aether,
+		"gold": gold,
+		"elements": elements.duplicate(),
+		"acquired_equipment": acquired_equipment.duplicate(),
+	}
+
+
+func from_dict(d: Dictionary) -> void:
+	if d.is_empty(): return
+	max_health = d.get("max_health", max_health)
+	current_health = d.get("current_health", current_health)
+	aether = d.get("aether", aether)
+	gold = d.get("gold", gold)
+	if d.has("elements"): elements = d["elements"]
+	if d.has("acquired_equipment"): acquired_equipment = d["acquired_equipment"]

@@ -52,3 +52,16 @@ func reset() -> void:
 
 func _dict_for(target: String) -> Dictionary:
 	return player_statuses if target == "player" else enemy_statuses
+
+
+func to_dict() -> Dictionary:
+	return {
+		"enemy_statuses": enemy_statuses.duplicate(true),
+		"player_statuses": player_statuses.duplicate(true),
+	}
+
+
+func from_dict(d: Dictionary) -> void:
+	if d.is_empty(): return
+	enemy_statuses = d.get("enemy_statuses", {})
+	player_statuses = d.get("player_statuses", {})

@@ -78,3 +78,55 @@ func has_reaction(reaction_name: String) -> bool:
 		if r.reaction_name == reaction_name:
 			return true
 	return false
+
+
+func to_dict() -> Dictionary:
+	var owned_data: Array = []
+	for r in owned_reactions:
+		owned_data.append({
+			"name": r.reaction_name,
+			"combo": r.combination.duplicate(),
+			"color_hex": "#%02x%02x%02x" % [
+				int(clampf(r.reaction_color.r, 0.0, 1.0) * 255),
+				int(clampf(r.reaction_color.g, 0.0, 1.0) * 255),
+				int(clampf(r.reaction_color.b, 0.0, 1.0) * 255),
+			],
+			"desc": r.description,
+		})
+
+	var equipped_data: Dictionary = {}
+	for key in equipped_reactions:
+		var r = equipped_reactions[key]
+		equipped_data[key] = r.reaction_name
+
+	return {
+		"owned_reactions": owned_data,
+		"equipped_reactions": equipped_data,
+	}
+
+
+func from_dict(d: Dictionary) -> void:
+	if d.is_empty(): return
+
+	owned_reactions.clear()
+	var owned_data: Array = d.get("owned_reactions", [])
+	for item in owned_data:
+		var r := ReactionData.new()
+		r.reaction_name = item.get("name", "")
+		var combo_arr: Array[String] = []
+		for elem in item.get("combo", []):
+			combo_arr.append(elem)
+		r.combination = combo_arr
+		var hex: String = item.get("color_hex", "#FFFFFF")
+		r.reaction_color = Color(hex)
+		r.description = item.get("desc", "")
+		owned_reactions.append(r)
+
+	equipped_reactions.clear()
+	var equipped_data: Dictionary = d.get("equipped_reactions", {})
+	for key in equipped_data:
+		var rxn_name: String = equipped_data[key]
+		for r in owned_reactions:
+			if r.reaction_name == rxn_name:
+				equipped_reactions[key] = r
+				break

@@ -31,7 +31,7 @@ func _grant_rewards() -> void:
 	var counts = {"Metal": 0, "Wood": 0, "Water": 0, "Fire": 0, "Earth": 0}
 
 	for i in range(5):
-		var chosen = elements[randi() % elements.size()]
+		var chosen = elements[RNGService.randi() % elements.size()]
 		match chosen:
 			"Metal": GameManager.element_metal += 1
 			"Wood": GameManager.element_wood += 1
@@ -52,7 +52,7 @@ func _grant_rewards() -> void:
 
 	# 偶尔掉落五行反应秘籍
 	var reaction_dropped: ReactionData = null
-	if randf() < 0.4: # 40% 几率掉落
+	if RNGService.randf() < 0.4: # 40% 几率掉落
 		var pool = [
 			{"name": "蒸腾", "combo": ["火", "水"], "color": Color("#FF5252"), "desc": "提供烧伤效果，每回合按层数结算扣血"},
 			{"name": "熄灭", "combo": ["水", "火"], "color": Color("#29B6F6"), "desc": "为目标赋予“虚弱”（造成伤害x0.75）2回合"},
@@ -75,7 +75,7 @@ func _grant_rewards() -> void:
 			{"name": "合金", "combo": ["金", "土"], "color": Color("#FFCA28"), "desc": "主控获得“合金”，提供1点减伤，直到本次对局结束"},
 			{"name": "埋藏", "combo": ["土", "金"], "color": Color("#BCAAA4"), "desc": "下次在“车间”节点打造装备时，消耗减少2点金元素"}
 		]
-		var data = pool[randi() % pool.size()]
+		var data = pool[RNGService.randi() % pool.size()]
 		reaction_dropped = ReactionData.new()
 		reaction_dropped.reaction_name = data["name"]
 		var combo_arr: Array[String] = []
@@ -98,7 +98,7 @@ func _display_card_options() -> void:
 	if all_card_resources.is_empty():
 		return
 
-	all_card_resources.shuffle()
+	RNGService.shuffle(all_card_resources)
 
 	var selected_cards = []
 	for i in range(min(3, all_card_resources.size())):

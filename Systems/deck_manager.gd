@@ -72,3 +72,63 @@ func save_layout_from_slots(slots_map: Dictionary) -> Array[Dictionary]:
 			"subs": [slots_map[i]["subs"][0].card_data, slots_map[i]["subs"][1].card_data]
 		})
 	return new_layout
+
+
+func to_dict() -> Dictionary:
+	var pool_ids: Array[String] = []
+	for card in card_pool:
+		if card and not card.id.is_empty():
+			pool_ids.append(card.id)
+
+	var layout_data: Array = []
+	for row in active_deck_layout:
+		var row_dict := {
+			"row": row.get("row", ""),
+			"main": "",
+			"subs": [],
+		}
+		var main_card = row.get("main")
+		if main_card is CardData:
+			row_dict["main"] = main_card.id
+		elif main_card is String:
+			row_dict["main"] = main_card
+		var subs = row.get("subs", [])
+		for sub in subs:
+			if sub is CardData:
+				row_dict["subs"].append(sub.id)
+			elif sub is String:
+				row_dict["subs"].append(sub)
+		layout_data.append(row_dict)
+
+	return {"card_pool": pool_ids, "active_deck_layout": layout_data}
+
+
+func from_dict(d: Dictionary) -> void:
+	if d.is_empty(): return
+
+	card_pool.clear()
+	var pool_ids: Array = d.get("card_pool", [])
+	for card_id in pool_ids:
+		var card := _lookup_card(card_id)
+		if card:
+			card_pool.append(card)
+		else:
+			printerr("DeckManager.from_dict: card not found: ", card_id)
+
+	active_deck_layout.clear()
+	var layout_data: Array = d.get("active_deck_layout", [])
+	for row_dict in layout_data:
+		var new_row := {
+			"row": row_dict.get("row", ""),
+			"main": null,
+			"subs": [],
+		}
+		var main_id: String = row_dict.get("main", "")
+		if main_id != "":
+			new_row["main"] = _lookup_card(main_id)
+		var sub_ids: Array = row_dict.get("subs", [])
+		for sub_id in sub_ids:
+			var sub_card := _lookup_card(sub_id)
+			if sub_card:
+				new_row["subs"].append(sub_card)
+		active_deck_layout.append(new_row)

@@ -79,11 +79,11 @@ func _ready() -> void:
 		if not enemy_entity.gui_input.is_connected(_on_enemy_entity_gui_input):
 			enemy_entity.gui_input.connect(_on_enemy_entity_gui_input)
 
-	# 监听来自 BattleManager 的所有信号
-	if battle_manager:
-		battle_manager.battle_ended.connect(_on_battle_ended)
-		battle_manager.formation_readiness_changed.connect(_on_formation_readiness_changed)
-		battle_manager.formation_activated.connect(_on_formation_activated)
+	# 通过 EventBus 解耦战斗信号
+	EventBus.battle_won.connect(_on_battle_ended.bind(true))
+	EventBus.battle_lost.connect(_on_battle_ended.bind(false))
+	EventBus.formation_readiness_changed.connect(_on_formation_readiness_changed)
+	EventBus.formation_activated.connect(_on_formation_activated)
 
 	# 连接支付面板按钮
 	if confirm_activation_button:
@@ -109,10 +109,14 @@ func _ready() -> void:
 	if formation_btn:
 		formation_btn.pressed.connect(_on_formation_button_pressed)
 
-	# step 4: Load default test enemy for testing purposes
-	var test_enemy = load("res://Resources/Enemies/World_1/Minion/snake_wood.tres")
-	if test_enemy and battle_manager:
-		battle_manager.start_battle(test_enemy)
+	# step 4: Restore battle state (load game) or start fresh test battle
+	if GameManager.restore_data and not GameManager.restore_data.is_empty():
+		_restore_battle_state(GameManager.restore_data)
+		GameManager.restore_data = {}
+	else:
+		var test_enemy = load("res://Resources/Enemies/World_1/Minion/snake_wood.tres")
+		if test_enemy and battle_manager:
+			battle_manager.start_battle(test_enemy)
 
 # 初始化槽位并加载 GameManager 中的布局
 func _initialize_slots() -> void:
@@ -685,3 +689,62 @@ func _on_formation_activated(_formation_name: String) -> void:
 func _on_formation_button_pressed() -> void:
 	if battle_manager and GameManager.has_formation:
 		battle_manager.activate_formation()
+
+func get_main_slot_states() -> Array:
+	return _main_slot_states.duplicate()
+
+
+func _restore_battle_state(data: Dictionary) -> void:
+	# 1. Restore BattleManager state
+	if battle_manager:
+		battle_manager.from_dict(data)
+
+	# 2. Restore main slot states
+	var saved_states = data.get("main_slot_states", [])
+	if not saved_states.is_empty():
+		_main_slot_states = saved_states
+		for i in range(min(slot_rows.size(), saved_states.size())):
+			var row_node = slot_rows[i]
+			if not row_node: continue
+			var row_num = i + 1
+			var main_slot = row_node.get_node_or_null("MainSlot_" + str(row_num))
+			if main_slot:
+				main_slot.current_state = saved_states[i] as int
+				main_slot._update_visuals()
+
+	# 3. Sync UI displays
+	_sync_battle_ui()
+
+	# 4. Reset loading flag
+	GameManager._is_loading = false
+
+
+func _sync_battle_ui() -> void:
+	if not battle_manager or not battle_manager.current_enemy:
+		return
+
+	# Update enemy name + stats
+	var name_lbl = $MasterLayout/MiddleArea/EnemyCenter/EnemyEntity/VBoxContainer/NameLabel
+	if name_lbl and battle_manager.current_enemy:
+		name_lbl.text = battle_manager.current_enemy.enemy_name + " (" + battle_manager.current_enemy.element + ")"
+
+	var stats_lbl = $MasterLayout/MiddleArea/EnemyCenter/EnemyEntity/VBoxContainer/EnemyStatsLabel
+	if stats_lbl and battle_manager.current_enemy:
+		stats_lbl.text = "HP: %d/%d | Shield: %d" % [battle_manager.enemy_hp, battle_manager.current_enemy.max_hp, battle_manager.enemy_shield]
+
+	# Update enemy intent
+	_update_enemy_intent_label()
+
+	# Update status icons
+	if battle_manager.status_manager:
+		var es = battle_manager.status_manager.get("enemy_statuses")
+		if es is Dictionary: _refresh_status_icons({"target": "enemy", "statuses": es})
+		var ps = battle_manager.status_manager.get("player_statuses")
+		if ps is Dictionary: _refresh_status_icons({"target": "player", "statuses": ps})
+
+	# Update formation button visibility
+	if battle_manager.get("formation_ready"):
+		_on_formation_readiness_changed(true)
+
+	# Update global HUD
+	GameManager.update_player_stats()

@@ -82,7 +82,7 @@ func _generate_deck(elements: Array) -> Array[CardData]:
 		return selected_deck
 		
 	for i in range(15):
-		var rand_idx = randi() % candidate_pool.size()
+		var rand_idx = RNGService.randi() % candidate_pool.size()
 		selected_deck.append(candidate_pool[rand_idx])
 		
 	return selected_deck

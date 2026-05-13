@@ -75,6 +75,8 @@ func play_card(main_card: CardData, sub_cards: Array, target: Node = null) -> vo
 		if sub_card is CardData and _is_valid_card(sub_card, "副槽"):
 			valid_subs.append(sub_card)
 
+	EventBus.card_played.emit(main_card, valid_subs, target)
+
 	# Build context for Effect system
 	var context = {
 		"damage_resolver": damage_resolver,
@@ -154,6 +156,7 @@ func play_card(main_card: CardData, sub_cards: Array, target: Node = null) -> vo
 	var gained_shield = damage_resolver.total_shield
 	if gained_shield > 0:
 		player_shield += gained_shield
+		EventBus.shield_gained.emit("player", gained_shield, player_shield)
 		print("  玩家获得护盾: ", gained_shield, " (当前护盾: ", player_shield, ")")
 
 	var final_damage = damage_resolver.get_final_damage()
@@ -170,6 +173,7 @@ func play_card(main_card: CardData, sub_cards: Array, target: Node = null) -> vo
 		if enemy_hp <= 0:
 			print("敌人被真实伤害击杀，战斗胜利！")
 			battle_ended.emit(true)
+			EventBus.battle_won.emit()
 			return
 
 	# Reflect
@@ -232,6 +236,7 @@ func _damage_player(amount: int) -> void:
 	if result.hp_loss > 0:
 		GameManager.current_health = max(0, GameManager.current_health - result.hp_loss)
 		print("  [玩家生命扣除] 受到伤害: ", result.hp_loss, " (剩余生命: ", GameManager.current_health, ")")
+		EventBus.damage_taken.emit("player", result.hp_loss, "", GameManager.current_health)
 		_aq().enqueue(ActionQueue.ActionType.DAMAGE, {"target": "player", "amount": result.hp_loss})
 	else:
 		print("  [玩家护盾抵扣] 受到伤害: ", amount, " (剩余护盾: ", player_shield, ")")
@@ -259,6 +264,7 @@ func _trigger_reaction(reaction: ReactionData, _current_card: CardData) -> Dicti
 	if reaction == null: return {}
 	var reaction_name = reaction.reaction_name
 	print("  >>> [五行反应触发] 反应名称: ", reaction_name, " <<<")
+	EventBus.reaction_triggered.emit(reaction_name, "")
 	_aq().enqueue(ActionQueue.ActionType.REACTION, {"name": reaction_name, "color": reaction.reaction_color})
 
 	var modifiers: Dictionary = {}
@@ -283,7 +289,7 @@ func _trigger_reaction(reaction: ReactionData, _current_card: CardData) -> Dicti
 		"润泽":
 			var possible_elements = ["金", "木", "火", "土"]
 			for i in range(2):
-				var el = possible_elements[randi() % possible_elements.size()]
+				var el = possible_elements[RNGService.randi() % possible_elements.size()]
 				match el:
 					"金": GameManager.element_metal += 1
 					"木": GameManager.element_wood += 1
@@ -337,7 +343,7 @@ func _trigger_reaction(reaction: ReactionData, _current_card: CardData) -> Dicti
 					if slot.current_state == CardSlot.SlotState.INACTIVE and slot.card_data != null and slot.is_sub_slot:
 						inactive_slots.append(slot)
 				if not inactive_slots.is_empty():
-					var random_slot = inactive_slots[randi() % inactive_slots.size()]
+					var random_slot = inactive_slots[RNGService.randi() % inactive_slots.size()]
 					random_slot._activate_confirmed()
 					print("  [过载反应] 随机激活了副槽卡牌: ", random_slot.card_data.card_name)
 				else:
@@ -392,6 +398,7 @@ func start_battle(enemy_res: EnemyData) -> void:
 	_aq().enqueue(ActionQueue.ActionType.HP_CHANGE, {"target": "player", "hp": GameManager.current_health, "shield": player_shield})
 	_aq().enqueue(ActionQueue.ActionType.STATUS_APPLY, {"target": "enemy", "statuses": status_manager.get_all("enemy")})
 	_aq().enqueue(ActionQueue.ActionType.STATUS_APPLY, {"target": "player", "statuses": status_manager.get_all("player")})
+	EventBus.turn_started.emit(0)
 
 
 # ============================================================
@@ -399,6 +406,8 @@ func start_battle(enemy_res: EnemyData) -> void:
 # ============================================================
 func end_turn() -> void:
 	print("--- 开始结算回合终止逻辑 ---")
+	EventBus.turn_ended.emit(enemy_turn_counter)
+
 	if not has_activated_card_this_turn:
 		print("本回合未激活任何卡牌，触发【引气入体】！全基础元素 +5")
 		GameManager.element_metal += 5
@@ -429,6 +438,7 @@ func end_turn() -> void:
 		print("敌人被 DOT 击杀，战斗胜利！")
 		_aq().enqueue(ActionQueue.ActionType.HP_CHANGE, {"target": "enemy", "hp": enemy_hp, "shield": enemy_shield})
 		battle_ended.emit(true)
+		EventBus.battle_won.emit()
 		return
 
 	# 2.5. Player DOTs
@@ -447,6 +457,7 @@ func end_turn() -> void:
 		_aq().enqueue(ActionQueue.ActionType.HP_CHANGE, {"target": "enemy", "hp": enemy_hp, "shield": enemy_shield})
 		_aq().enqueue(ActionQueue.ActionType.HP_CHANGE, {"target": "player", "hp": GameManager.current_health, "shield": player_shield})
 		battle_ended.emit(false)
+		EventBus.battle_lost.emit()
 		return
 
 	# 3. Enemy action
@@ -456,6 +467,7 @@ func end_turn() -> void:
 		_aq().enqueue(ActionQueue.ActionType.HP_CHANGE, {"target": "enemy", "hp": enemy_hp, "shield": enemy_shield})
 		_aq().enqueue(ActionQueue.ActionType.HP_CHANGE, {"target": "player", "hp": GameManager.current_health, "shield": player_shield})
 		battle_ended.emit(false)
+		EventBus.battle_lost.emit()
 		return
 
 	# 4. Advance turn counter
@@ -466,6 +478,8 @@ func end_turn() -> void:
 	status_manager.decay("player")
 	_aq().enqueue(ActionQueue.ActionType.STATUS_APPLY, {"target": "enemy", "statuses": status_manager.get_all("enemy")})
 	_aq().enqueue(ActionQueue.ActionType.STATUS_APPLY, {"target": "player", "statuses": status_manager.get_all("player")})
+
+	EventBus.turn_started.emit(enemy_turn_counter + 1)
 
 	# 6. UI sync
 	_aq().enqueue(ActionQueue.ActionType.HP_CHANGE, {"target": "enemy", "hp": enemy_hp, "shield": enemy_shield})
@@ -539,12 +553,14 @@ func take_damage(amount: int, element: String = "") -> void:
 
 	print("敌人受到伤害: ", amount, " (元素: ", element, "), 实际扣除生命: ", result.hp_loss,
 		", 剩余生命: ", enemy_hp, ", 剩余护盾: ", enemy_shield)
+	EventBus.damage_taken.emit("enemy", result.hp_loss, element, enemy_hp)
 	_aq().enqueue(ActionQueue.ActionType.DAMAGE, {"target": "enemy", "amount": result.hp_loss, "element": element})
 	_aq().enqueue(ActionQueue.ActionType.HP_CHANGE, {"target": "enemy", "hp": enemy_hp, "shield": enemy_shield})
 
 	if enemy_hp <= 0:
 		print("敌人生命值归零，战斗胜利！")
 		battle_ended.emit(true)
+		EventBus.battle_won.emit()
 
 
 func get_status() -> String:
@@ -602,6 +618,7 @@ func activate_formation() -> void:
 		_aq().enqueue(ActionQueue.ActionType.HP_CHANGE, {"target": "enemy", "hp": enemy_hp, "shield": enemy_shield})
 		_aq().enqueue(ActionQueue.ActionType.HP_CHANGE, {"target": "player", "hp": GameManager.current_health, "shield": player_shield})
 		battle_ended.emit(true)
+		EventBus.battle_won.emit()
 		return
 
 	# 阵法效果：10 点护盾
@@ -663,3 +680,47 @@ func _is_valid_card(card: CardData, slot_label: String) -> bool:
 				"可能是 .tres 文件未正确设置 id 字段。")
 		return false
 	return true
+
+
+func to_dict() -> Dictionary:
+	return {
+		"enemy_path": current_enemy.resource_path if current_enemy else "",
+		"enemy_hp": enemy_hp,
+		"enemy_shield": enemy_shield,
+		"enemy_turn_counter": enemy_turn_counter,
+		"enemy_atk_buff": enemy_atk_buff,
+		"player_shield": player_shield,
+		"has_activated_card_this_turn": has_activated_card_this_turn,
+		"activated_card_prev_turn": activated_card_prev_turn,
+		"enemy_intent_override": enemy_intent_override,
+		"player_damage_reduction": player_damage_reduction,
+		"reactivate_current_card": reactivate_current_card,
+		"formation_ready": formation_ready,
+		"status_manager": status_manager.to_dict() if status_manager else {},
+		"element_system": element_system.to_dict() if element_system else {},
+	}
+
+
+func from_dict(d: Dictionary) -> void:
+	if d.is_empty(): return
+	_init_sub_systems()
+
+	var enemy_path: String = d.get("enemy_path", "")
+	if enemy_path != "" and ResourceLoader.exists(enemy_path):
+		current_enemy = load(enemy_path)
+	enemy_hp = d.get("enemy_hp", enemy_hp)
+	enemy_shield = d.get("enemy_shield", enemy_shield)
+	enemy_turn_counter = d.get("enemy_turn_counter", enemy_turn_counter)
+	enemy_atk_buff = d.get("enemy_atk_buff", enemy_atk_buff)
+	player_shield = d.get("player_shield", player_shield)
+	has_activated_card_this_turn = d.get("has_activated_card_this_turn", false)
+	activated_card_prev_turn = d.get("activated_card_prev_turn", false)
+	enemy_intent_override = d.get("enemy_intent_override", "")
+	player_damage_reduction = d.get("player_damage_reduction", player_damage_reduction)
+	reactivate_current_card = d.get("reactivate_current_card", false)
+	formation_ready = d.get("formation_ready", false)
+
+	if d.has("status_manager") and status_manager:
+		status_manager.from_dict(d["status_manager"])
+	if d.has("element_system") and element_system:
+		element_system.from_dict(d["element_system"])

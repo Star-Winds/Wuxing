@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_klt5b"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_burn_1_1_b.tres" id="2_ns4oa"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_xinv5"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_heal_3.tres" id="4_2kcpq"]
+
+[resource]
+script = ExtResource("3_xinv5")
+id = "Fire_012"
+card_name = "不灭之火"
+description = "赋予1层灼烧，持续延长。"
+cost_fire = 2
+main_keywords = Array[ExtResource("1_klt5b")]([ExtResource("2_ns4oa")])
+sub_keywords = Array[ExtResource("1_klt5b")]([ExtResource("4_2kcpq")])

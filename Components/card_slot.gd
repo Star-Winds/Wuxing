@@ -2,10 +2,11 @@ extends Control
 class_name CardSlot
 
 # --- 新增引用，解决启动解析报错 ---
-const CARD_DATA_CONST = preload("res://Resources/Scripts/Card_data.gd")
+const CARD_DATA_CONST = preload("res://Data/Card_data.gd")
 
 # --- 信号 ---
 signal activation_requested(slot: CardSlot)
+signal state_changed(new_state: SlotState)
 
 # --- 枚举 ---
 enum SlotState { INACTIVE, ACTIVATED, PLAYED }
@@ -50,7 +51,7 @@ func set_card(new_card_data: CardData) -> void:
 	if card_data:
 		if name_label: name_label.text = card_data.card_name
 		if stats_label:
-			stats_label.text = str(card_data.sub_value) if is_sub_slot else str(card_data.main_value)
+			stats_label.text = str(card_data.get_sub_display_value()) if is_sub_slot else str(card_data.get_main_display_value())
 	else:
 		if name_label: name_label.text = ""
 		if stats_label: stats_label.text = ""
@@ -89,12 +90,14 @@ func _on_button_pressed() -> void:
 
 func _activate_confirmed():
 	current_state = SlotState.ACTIVATED
+	state_changed.emit(current_state)
 	_update_visuals()
 	if not is_sub_slot:
 		for s in sub_slots: s._activate_confirmed()
 
 func _finalize_play():
 	current_state = SlotState.PLAYED
+	state_changed.emit(current_state)
 	_update_visuals()
 	if not is_sub_slot:
 		for s in sub_slots: s._finalize_play()

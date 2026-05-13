@@ -1,6 +1,6 @@
 extends Control
 
-const CARD_DATA_CONST = preload("res://Resources/Scripts/Card_data.gd")
+const CARD_DATA_CONST = preload("res://Data/Card_data.gd")
 
 @onready var backpack_grid: GridContainer = %BackpackGrid
 @onready var rows_container: VBoxContainer = %RowsContainer
@@ -189,7 +189,7 @@ func update_backpack_view() -> void:
 	# 3. Calculate remaining available cards in backpack
 	var available_cards: Array[CardData] = []
 	var temp_equipped = equipped_cards.duplicate()
-	for card in GameManager.backpack_cards:
+	for card in GameManager.card_pool:
 		if card == null:
 			continue
 		if card is CardData:

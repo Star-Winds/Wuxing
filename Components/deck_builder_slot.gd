@@ -1,7 +1,7 @@
 # res://Components/deck_builder_slot.gd
 extends PanelContainer
 
-const CARD_DATA_CONST = preload("res://Resources/Scripts/Card_data.gd")
+const CARD_DATA_CONST = preload("res://Data/Card_data.gd")
 
 var slot_type: String = "" # "main" or "sub"
 var row_index: int = 0
@@ -55,7 +55,11 @@ func _update_display() -> void:
 		self.self_modulate = Color(0.2, 0.2, 0.25, 0.8)
 	else:
 		name_label.text = card_data.card_name + " [" + card_data.element + "]"
-		stats_label.text = card_data.main_description if slot_type == "main" else card_data.sub_description
+		var auto_desc = card_data.get_auto_description(slot_type == "sub")
+		if not auto_desc.is_empty():
+			stats_label.text = auto_desc
+		else:
+			stats_label.text = card_data.main_description if slot_type == "main" else card_data.sub_description
 		
 		# Set aesthetic color according to element
 		var color = Color(0.3, 0.3, 0.4, 1)

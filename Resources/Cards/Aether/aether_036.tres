@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_vgi8q"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="2_n44er"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_gen_aether_2.tres" id="3_8ng6s"]
+
+[resource]
+script = ExtResource("2_n44er")
+id = "Aether_036"
+card_name = "灵气萦绕"
+element = "以太"
+description = "引气增益。"
+cost_aether = 1
+sub_keywords = Array[ExtResource("1_vgi8q")]([ExtResource("3_8ng6s")])

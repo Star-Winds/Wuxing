@@ -1,17 +1,14 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_eom00"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_hmmnl"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_heal_2.tres" id="2_aeb5r"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_ag4wd"]
 
 [resource]
-script = ExtResource("1_eom00")
+script = ExtResource("3_ag4wd")
 id = "Water_013"
 card_name = "甘霖"
 element = "水"
-description = "清除自身所有负面状态，每清除一种，回复2点生命。"
+description = "清除自身负面状态，回复生命。"
 cost_water = 10
-main_type = "heal"
-main_value = 2
-main_description = "清除自身所有负面状态，每清除一种，回复2点生命。"
-sub_type = "special_action"
-sub_value = 1
-sub_description = "主槽卡牌打出时，清除敌方1层正面状态。"
+main_keywords = Array[ExtResource("1_hmmnl")]([ExtResource("2_aeb5r")])

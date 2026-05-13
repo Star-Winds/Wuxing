@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_3hvd7"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_cond_burn_12_5.tres" id="2_lc0f1"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_hlvx6"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_5.tres" id="4_6o31w"]
+
+[resource]
+script = ExtResource("3_hlvx6")
+id = "Fire_011"
+card_name = "焚心"
+description = "造成12点火伤。若敌人有灼烧，额外+5。"
+cost_fire = 5
+main_keywords = Array[ExtResource("1_3hvd7")]([ExtResource("2_lc0f1")])
+sub_keywords = Array[ExtResource("1_3hvd7")]([ExtResource("4_6o31w")])

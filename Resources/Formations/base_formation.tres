@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="FormationData" format=3]
+
+[ext_resource type="Script" path="res://Data/FormationData.gd" id="1_formation"]
+
+[resource]
+script = ExtResource("1_formation")
+formation_name = "五行归元阵"
+description = "消耗所有槽位的激活状态，对敌方造成 15 点真实伤害，获得 10 点护盾，全基础元素 +3"
+element_color = Color(1, 0.84, 0, 1)

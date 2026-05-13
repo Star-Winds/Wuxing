@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_ia8pr"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_6.tres" id="2_aebng"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_mt07s"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_3.tres" id="4_hyqep"]
+
+[resource]
+script = ExtResource("3_mt07s")
+id = "Fire_008"
+card_name = "连珠火"
+description = "造成6点火伤，然后重复1次。"
+cost_fire = 4
+main_keywords = Array[ExtResource("1_ia8pr")]([ExtResource("2_aebng")])
+sub_keywords = Array[ExtResource("1_ia8pr")]([ExtResource("4_hyqep")])

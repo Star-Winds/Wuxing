@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_8vthu"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_reduction_1_999.tres" id="2_2lj8l"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_btp3c"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_shield_4.tres" id="4_muiox"]
+
+[resource]
+script = ExtResource("3_btp3c")
+id = "Metal_029"
+card_name = "金精"
+element = "金"
+description = "永久合金+护盾。"
+cost_metal = 4
+main_keywords = Array[ExtResource("1_8vthu")]([ExtResource("2_2lj8l")])
+sub_keywords = Array[ExtResource("1_8vthu")]([ExtResource("4_muiox")])

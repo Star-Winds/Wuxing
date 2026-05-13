@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="ReactionData" format=3 uid="uid://cb45vht353q5e"]
+
+[ext_resource type="Script" uid="uid://bemvqe2cmm3vj" path="res://Data/reaction_data.gd" id="1_ehnhh"]
+
+[resource]
+script = ExtResource("1_ehnhh")
+reaction_name = "熄灭"

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="KeywordData" format=3]
+
+[ext_resource type="Script" path="res://Data/Effects/ShieldEffect.gd" id="1_06vnf"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="2_75bxl"]
+
+[sub_resource type="Resource" id="Resource_06vnf"]
+script = ExtResource("1_06vnf")
+value = 3
+
+[resource]
+script = ExtResource("2_75bxl")
+keyword_id = "kw_shield_3"
+display_name = "护盾3"
+description = "获得 3 点护盾"
+effect = SubResource("Resource_06vnf")

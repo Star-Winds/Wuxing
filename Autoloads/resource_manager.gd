@@ -1,6 +1,6 @@
 extends Node
 
-const CARD_DATA_CONST = preload("res://Resources/Scripts/Card_data.gd")
+const CARD_DATA_CONST = preload("res://Data/Card_data.gd")
 
 # Key: String (id), Value: CardData instance
 var all_cards: Dictionary = {}

@@ -1,15 +1,13 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_o5um7"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_qburr"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_6.tres" id="2_arpmh"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_3nl5i"]
 
 [resource]
-script = ExtResource("1_o5um7")
+script = ExtResource("3_3nl5i")
 id = "Fire_003"
 card_name = "烛龙引"
-description = "造成6点火伤。若敌方处于“烧伤”状态，立即触发一次“烧伤”结算。"
+description = "造成6点火伤。"
 cost_fire = 2
-main_value = 6
-main_description = "造成6点火伤。若敌方处于“烧伤”状态，立即触发一次“烧伤”结算。"
-sub_type = "buff"
-sub_value = 3
-sub_description = "主槽卡牌对处于“烧伤”状态的敌人伤害+3。"
+main_keywords = Array[ExtResource("1_qburr")]([ExtResource("2_arpmh")])

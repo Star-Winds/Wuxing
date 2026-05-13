@@ -6,19 +6,69 @@ extends Control
 @onready var buy_card_button: Button = $VBoxContainer/ButtonsContainer/BuyCardButton
 @onready var leave_button: Button = $VBoxContainer/ButtonsContainer/LeaveButton
 
+var _pending_shop_card: CardData = null
+var _swap_overlay: Panel
+var _swap_grid: GridContainer
+
 func _ready() -> void:
 	GlobalHUD.set_scene_name("奇珍异宝阁 (Shop)")
 	var vbox = get_node_or_null("VBoxContainer")
 	if vbox:
 		vbox.offset_top = 100
-	
+
+	_setup_shop_swap_overlay()
 	_update_ui()
-	
+
 	# 连接按钮信号
 	buy_aether_button.pressed.connect(_on_buy_aether_pressed)
 	buy_elements_button.pressed.connect(_on_buy_elements_pressed)
 	buy_card_button.pressed.connect(_on_buy_card_pressed)
 	leave_button.pressed.connect(_leave_shop)
+
+func _setup_shop_swap_overlay() -> void:
+	_swap_overlay = Panel.new()
+	_swap_overlay.visible = false
+	_swap_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0.06, 0.06, 0.08, 0.96)
+	style.set_border_width_all(4)
+	style.border_color = Color(0.8, 0.2, 0.2, 0.8)
+	style.set_corner_radius_all(12)
+	_swap_overlay.add_theme_stylebox_override("panel", style)
+
+	var vbox = VBoxContainer.new()
+	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+	vbox.offset_left = 60; vbox.offset_top = 60; vbox.offset_right = -60; vbox.offset_bottom = -60
+	vbox.add_theme_constant_override("separation", 20)
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	_swap_overlay.add_child(vbox)
+
+	var label = Label.new()
+	label.text = "牌包已满！请选择一张卡牌丢弃以替换新卡"
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 24)
+	label.add_theme_color_override("font_color", Color(1.0, 0.3, 0.3))
+	vbox.add_child(label)
+
+	var scroll = ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 320)
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_child(scroll)
+
+	_swap_grid = GridContainer.new()
+	_swap_grid.columns = 4
+	_swap_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_swap_grid.add_theme_constant_override("h_separation", 15)
+	_swap_grid.add_theme_constant_override("v_separation", 15)
+	scroll.add_child(_swap_grid)
+
+	var cancel_btn = Button.new()
+	cancel_btn.text = "取消购买 (Cancel)"
+	cancel_btn.custom_minimum_size = Vector2(200, 50)
+	cancel_btn.pressed.connect(func(): _swap_overlay.hide())
+	vbox.add_child(cancel_btn)
+	add_child(_swap_overlay)
 
 func _update_ui() -> void:
 	if status_label:
@@ -31,7 +81,7 @@ func _update_ui() -> void:
 			GameManager.element_fire,
 			GameManager.element_earth
 		]
-	
+
 	_check_affordability()
 
 func _check_affordability() -> void:
@@ -63,23 +113,52 @@ func _on_buy_elements_pressed() -> void:
 
 func _on_buy_card_pressed() -> void:
 	if GameManager.gold >= 30:
-		GameManager.gold -= 30
 		var card_res = ResourceManager.get_card_data("fire_law_001")
-		if card_res:
-			GameManager.backpack_cards.append(card_res)
-		else:
-			# Fallback to the first available card if not found
+		if not card_res:
 			var all_keys = ResourceManager.all_cards.keys()
 			if not all_keys.is_empty():
-				GameManager.backpack_cards.append(ResourceManager.all_cards[all_keys[0]])
-		buy_card_button.disabled = true
-		_update_ui()
+				card_res = ResourceManager.all_cards[all_keys[0]]
+		if not card_res:
+			return
+
+		if GameManager.card_pool.size() < DeckManager.MAX_DECK_SIZE:
+			# 牌包未满，直接添加
+			GameManager.gold -= 30
+			GameManager.card_pool.append(card_res)
+			buy_card_button.disabled = true
+			_update_ui()
+		else:
+			# 牌包已满，弹出替换界面
+			_pending_shop_card = card_res
+			_show_buy_swap_menu()
+
+func _show_buy_swap_menu() -> void:
+	for child in _swap_grid.get_children():
+		child.queue_free()
+
+	for i in range(GameManager.card_pool.size()):
+		var card_data = GameManager.card_pool[i]
+		var btn = Button.new()
+		btn.text = "%s\n[%s]" % [card_data.card_name, card_data.element]
+		btn.custom_minimum_size = Vector2(160, 90)
+		btn.pressed.connect(_confirm_shop_swap.bind(i))
+		_swap_grid.add_child(btn)
+
+	_swap_overlay.show()
+
+func _confirm_shop_swap(index: int) -> void:
+	GameManager.gold -= 30
+	GameManager.card_pool.remove_at(index)
+	GameManager.card_pool.append(_pending_shop_card)
+	buy_card_button.disabled = true
+	_swap_overlay.hide()
+	_update_ui()
 
 # --- 核心修改部分 ---
 func _leave_shop() -> void:
 	# 1. 推进地图索引
 	GameManager.current_node_index += 1
-	
+
 	# 2. 调用重构后的全局场景切换逻辑
 	# 确保 GameManager 的 map_scene 已在编辑器中赋值
 	GameManager.switch_to_scene(GameManager.map_scene)

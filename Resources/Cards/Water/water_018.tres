@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_mx8ym"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_3_w.tres" id="2_30iw3"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_iu4gy"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_gen_water_1.tres" id="4_u151s"]
+
+[resource]
+script = ExtResource("3_iu4gy")
+id = "Water_018"
+card_name = "水珠"
+element = "水"
+description = "造成3点水伤，获得1点水元素。"
+cost_water = 1
+main_keywords = Array[ExtResource("1_mx8ym")]([ExtResource("2_30iw3")])
+sub_keywords = Array[ExtResource("1_mx8ym")]([ExtResource("4_u151s")])

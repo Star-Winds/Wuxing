@@ -872,6 +872,16 @@ size_flags_vertical = 4
 theme_override_font_sizes/font_size = 16
 text = "End Turn"
 
+[node name="FormationButton" type="Button" parent="MasterLayout/PlayerStatusBar/MarginContainer/HBoxContainer" unique_id=111111111]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(180, 50)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
+text = "⚡ 五行阵法·就绪 ⚡"
+
 [node name="PaymentPanel" type="PanelContainer" parent="." unique_id=741985919]
 visible = false
 layout_mode = 1

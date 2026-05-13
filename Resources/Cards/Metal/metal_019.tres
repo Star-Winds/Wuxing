@@ -1,19 +1,16 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_s1ot7"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_4t3ly"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_reduction_3_2.tres" id="2_bltn0"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_sc2iv"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_reduction_1_999.tres" id="4_511nv"]
 
 [resource]
-script = ExtResource("1_s1ot7")
+script = ExtResource("3_sc2iv")
 id = "Metal_019"
 card_name = "金钟罩"
 element = "金"
-description = "获得“合金3”，持续2回合。"
+description = "获得合金3，持续2回合。"
 cost_metal = 5
-main_type = "status_apply"
-main_description = "获得“合金3”，持续2回合。"
-sub_type = "status_apply"
-sub_value = 1
-sub_description = "主槽卡牌获得“合金1”，持续到本局战斗结束（可叠加）。"
-status_id = "alloy"
-status_amount = 3
-status_duration = 2
+main_keywords = Array[ExtResource("1_4t3ly")]([ExtResource("2_bltn0")])
+sub_keywords = Array[ExtResource("1_4t3ly")]([ExtResource("4_511nv")])

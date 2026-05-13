@@ -1,18 +1,16 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_gubou"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_3sab8"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_cond_enemy_shield_5_5.tres" id="2_ek4s0"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_5p3oq"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_3.tres" id="4_etpt3"]
 
 [resource]
-script = ExtResource("1_gubou")
+script = ExtResource("3_5p3oq")
 id = "Metal_021"
 card_name = "破甲符"
 element = "金"
-description = "造成5点金伤。若敌方持有护盾，伤害翻倍。"
+description = "造成5点金伤。若敌人护盾翻倍。"
 cost_metal = 2
-main_type = "condition_damage"
-main_value = 5
-main_description = "造成5点金伤。若敌方持有护盾，伤害翻倍。"
-sub_value = 3
-sub_description = "主槽卡牌对护盾造成的伤害+3。"
-status_id = "enemy_has_shield"
-status_amount = 5
+main_keywords = Array[ExtResource("1_3sab8")]([ExtResource("2_ek4s0")])
+sub_keywords = Array[ExtResource("1_3sab8")]([ExtResource("4_etpt3")])

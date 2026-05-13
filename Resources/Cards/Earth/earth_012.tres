@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_r7dmc"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_shield_4.tres" id="2_fixnc"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_3s7uo"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_shield_1.tres" id="4_vv4g5"]
+
+[resource]
+script = ExtResource("3_3s7uo")
+id = "Earth_012"
+card_name = "碎石"
+element = "土"
+description = "获得4点护盾。"
+cost_earth = 1
+main_keywords = Array[ExtResource("1_r7dmc")]([ExtResource("2_fixnc")])
+sub_keywords = Array[ExtResource("1_r7dmc")]([ExtResource("4_vv4g5")])

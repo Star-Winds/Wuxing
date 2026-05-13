@@ -1,18 +1,14 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_niy3j"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_ktids"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_10.tres" id="2_7i05r"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_46411"]
 
 [resource]
-script = ExtResource("1_niy3j")
+script = ExtResource("3_46411")
 id = "Metal_022"
 card_name = "小刀制造"
 element = "金"
-description = "在车间花费17点金元素制造一把“小刀”装备，随后这张牌从你的卡牌包中移除。
-主槽效果：花费3金元素，对一名敌人造成5金属性伤害两次。"
+description = "造成10点金伤。"
 cost_metal = 3
-main_value = 10
-main_description = "在车间花费17点金元素制造一把“小刀”装备，随后这张牌从你的卡牌包中移除。
-主槽效果：花费3金元素，对一名敌人造成5金属性伤害两次。"
-sub_type = "buff"
-sub_value = 3
-sub_description = "主槽卡牌的伤害+3。"
+main_keywords = Array[ExtResource("1_ktids")]([ExtResource("2_7i05r")])

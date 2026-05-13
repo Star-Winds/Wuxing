@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_ldseg"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_cond_burn_5_2.tres" id="2_tihw8"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_4gpqu"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_2.tres" id="4_6wrae"]
+
+[resource]
+script = ExtResource("3_4gpqu")
+id = "Fire_010"
+card_name = "烈焰斩"
+description = "造成5点火伤。若敌人有灼烧，伤害+2。"
+cost_fire = 3
+main_keywords = Array[ExtResource("1_ldseg")]([ExtResource("2_tihw8")])
+sub_keywords = Array[ExtResource("1_ldseg")]([ExtResource("4_6wrae")])

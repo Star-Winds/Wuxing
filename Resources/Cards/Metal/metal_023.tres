@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_yftwq"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_4.tres" id="2_g413r"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_f3p11"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_1.tres" id="4_b6cs6"]
+
+[resource]
+script = ExtResource("3_f3p11")
+id = "Metal_023"
+card_name = "铁刺"
+element = "金"
+description = "造成4点金伤。"
+cost_metal = 1
+main_keywords = Array[ExtResource("1_yftwq")]([ExtResource("2_g413r")])
+sub_keywords = Array[ExtResource("1_yftwq")]([ExtResource("4_b6cs6")])

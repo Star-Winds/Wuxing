@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="KeywordData" format=3 uid="uid://dctbuqw5tadng"]
+
+[ext_resource type="Script" uid="uid://do0cmerqt5q8j" path="res://Data/Effects/StatusEffect.gd" id="1_tj0k4"]
+[ext_resource type="Script" uid="uid://q71xsraknb8x" path="res://Data/KeywordData.gd" id="2_hh31h"]
+
+[sub_resource type="Resource" id="Resource_tj0k4"]
+script = ExtResource("1_tj0k4")
+status_id = "burn"
+amount = 3
+duration = 2
+phase = 2
+
+[resource]
+script = ExtResource("2_hh31h")
+keyword_id = "kw_burn_3_2"
+display_name = "灼烧3"
+description = "赋予灼烧 3 层，持续 2 回合"
+effect = SubResource("Resource_tj0k4")

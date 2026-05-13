@@ -1,18 +1,16 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_orh53"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_e05vm"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_action_change_intent.tres" id="2_s12ku"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_0hujy"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_shield_3.tres" id="4_wngge"]
 
 [resource]
-script = ExtResource("1_orh53")
+script = ExtResource("3_0hujy")
 id = "Earth_008"
 card_name = "撼地"
 element = "土"
-description = "造成6点土伤，并强制改变敌方当前意图为“防守”。"
+description = "改变敌方意图。"
 cost_earth = 4
-main_type = "special_action"
-main_value = 6
-main_description = "造成6点土伤，并强制改变敌方当前意图为“防守”。"
-sub_type = "shield"
-sub_value = 3
-sub_description = "主槽卡牌打出时，若敌方意图为“进攻”，获得3点护盾。"
-status_id = "change_enemy_intent"
+main_keywords = Array[ExtResource("1_e05vm")]([ExtResource("2_s12ku")])
+sub_keywords = Array[ExtResource("1_e05vm")]([ExtResource("4_wngge")])

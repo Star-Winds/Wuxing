@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_mmlme"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="2_tidq6"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_heal_5.tres" id="3_pxdwh"]
+
+[resource]
+script = ExtResource("2_tidq6")
+id = "Aether_039"
+card_name = "返璞归真"
+element = "以太"
+description = "重置冷却。"
+cost_aether = 7
+sub_keywords = Array[ExtResource("1_mmlme")]([ExtResource("3_pxdwh")])

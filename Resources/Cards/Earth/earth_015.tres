@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_6a4vt"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_cond_shield_0_5.tres" id="2_75wje"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_c2op3"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_cond_shield_b_5_1.tres" id="4_rna82"]
+
+[resource]
+script = ExtResource("3_c2op3")
+id = "Earth_015"
+card_name = "以盾为矛"
+element = "土"
+description = "消耗护盾造成伤害。"
+cost_earth = 4
+main_keywords = Array[ExtResource("1_6a4vt")]([ExtResource("2_75wje")])
+sub_keywords = Array[ExtResource("1_6a4vt")]([ExtResource("4_rna82")])

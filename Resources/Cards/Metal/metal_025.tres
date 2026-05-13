@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_lrofh"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_9.tres" id="2_ood3q"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_7b4o4"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_2.tres" id="4_8trl5"]
+
+[resource]
+script = ExtResource("3_7b4o4")
+id = "Metal_025"
+card_name = "连环击"
+element = "金"
+description = "造成9点金伤。"
+cost_metal = 3
+main_keywords = Array[ExtResource("1_lrofh")]([ExtResource("2_ood3q")])
+sub_keywords = Array[ExtResource("1_lrofh")]([ExtResource("4_8trl5")])

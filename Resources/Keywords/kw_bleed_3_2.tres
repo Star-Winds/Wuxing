@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="KeywordData" format=3 uid="uid://cn4pfs0iq5m0s"]
+
+[ext_resource type="Script" uid="uid://do0cmerqt5q8j" path="res://Data/Effects/StatusEffect.gd" id="1_6dxlu"]
+[ext_resource type="Script" uid="uid://q71xsraknb8x" path="res://Data/KeywordData.gd" id="2_31rso"]
+
+[sub_resource type="Resource" id="Resource_6dxlu"]
+script = ExtResource("1_6dxlu")
+status_id = "bleed"
+amount = 3
+duration = 2
+phase = 2
+
+[resource]
+script = ExtResource("2_31rso")
+keyword_id = "kw_bleed_3_2"
+display_name = "流血3"
+description = "赋予流血 3 层，持续 2 回合"
+effect = SubResource("Resource_6dxlu")

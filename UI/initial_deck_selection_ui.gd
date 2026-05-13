@@ -96,9 +96,9 @@ func _finalize_selection(selected_deck: Array[CardData]) -> void:
 	GameManager.reset_run()
 	
 	# 2. Overwrite the default backpack with our 15 selected cards
-	GameManager.backpack_cards.clear()
+	GameManager.card_pool.clear()
 	for card in selected_deck:
-		GameManager.backpack_cards.append(card)
+		GameManager.card_pool.append(card)
 		
 	# 3. Safely initialize active deck layout using the first 3 cards from selected archetype
 	# This ensures combat pipeline doesn't throw null reference exceptions on start
@@ -120,7 +120,7 @@ func _finalize_selection(selected_deck: Array[CardData]) -> void:
 			}
 		]
 	
-	print("InitialDeckSelection: Backpack cards successfully populated! Size: ", GameManager.backpack_cards.size())
+	print("InitialDeckSelection: Backpack cards successfully populated! Size: ", GameManager.card_pool.size())
 	
 	# 4. Transition to the Map UI
 	GameManager.switch_to_scene(GameManager.map_scene)

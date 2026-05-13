@@ -1,18 +1,15 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_qay6s"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_icmxc"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_action_overload.tres" id="2_e0qtr"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_qbeo4"]
 
 [resource]
-script = ExtResource("1_qay6s")
+script = ExtResource("3_qbeo4")
 id = "Metal_018"
 card_name = "针"
 element = "金"
-description = "随机激活一个当前未激活的副槽卡牌，使其本回合可独立打出。"
+description = "随机激活一个副槽卡牌。"
 cost_metal = 3
-main_type = "special_action"
-main_value = 1
-main_description = "随机激活一个当前未激活的副槽卡牌，使其本回合可独立打出。"
-sub_type = "special_action"
-sub_value = 1
-sub_description = "主槽卡牌打出时，触发一次“火与金”元素反应。"
-status_id = "overload"
+main_keywords = Array[ExtResource("1_icmxc")]([ExtResource("2_e0qtr")])
+sub_keywords = Array[ExtResource("1_icmxc")]([ExtResource("2_e0qtr")])

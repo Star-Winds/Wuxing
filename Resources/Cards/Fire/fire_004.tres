@@ -1,15 +1,15 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_svmdt"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_fx6sc"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_8.tres" id="2_ep5ai"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_alq7t"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_action_shield_break.tres" id="4_3uknj"]
 
 [resource]
-script = ExtResource("1_svmdt")
+script = ExtResource("3_alq7t")
 id = "Fire_004"
 card_name = "焚天"
-description = "造成8点火伤。"
+description = "造成8点火伤，先清除敌方护盾。"
 cost_fire = 5
-main_value = 8
-main_description = "造成8点火伤。"
-sub_type = "special_action"
-sub_description = "主槽卡牌会先清除敌方所有护盾，再结算伤害。"
-status_id = "shield_break"
+main_keywords = Array[ExtResource("1_fx6sc")]([ExtResource("2_ep5ai")])
+sub_keywords = Array[ExtResource("1_fx6sc")]([ExtResource("4_3uknj")])

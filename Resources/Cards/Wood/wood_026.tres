@@ -1,19 +1,16 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_3oovl"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_f1she"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_reflect_4_2.tres" id="2_3md0n"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_bp7do"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_reflect_1_1.tres" id="4_vvd1t"]
 
 [resource]
-script = ExtResource("1_3oovl")
+script = ExtResource("3_bp7do")
 id = "Wood_026"
 card_name = "荆棘"
 element = "木"
-description = "获得“反震4”，持续2回合。若本牌已激活超过1回合未打出，反震+2。"
+description = "获得反震4持续2回合。"
 cost_wood = 3
-main_type = "status_apply"
-main_description = "获得“反震4”，持续2回合。若本牌已激活超过1回合未打出，反震+2。"
-sub_type = "status_apply"
-sub_value = 1
-sub_description = "主槽卡牌获得“反震1”。"
-status_id = "reflect"
-status_amount = 4
-status_duration = 2
+main_keywords = Array[ExtResource("1_f1she")]([ExtResource("2_3md0n")])
+sub_keywords = Array[ExtResource("1_f1she")]([ExtResource("4_vvd1t")])

@@ -1,20 +1,18 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_sfrxe"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_g53jf"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_15.tres" id="2_k4ixv"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_t8m72"]
 
 [resource]
-script = ExtResource("1_sfrxe")
+script = ExtResource("3_t8m72")
 id = "Aether_029"
 card_name = "五行轮转"
 element = "以太"
-description = "造成15点伤害，并触发一次你选择的元素反应。"
+description = "造成15点伤害，触发元素反应。"
 cost_metal = 1
 cost_wood = 1
 cost_water = 1
 cost_fire = 1
 cost_earth = 1
-main_value = 15
-main_description = "造成15点伤害，并触发一次你选择的元素反应。"
-sub_type = "special_action"
-sub_value = 1
-sub_description = "主槽卡牌打出时，额外触发一次随机元素反应。"
+main_keywords = Array[ExtResource("1_g53jf")]([ExtResource("2_k4ixv")])

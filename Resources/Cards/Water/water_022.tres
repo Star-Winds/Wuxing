@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_cq3kq"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_6_w2.tres" id="2_pyrjc"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_slow_2_2.tres" id="3_calb8"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="4_2a4co"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_cond_slow_4_4.tres" id="5_hemhi"]
+
+[resource]
+script = ExtResource("4_2a4co")
+id = "Water_022"
+card_name = "极寒"
+element = "水"
+description = "造成6点水伤，减速2。"
+cost_water = 4
+main_keywords = Array[ExtResource("1_cq3kq")]([ExtResource("2_pyrjc"), ExtResource("3_calb8")])
+sub_keywords = Array[ExtResource("1_cq3kq")]([ExtResource("5_hemhi")])

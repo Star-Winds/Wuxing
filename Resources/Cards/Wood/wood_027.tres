@@ -1,17 +1,14 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_tya4w"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_s20fo"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="2_ppl7d"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_heal_2.tres" id="3_r1263"]
 
 [resource]
-script = ExtResource("1_tya4w")
+script = ExtResource("2_ppl7d")
 id = "Wood_027"
 card_name = "万物生"
 element = "木"
-description = "本回合每激活一张卡牌，回复1点生命并随机获得1点基础元素。"
+description = "每激活一张卡牌回复1点生命。"
 cost_wood = 4
-main_type = "utility"
-main_value = 1
-main_description = "本回合每激活一张卡牌，回复1点生命并随机获得1点基础元素。"
-sub_type = "heal"
-sub_value = 2
-sub_description = "主槽卡牌激活时，若你已激活3张以上卡牌，回复2点生命。"
+sub_keywords = Array[ExtResource("1_s20fo")]([ExtResource("3_r1263")])

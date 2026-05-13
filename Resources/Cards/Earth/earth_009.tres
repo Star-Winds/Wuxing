@@ -1,20 +1,14 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_dy15l"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_mi51f"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_reflect_2_2.tres" id="2_fbc42"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_0cv8d"]
 
 [resource]
-script = ExtResource("1_dy15l")
+script = ExtResource("3_0cv8d")
 id = "Earth_009"
 card_name = "戌土甲"
 element = "土"
-description = "获得6点护盾，并获得“反震2”，持续2回合。"
+description = "获得6点护盾，获得反震2持续2回合。"
 cost_earth = 3
-main_type = "status_apply"
-main_value = 6
-main_description = "获得6点护盾，并获得“反震2”，持续2回合。"
-sub_type = "buff"
-sub_value = 2
-sub_description = "为主槽卡牌提供“若持有护盾，伤害+2”。"
-status_id = "reflect"
-status_amount = 2
-status_duration = 2
+main_keywords = Array[ExtResource("1_mi51f")]([ExtResource("2_fbc42")])

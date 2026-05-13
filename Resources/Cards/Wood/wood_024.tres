@@ -1,20 +1,17 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_hjycl"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_fo327"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_4.tres" id="2_d6vwy"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_bleed_3_2.tres" id="3_0f4m1"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="4_644aw"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_cond_bleed_1_1.tres" id="5_5pdmp"]
 
 [resource]
-script = ExtResource("1_hjycl")
+script = ExtResource("4_644aw")
 id = "Wood_024"
 card_name = "缠绕"
 element = "木"
-description = "造成4点木伤，赋予敌方“流血3”，持续2回合。"
+description = "造成4点木伤，赋予流血3持续2回合。"
 cost_wood = 3
-main_type = "status_apply"
-main_value = 4
-main_description = "造成4点木伤，赋予敌方“流血3”，持续2回合。"
-sub_type = "condition_damage"
-sub_value = 1
-sub_description = "主槽卡牌对处于“流血”状态的敌人，每层流血使伤害+1。"
-status_id = "bleed"
-status_amount = 3
-status_duration = 2
+main_keywords = Array[ExtResource("1_fo327")]([ExtResource("2_d6vwy"), ExtResource("3_0f4m1")])
+sub_keywords = Array[ExtResource("1_fo327")]([ExtResource("5_5pdmp")])

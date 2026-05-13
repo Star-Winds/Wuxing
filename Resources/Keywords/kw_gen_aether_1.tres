@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="KeywordData" format=3]
+
+[ext_resource type="Script" path="res://Data/Effects/GenerateElementEffect.gd" id="1_2sl8u"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="2_b36oj"]
+
+[sub_resource type="Resource" id="Resource_2sl8u"]
+script = ExtResource("1_2sl8u")
+element_type = "以太"
+amount = 1
+phase = 2
+
+[resource]
+script = ExtResource("2_b36oj")
+keyword_id = "kw_gen_aether_1"
+display_name = "生以太1"
+description = "获得 1 点以太"
+effect = SubResource("Resource_2sl8u")

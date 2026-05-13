@@ -1,17 +1,16 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_6y85u"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_3qam0"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_heal_5.tres" id="2_7tia6"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_rhkt8"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_heal_1.tres" id="4_gkuen"]
 
 [resource]
-script = ExtResource("1_6y85u")
+script = ExtResource("3_rhkt8")
 id = "Wood_023"
 card_name = "逢春"
 element = "木"
 description = "回复5点生命。"
 cost_wood = 3
-main_type = "heal"
-main_value = 5
-main_description = "回复5点生命。"
-sub_type = "heal"
-sub_value = 1
-sub_description = "主槽卡牌打出时，回复1点生命。"
+main_keywords = Array[ExtResource("1_3qam0")]([ExtResource("2_7tia6")])
+sub_keywords = Array[ExtResource("1_3qam0")]([ExtResource("4_gkuen")])

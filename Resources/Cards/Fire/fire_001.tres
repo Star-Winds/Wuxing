@@ -1,18 +1,13 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_wcqcg"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_enkuk"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_cond_prev_turn_10_10.tres" id="2_4o0yo"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_lyhqx"]
 
 [resource]
-script = ExtResource("1_wcqcg")
+script = ExtResource("3_lyhqx")
 id = "Fire_001"
 card_name = "火势"
 description = "造成10点火元素伤害。若本牌上一回合已被激活，则伤害翻倍。"
 cost_fire = 3
-main_type = "condition_damage"
-main_value = 10
-main_description = "造成10点火元素伤害。若本牌上一回合已被激活，则伤害翻倍。"
-sub_type = "buff"
-sub_value = 50
-sub_description = "为主槽卡牌附加“蓄势”效果：若主槽卡牌上回合已被激活且未打出，本回合伤害+50％。"
-status_id = "prev_turn_active"
-status_amount = 10
+main_keywords = Array[ExtResource("1_enkuk")]([ExtResource("2_4o0yo")])

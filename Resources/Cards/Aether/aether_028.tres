@@ -1,17 +1,12 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_85wxu"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_02m58"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="2_a7ipy"]
 
 [resource]
-script = ExtResource("1_85wxu")
+script = ExtResource("2_a7ipy")
 id = "Aether_028"
 card_name = "归元"
 element = "以太"
-description = "返还本回合消耗的所有元素的一半。"
+description = "返还本回合消耗元素的一半。"
 cost_aether = 3
-main_type = "utility"
-main_value = 50
-main_description = "返还本回合消耗的所有元素的一半。"
-sub_type = "buff"
-sub_value = 3
-sub_description = "主槽卡牌被激活时，若使用了至少1点以太，该卡牌本回合伤害+3。"

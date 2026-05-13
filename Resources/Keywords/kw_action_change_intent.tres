@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="KeywordData" format=3 uid="uid://6ib6bpvpj37b"]
+
+[ext_resource type="Script" uid="uid://bbu0y1hitryu" path="res://Data/Effects/SpecialActionEffect.gd" id="1_t1rtt"]
+[ext_resource type="Script" uid="uid://q71xsraknb8x" path="res://Data/KeywordData.gd" id="2_pyrwc"]
+
+[sub_resource type="Resource" id="Resource_t1rtt"]
+script = ExtResource("1_t1rtt")
+action_id = "change_enemy_intent"
+phase = 0
+
+[resource]
+script = ExtResource("2_pyrwc")
+keyword_id = "kw_action_change_intent"
+display_name = "撼地"
+description = "强制改变敌方意图"
+effect = SubResource("Resource_t1rtt")

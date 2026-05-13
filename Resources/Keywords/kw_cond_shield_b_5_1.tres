@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="KeywordData" format=3]
+
+[ext_resource type="Script" path="res://Data/Effects/ConditionDamageEffect.gd" id="1_j60o1"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="2_hbx0m"]
+
+[sub_resource type="Resource" id="Resource_j60o1"]
+script = ExtResource("1_j60o1")
+base_damage = 5
+condition = "player_has_shield"
+bonus_per_condition = 1
+
+[resource]
+script = ExtResource("2_hbx0m")
+keyword_id = "kw_cond_shield_b_5_1"
+display_name = "坚盾"
+description = "若持有护盾，基础5+1"
+effect = SubResource("Resource_j60o1")

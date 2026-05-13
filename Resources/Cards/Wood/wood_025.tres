@@ -1,18 +1,14 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_njaak"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_ajgdv"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="2_6cjga"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_gen_wood_1.tres" id="3_jwngm"]
 
 [resource]
-script = ExtResource("1_njaak")
+script = ExtResource("2_6cjga")
 id = "Wood_025"
 card_name = "纳元术"
 element = "木"
-description = "下次你触发元素反应时，额外获得该反应涉及的一种元素3点。"
+description = "下次元素反应额外获得元素。"
 cost_wood = 2
-main_type = "utility"
-main_value = 3
-main_description = "下次你触发元素反应时，额外获得该反应涉及的一种元素3点。"
-sub_type = "generate_element"
-sub_value = 1
-sub_element_type = "木"
-sub_description = "主槽卡牌触发元素反应时，你额外获得1点该主槽卡牌的元素。"
+sub_keywords = Array[ExtResource("1_ajgdv")]([ExtResource("3_jwngm")])

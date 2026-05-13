@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_5vk4p"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_4.tres" id="2_5bwx2"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_dg2us"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_gen_fire_1.tres" id="4_d1v50"]
+
+[resource]
+script = ExtResource("3_dg2us")
+id = "Fire_007"
+card_name = "火花"
+description = "造成4点火元素伤害。"
+cost_fire = 1
+main_keywords = Array[ExtResource("1_5vk4p")]([ExtResource("2_5bwx2")])
+sub_keywords = Array[ExtResource("1_5vk4p")]([ExtResource("4_d1v50")])

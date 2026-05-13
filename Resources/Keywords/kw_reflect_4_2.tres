@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="KeywordData" format=3]
+
+[ext_resource type="Script" path="res://Data/Effects/StatusEffect.gd" id="1_d5rvn"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="2_djfsm"]
+
+[sub_resource type="Resource" id="Resource_d5rvn"]
+script = ExtResource("1_d5rvn")
+status_id = "reflect"
+amount = 4
+duration = 2
+apply_to_player = true
+phase = 2
+
+[resource]
+script = ExtResource("2_djfsm")
+keyword_id = "kw_reflect_4_2"
+display_name = "反震4"
+description = "获得反震 4 层，持续 2 回合"
+effect = SubResource("Resource_d5rvn")

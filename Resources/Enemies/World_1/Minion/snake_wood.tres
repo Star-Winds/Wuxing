@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://Data/EnemyData.gd" id="1_enemy"]
+
+[resource]
+script = ExtResource("1_enemy")
+id = "snake_wood"
+enemy_name = "竹叶青"
+element = "木"
+max_hp = 32
+intent_base_dmg = 8

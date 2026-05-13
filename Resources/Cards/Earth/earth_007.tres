@@ -1,17 +1,14 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_b3a6d"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_87ifl"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_shield_10.tres" id="2_2lhsp"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_mf1p8"]
 
 [resource]
-script = ExtResource("1_b3a6d")
+script = ExtResource("3_mf1p8")
 id = "Earth_007"
 card_name = "墙"
 element = "土"
 description = "获得10点护盾。"
 cost_earth = 3
-main_type = "shield"
-main_value = 10
-main_description = "获得10点护盾。"
-sub_type = "buff"
-sub_value = 2
-sub_description = "主槽卡牌获得护盾时，额外+2护盾。"
+main_keywords = Array[ExtResource("1_87ifl")]([ExtResource("2_2lhsp")])

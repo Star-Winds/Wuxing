@@ -1,17 +1,12 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_6mrlx"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_tuixh"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="2_4qhe7"]
 
 [resource]
-script = ExtResource("1_6mrlx")
+script = ExtResource("2_4qhe7")
 id = "Metal_020"
 card_name = "养剑诀"
 element = "金"
-description = "本局战斗中，你所有已打出过的金系卡牌伤害+2。"
+description = "金系卡牌伤害+2（本局）。"
 cost_metal = 4
-main_type = "utility"
-main_value = 2
-main_description = "本局战斗中，你所有已打出过的金系卡牌伤害+2。"
-sub_type = "utility"
-sub_value = 1
-sub_description = "主槽卡牌每被激活一次（无论是否打出），本次游戏该牌伤害永久+1。"

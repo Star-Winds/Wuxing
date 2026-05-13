@@ -1,17 +1,12 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_7qxdr"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_k21a6"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="2_kscrq"]
 
 [resource]
-script = ExtResource("1_7qxdr")
+script = ExtResource("2_kscrq")
 id = "Water_017"
 card_name = "潮生诀"
 element = "水"
-description = "从卡牌包里任意选择一张牌替换该主槽的位置。"
+description = "从卡包选牌替换主槽。"
 cost_water = 3
-main_type = "utility"
-main_value = 1
-main_description = "从卡牌包里任意选择一张牌替换该主槽的位置。"
-sub_type = "utility"
-sub_value = 1
-sub_description = "主槽卡牌打出时，可以从卡牌包中任意选择一张牌替换该主槽的位置。"

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_tn7e8"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_burn_3_2.tres" id="2_u7nsy"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_qc6sy"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_burn_1_1.tres" id="4_x6pxl"]
+
+[resource]
+script = ExtResource("3_qc6sy")
+id = "Fire_009"
+card_name = "纵火"
+description = "赋予敌人灼烧3层，持续2回合。"
+cost_fire = 2
+main_keywords = Array[ExtResource("1_tn7e8")]([ExtResource("2_u7nsy")])
+sub_keywords = Array[ExtResource("1_tn7e8")]([ExtResource("4_x6pxl")])

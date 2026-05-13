@@ -1,7 +1,7 @@
 # res://Components/deck_builder_card.gd
 extends Button
 
-const CARD_DATA_CONST = preload("res://Resources/Scripts/Card_data.gd")
+const CARD_DATA_CONST = preload("res://Data/Card_data.gd")
 
 var card_data: CardData = null
 var is_equipped: bool = false

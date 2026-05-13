@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_bv3pm"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_shield_8.tres" id="2_r76xj"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_10lax"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_reflect_1_1.tres" id="4_8a76h"]
+
+[resource]
+script = ExtResource("3_10lax")
+id = "Earth_017"
+card_name = "地脉涌动"
+element = "土"
+description = "获得8点护盾。"
+cost_earth = 3
+main_keywords = Array[ExtResource("1_bv3pm")]([ExtResource("2_r76xj")])
+sub_keywords = Array[ExtResource("1_bv3pm")]([ExtResource("4_8a76h")])

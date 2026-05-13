@@ -1,19 +1,13 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_cklvk"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_fxlvj"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="2_8a6sl"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_burn_1_1.tres" id="3_m58rj"]
 
 [resource]
-script = ExtResource("1_cklvk")
+script = ExtResource("2_8a6sl")
 id = "Fire_002"
 card_name = "离火罩"
-description = "本回合内，每当你激活或打出一张卡牌，对敌方造成2点火元素伤害。"
+description = "每当你激活或打出一张卡牌，对敌方造成2点火伤。"
 cost_fire = 4
-main_type = "utility"
-main_value = 2
-main_description = "本回合内，每当你激活或打出一张卡牌，对敌方造成2点火元素伤害。"
-sub_type = "status_apply"
-sub_value = 1
-sub_description = "主槽卡牌打出时，赋予敌方1层“烧伤”。"
-status_id = "burn"
-status_amount = 1
-status_duration = 1
+sub_keywords = Array[ExtResource("1_fxlvj")]([ExtResource("3_m58rj")])

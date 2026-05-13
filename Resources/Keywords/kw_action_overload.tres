@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="KeywordData" format=3 uid="uid://el465ogefn76"]
+
+[ext_resource type="Script" uid="uid://bbu0y1hitryu" path="res://Data/Effects/SpecialActionEffect.gd" id="1_6k6n3"]
+[ext_resource type="Script" uid="uid://q71xsraknb8x" path="res://Data/KeywordData.gd" id="2_no8nu"]
+
+[sub_resource type="Resource" id="Resource_6k6n3"]
+script = ExtResource("1_6k6n3")
+action_id = "overload"
+phase = 0
+
+[resource]
+script = ExtResource("2_no8nu")
+keyword_id = "kw_action_overload"
+display_name = "过载"
+description = "触发一次过载"
+effect = SubResource("Resource_6k6n3")

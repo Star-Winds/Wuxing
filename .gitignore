@@ -1,3 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+# Claude Code local config
+.claude/
+# Python build utils
+_extract_docs.py

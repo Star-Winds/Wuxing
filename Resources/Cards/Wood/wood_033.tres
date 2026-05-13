@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_x2wrd"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_8.tres" id="2_qiub8"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_bf6ub"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_heal_4.tres" id="4_34iws"]
+
+[resource]
+script = ExtResource("3_bf6ub")
+id = "Wood_033"
+card_name = "生命汲取"
+element = "木"
+description = "造成8点木伤，回复等量生命。"
+cost_wood = 4
+main_keywords = Array[ExtResource("1_x2wrd")]([ExtResource("2_qiub8")])
+sub_keywords = Array[ExtResource("1_x2wrd")]([ExtResource("4_34iws")])

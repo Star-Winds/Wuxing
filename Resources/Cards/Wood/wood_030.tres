@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_lbt0k"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_heal_5.tres" id="2_qvlmj"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_uucyo"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_heal_2.tres" id="4_crf81"]
+
+[resource]
+script = ExtResource("3_uucyo")
+id = "Wood_030"
+card_name = "草木萌发"
+element = "木"
+description = "回复5点生命。"
+cost_wood = 2
+main_keywords = Array[ExtResource("1_lbt0k")]([ExtResource("2_qvlmj")])
+sub_keywords = Array[ExtResource("1_lbt0k")]([ExtResource("4_crf81")])

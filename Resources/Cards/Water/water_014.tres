@@ -1,19 +1,16 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_wyf6r"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_wdbxf"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_slow_1_1.tres" id="2_etnbj"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_n5hew"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_cond_slow_4_1.tres" id="4_1wkgf"]
 
 [resource]
-script = ExtResource("1_wyf6r")
+script = ExtResource("3_n5hew")
 id = "Water_014"
 card_name = "困泽"
 element = "水"
-description = "敌方本回合无法行动，但你下回合只能激活至多3张卡牌。"
+description = "减速敌人。对减速敌人伤害+4。"
 cost_water = 4
-main_type = "status_apply"
-main_description = "敌方本回合无法行动，但你下回合只能激活至多3张卡牌。"
-sub_type = "condition_damage"
-sub_value = 4
-sub_description = "主槽卡牌对处于“减速”状态的敌人伤害+4。"
-status_id = "slow"
-status_amount = 1
-status_duration = 1
+main_keywords = Array[ExtResource("1_wdbxf")]([ExtResource("2_etnbj")])
+sub_keywords = Array[ExtResource("1_wdbxf")]([ExtResource("4_1wkgf")])

@@ -1,15 +1,16 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_wl3wg"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_aocgk"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_0.tres" id="2_a5sdw"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_d5qq6"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_gen_aether_20.tres" id="4_n81lg"]
 
 [resource]
-script = ExtResource("1_wl3wg")
+script = ExtResource("3_d5qq6")
 id = "Aether_032"
 card_name = "混元归一"
 element = "以太"
-description = "造成相当于本局战斗中你消耗的所有元素总量5％的伤害。"
+description = "造成消耗总量5%的伤害。"
 cost_aether = 8
-main_description = "造成相当于本局战斗中你消耗的所有元素总量5％的伤害。"
-sub_type = "generate_element"
-sub_value = 20
-sub_description = "主槽卡牌伤害 of 20％转化为随机元素返还。"
+main_keywords = Array[ExtResource("1_aocgk")]([ExtResource("2_a5sdw")])
+sub_keywords = Array[ExtResource("1_aocgk")]([ExtResource("4_n81lg")])

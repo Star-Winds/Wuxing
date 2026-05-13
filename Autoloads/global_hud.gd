@@ -20,6 +20,8 @@ extends CanvasLayer
 @onready var map_btn: Button = %MapButton
 @onready var settings_btn: Button = %SettingsButton
 @onready var reaction_btn: Button = %ReactionButton
+@onready var equipment_row: HBoxContainer = %EquipmentRow
+@onready var equipment_label: Label = %EquipmentLabel
 
 var map_overlay_instance: Node = null
 var deck_overlay_instance: Node = null
@@ -52,6 +54,14 @@ func update_display() -> void:
 	fire_lbl.text = "火: %d" % GameManager.element_fire
 	earth_lbl.text = "土: %d" % GameManager.element_earth
 	gold_lbl.text = "金币: %d" % GameManager.gold
+
+	# Update equipment display
+	var equip_list = GameManager.acquired_equipment
+	if equip_list.is_empty():
+		equipment_row.visible = false
+	else:
+		equipment_label.text = "装备: " + " | ".join(equip_list)
+		equipment_row.visible = true
 
 func set_scene_name(scene_name: String) -> void:
 	if scene_name_label:

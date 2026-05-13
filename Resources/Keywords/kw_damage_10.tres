@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="KeywordData" format=3]
+
+[ext_resource type="Script" path="res://Data/Effects/DamageEffect.gd" id="1_3xdxt"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="2_84sn5"]
+
+[sub_resource type="Resource" id="Resource_3xdxt"]
+script = ExtResource("1_3xdxt")
+value = 10
+
+[resource]
+script = ExtResource("2_84sn5")
+keyword_id = "kw_damage_10"
+display_name = "伤害10"
+description = "造成 10 点伤害"
+effect = SubResource("Resource_3xdxt")

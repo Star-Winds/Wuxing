@@ -1,0 +1,74 @@
+[gd_scene format=3 uid="uid://bossrewardui"]
+
+[ext_resource type="Script" path="res://UI/boss_reward_ui.gd" id="1_script"]
+
+[node name="BossRewardUI" type="Control"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.04, 0.04, 0.06, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -250.0
+offset_right = 350.0
+offset_bottom = 250.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
+theme_override_font_sizes/font_size = 28
+text = "获得五行阵法"
+horizontal_alignment = 1
+
+[node name="FormationColorRect" type="ColorRect" parent="CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 8)
+layout_mode = 2
+size_flags_horizontal = 4
+color = Color(1, 0.84, 0, 1)
+
+[node name="FormationNameLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
+theme_override_font_sizes/font_size = 42
+text = "五行归元阵"
+horizontal_alignment = 1
+
+[node name="DescriptionLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.85, 1)
+theme_override_font_sizes/font_size = 18
+text = "消耗所有槽位的激活状态，对敌方造成 15 点真实伤害，获得 10 点护盾，全基础元素 +3"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="AcceptButton" type="Button" parent="CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(280, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
+text = "接受阵法，继续前行"

@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_v1w0s"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_20.tres" id="2_i654s"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_ehw2k"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_gen_aether_3.tres" id="4_ddnue"]
+
+[resource]
+script = ExtResource("3_ehw2k")
+id = "Aether_040"
+card_name = "五行流转"
+element = "以太"
+description = "造成20点五行伤害。"
+cost_metal = 2
+cost_wood = 2
+cost_water = 2
+cost_fire = 2
+cost_earth = 2
+main_keywords = Array[ExtResource("1_v1w0s")]([ExtResource("2_i654s")])
+sub_keywords = Array[ExtResource("1_v1w0s")]([ExtResource("4_ddnue")])

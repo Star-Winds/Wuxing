@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_6l3nm"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_shield_3_3.tres" id="2_b7v06"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_m3elg"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_2_b.tres" id="4_4dgp4"]
+
+[resource]
+script = ExtResource("3_m3elg")
+id = "Earth_013"
+card_name = "岩刺"
+element = "土"
+description = "造成3点土伤，获得3点护盾。"
+cost_earth = 2
+main_keywords = Array[ExtResource("1_6l3nm")]([ExtResource("2_b7v06")])
+sub_keywords = Array[ExtResource("1_6l3nm")]([ExtResource("4_4dgp4")])

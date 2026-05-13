@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="CardData" format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_l2eys"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_6_w.tres" id="2_2j7yq"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="3_p7x2s"]
+[ext_resource type="Resource" path="res://Resources/Keywords/kw_gen_water_1.tres" id="4_jxls0"]
+
+[resource]
+script = ExtResource("3_p7x2s")
+id = "Water_020"
+card_name = "潮涌"
+element = "水"
+description = "造成6点水伤，获得水元素。"
+cost_water = 3
+main_keywords = Array[ExtResource("1_l2eys")]([ExtResource("2_2j7yq")])
+sub_keywords = Array[ExtResource("1_l2eys")]([ExtResource("4_jxls0")])

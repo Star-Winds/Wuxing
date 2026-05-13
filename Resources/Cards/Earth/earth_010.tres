@@ -1,17 +1,12 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Resources/Scripts/Card_data.gd" id="1_hsp62"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_li35m"]
+[ext_resource type="Script" path="res://Data/Card_data.gd" id="2_1fslg"]
 
 [resource]
-script = ExtResource("1_hsp62")
+script = ExtResource("2_1fslg")
 id = "Earth_010"
 card_name = "厚德载物"
 element = "土"
-description = "本回合内，你获得的所有护盾量+50％。"
+description = "本回合获得护盾量+50%。"
 cost_earth = 2
-main_type = "utility"
-main_value = 50
-main_description = "本回合内，你获得的所有护盾量+50％。"
-sub_type = "buff"
-sub_value = 1
-sub_description = "主槽卡牌打出时，若你持有护盾，格挡一次负面状态（每回合限一次）。"

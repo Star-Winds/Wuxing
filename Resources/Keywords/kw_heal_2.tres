@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="KeywordData" format=3]
+
+[ext_resource type="Script" path="res://Data/Effects/HealEffect.gd" id="1_m8u7r"]
+[ext_resource type="Script" path="res://Data/KeywordData.gd" id="2_10eg7"]
+
+[sub_resource type="Resource" id="Resource_m8u7r"]
+script = ExtResource("1_m8u7r")
+value = 2
+phase = 2
+
+[resource]
+script = ExtResource("2_10eg7")
+keyword_id = "kw_heal_2"
+display_name = "治疗2"
+description = "回复 2 点生命"
+effect = SubResource("Resource_m8u7r")

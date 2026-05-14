@@ -347,8 +347,8 @@ func start_battle(enemy_res: EnemyData) -> void:
 
 	status_manager.reset()
 	element_system.reset()
-	element_system.enemy_element = enemy_res.initial_element_attachment
-	element_system.enemy_element_layers = enemy_res.initial_element_layers
+	element_system.set_enemy_queue(enemy_res.initial_elements)
+	current_enemy.compile_keywords()
 
 	player_damage_reduction = 0
 	reactivate_current_card = false
@@ -400,9 +400,13 @@ func end_turn() -> void:
 			enemy_hp = max(0, enemy_hp - dmg)
 			print("敌人受到 [bleed] 伤害: ", dmg, ", 剩余生命: ", enemy_hp)
 
+	# TURN_END 敌人词条
+	_execute_enemy_slots(KeywordSlot.TriggerTiming.TURN_END)
+
 	if enemy_hp <= 0:
 		print("敌人被 DOT 击杀，战斗胜利！")
 		_aq().enqueue(ActionQueue.ActionType.HP_CHANGE, {"target": "enemy", "hp": enemy_hp, "shield": enemy_shield})
+		_on_enemy_death()
 		battle_ended.emit(true)
 		EventBus.battle_won.emit()
 		return
@@ -447,6 +451,9 @@ func end_turn() -> void:
 
 	EventBus.turn_started.emit(enemy_turn_counter + 1)
 
+	# TURN_START 敌人词条
+	_execute_enemy_slots(KeywordSlot.TriggerTiming.TURN_START)
+
 	# 6. UI sync
 	_aq().enqueue(ActionQueue.ActionType.HP_CHANGE, {"target": "enemy", "hp": enemy_hp, "shield": enemy_shield})
 	_aq().enqueue(ActionQueue.ActionType.HP_CHANGE, {"target": "player", "hp": GameManager.current_health, "shield": player_shield})
@@ -482,8 +489,27 @@ func _execute_enemy_intent() -> void:
 				var weak_amt = status_manager.get_data("weak", "enemy").get("amount", 0)
 				dmg = int(dmg * max(0.25, 1.0 - 0.25 * weak_amt))
 
+			# 意图元素附着（intent_elements 按回合轮换）
+			var attack_element = ""
+			if not current_enemy.intent_elements.is_empty():
+				var idx = enemy_turn_counter % current_enemy.intent_elements.size()
+				attack_element = current_enemy.intent_elements[idx]
+				print("敌人意图元素附着: ", attack_element)
+				var result = element_system.attach(attack_element, 1, "player")
+				if result != "attach" and result != "stack" and result != "skip":
+					# 触发了反应！combo_key 返回
+					print("  [敌人反应触发!] combo: ", result)
+					if GameManager.equipped_reactions.has(result):
+						var reaction_card = GameManager.equipped_reactions[result]
+						if reaction_card is CardData:
+							print("  [玩家反应发动!] ", reaction_card.card_name)
+							_trigger_reaction(reaction_card)
+
 			print("敌人发动攻击！造成伤害: ", dmg)
 			_damage_player(dmg, current_enemy.element if current_enemy else "")
+
+			# ON_ATTACK 敌人词条
+			_execute_enemy_slots(KeywordSlot.TriggerTiming.ON_ATTACK)
 
 			if status_manager.has("reflect", "player") or status_manager.has("反震", "player"):
 				var reflect_data = status_manager.get_data("reflect", "player")
@@ -500,6 +526,7 @@ func _execute_enemy_intent() -> void:
 				shield_gain = int(shield_gain * 0.5)
 			enemy_shield += shield_gain
 			print("敌人进行防御，获得护盾: ", shield_gain, ", 当前总护盾: ", enemy_shield)
+			_execute_enemy_slots(KeywordSlot.TriggerTiming.ON_DEFEND)
 
 		"buff":
 			enemy_atk_buff += 3
@@ -507,6 +534,30 @@ func _execute_enemy_intent() -> void:
 
 
 # ============================================================
+#  敌人词条执行（按 TriggerTiming，从 enemy_keywords slot 数组中直接执行）
+# ============================================================
+
+func _execute_enemy_slots(timing: int) -> void:
+	if not current_enemy:
+		return
+	var ctx = {
+		"battle_manager": self,
+		"target": self,
+		"damage_resolver": damage_resolver,
+		"status_manager": status_manager,
+		"context": {}
+	}
+	for slot in current_enemy.enemy_keywords:
+		if slot and slot.type != KeywordSlot.SlotType.无 and slot.trigger_timing == timing:
+			var kw = slot.compile()
+			if kw and kw.effect:
+				kw.effect.execute(ctx)
+
+func _on_enemy_death() -> void:
+	_execute_enemy_slots(KeywordSlot.TriggerTiming.ON_DEATH)
+
+func _on_enemy_hurt() -> void:
+	_execute_enemy_slots(KeywordSlot.TriggerTiming.ON_HURT)
 
 
 # ============================================================
@@ -633,6 +684,7 @@ func take_damage(amount: int, element: String = "") -> void:
 	var result = damage_resolver.damage_after_shield(actual_dmg, enemy_shield)
 	enemy_shield = result.shield_remaining
 	enemy_hp = max(0, enemy_hp - result.hp_loss)
+	_execute_enemy_slots(KeywordSlot.TriggerTiming.ON_HURT)
 
 	print("敌人受到伤害: ", amount, " (元素: ", element, "), 实际扣除生命: ", result.hp_loss,
 		", 剩余生命: ", enemy_hp, ", 剩余护盾: ", enemy_shield)

@@ -2,6 +2,7 @@ extends Resource
 class_name KeywordSlot
 
 enum SlotType { 无, 伤害, 护盾, 治疗, 伤害护盾, 施加状态, 生成元素, 条件伤害, 行动, 多次伤害, 全体伤害, 共鸣, 休眠, 无法打出 }
+enum TriggerTiming { PASSIVE, TURN_START, TURN_END, ON_ATTACK, ON_DEFEND, ON_HURT, ON_DEATH }
 
 @export var type: SlotType = SlotType.无:
 	set(v):
@@ -15,6 +16,8 @@ enum SlotType { 无, 伤害, 护盾, 治疗, 伤害护盾, 施加状态, 生成�
 @export_enum("burn","bleed","slow","reflect","damage_reduction","vulnerable","weak","strength","dexterity","vigor","buffer","ethereal","frail","stun_attack","retaliate_generate_fire") var status_id: String = ""
 @export var duration: int = 0
 @export var to_player: bool = false
+@export_group("触发时机（敌人用）")
+@export var trigger_timing: TriggerTiming = TriggerTiming.PASSIVE
 @export_enum("prev_turn_active","enemy_has_burn","enemy_has_slow","enemy_has_bleed","enemy_has_shield","player_has_shield","any_card_activated","enemy_has_frail") var condition: String = ""
 @export_enum("overload","shield_break","change_enemy_intent","draw_card","charge","eject","collapse","reactivate","damage_multiplier","random_element_2","workshop_discount") var action_id: String = ""
 
@@ -31,7 +34,7 @@ func _validate_property(property: Dictionary):
 		return
 
 	var keep := false
-	var groups := ["显示覆盖（选填）"]
+	var groups := ["显示覆盖（选填）", "触发时机（敌人用）"]
 	match type:
 		SlotType.伤害:
 			keep = property.name in ["type", "value"]
@@ -60,7 +63,7 @@ func _validate_property(property: Dictionary):
 		SlotType.无法打出:
 			keep = property.name in ["type"]
 
-	if not keep and property.name not in groups:
+	if not keep and property.name not in groups and property.name != "trigger_timing":
 		property.usage = PROPERTY_USAGE_NONE
 
 

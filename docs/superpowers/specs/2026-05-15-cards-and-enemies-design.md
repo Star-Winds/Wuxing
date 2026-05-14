@@ -191,3 +191,284 @@
 - **词条驱动**：敌人通过 `enemy_keywords: Array[KeywordSlot]` 定义行为，支持 7 种触发时机
 - **双向元素**：`element_system` 支持玩家和敌人双向元素附着，敌人可通过 `intent_elements` 对玩家附着元素触发反应
 - **双元素队列**：多元素敌人通过 `initial_elements` 数组依次附着，一层消耗后自动出队下一元素
+
+---
+
+## 四、词条系统完整参考
+
+### 4.1 SlotType（14 种卡牌词条类型）
+
+> 定义在 `Data/KeywordSlot.gd` enum `SlotType`
+
+| 编号 | SlotType | 编译 Effect | Phase | 可配置字段 | 描述 |
+|------|----------|-------------|-------|-----------|------|
+| 0 | 无 | — | — | — | 空槽位，不产生效果 |
+| 1 | 伤害 | `DamageEffect` | AGGREGATION | `value` | 造成 N 点伤害 |
+| 2 | 护盾 | `ShieldEffect` | AGGREGATION | `value` | 获得 N 点护盾 |
+| 3 | 治疗 | `HealEffect` | POST_HIT | `value` | 恢复 N 点生命（上限 max_hp） |
+| 4 | 伤害护盾 | `DamageAndShieldEffect` | AGGREGATION | `value`(伤害), `value2`(护盾) | 造成 N 点伤害并获得 M 点护盾 |
+| 5 | 施加状态 | `StatusEffect` | POST_HIT | `status_id`, `value`(层数), `duration`, `to_player` | 赋予指定状态 N 层，持续 T 回合 |
+| 6 | 生成元素 | `GenerateElementEffect` | POST_HIT | `element_type`, `value`(数量) | 获得 N 单位指定元素（金木水火土以太） |
+| 7 | 条件伤害 | `ConditionDamageEffect` | AGGREGATION | `value`(基础), `condition`, `value2`(加成) | 造成 N 点伤害，满足条件时 +M |
+| 8 | 行动 | `SpecialActionEffect` | PRE_HIT | `action_id` | 执行特殊行动（过载/破盾/抽牌等） |
+| 9 | 多次伤害 | `MultiHitDamageEffect` | AGGREGATION | `value`(伤害), `value2`(次数) | 造成 N 点伤害，重复 M 次 |
+| 10 | 全体伤害 | `AOEDamageEffect` | AGGREGATION | `value` | 对所有敌人造成 N 点伤害 |
+| 11 | 共鸣 | `ResonanceEffect` | PRE_HIT | `condition` | 其他卡牌激活时本卡视为激活（存根） |
+| 12 | 休眠 | `DormantEffect` | PRE_HIT | `value`(延迟回合) | 激活后延迟 N 回合生效（存根） |
+| 13 | 无法打出 | —（纯机制） | — | — | 卡牌无法被打出，由 card_slot 检查 `kw_cannot_play` |
+
+### 4.2 TriggerTiming（7 种敌人词条触发时机）
+
+> 定义在 `Data/KeywordSlot.gd` enum `TriggerTiming`
+
+| 枚举值 | 名称 | 触发时机 | 代码位置 |
+|--------|------|----------|----------|
+| 0 | PASSIVE | 默认值，不自动触发 | — |
+| 1 | TURN_START | 回合开始时 | `battle_manager.gd` `end_turn()` 末尾 |
+| 2 | TURN_END | 回合结束时 | `battle_manager.gd` `end_turn()` DOT 结算后 |
+| 3 | ON_ATTACK | 敌人攻击时 | `battle_manager.gd` `_execute_enemy_intent()` attack 分支 |
+| 4 | ON_DEFEND | 敌人防御时 | `battle_manager.gd` `_execute_enemy_intent()` defend 分支 |
+| 5 | ON_HURT | 敌人受伤时 | `battle_manager.gd` `take_damage()` HP 扣除后 |
+| 6 | ON_DEATH | 敌人死亡时 | `battle_manager.gd` `end_turn()` DOT 击杀处 |
+
+### 4.3 StatusEffect（15 种状态效果）
+
+> 定义在 `Data/KeywordSlot.gd` `@export_enum status_id`
+
+#### DOT 类（回合结束自动结算）
+
+| status_id | 显示名 | 结算位置 | 公式 |
+|-----------|--------|----------|------|
+| `burn` | 灼烧 | `end_turn()` | 敌人/玩家 HP -= amount（默认 4） |
+| `bleed` | 流血 | `end_turn()` | 敌人/玩家 HP -= amount（默认 5） |
+
+#### 伤害修正类（战斗中实时计算）
+
+| status_id | 显示名 | 目标 | 结算位置 | 公式 |
+|-----------|--------|------|----------|------|
+| `vulnerable` | 易伤 | 敌人 | `take_damage()` | damage × (1.0 + 0.5 × amount)，每层 +50% |
+| `weak` | 虚弱 | 敌人 | `_execute_enemy_intent()` attack | dmg × max(0.25, 1.0 - 0.25 × amount)，每层 -25%，最低 25% |
+| `frail` | 脆化 | 敌人 | `take_damage()` | damage × 1.5（固定倍率） |
+| `strength` | 力量 | 玩家 | `play_card()` AGGREGATION | 总伤害 +amount（固定加成） |
+| `vigor` | 活力 | 玩家 | `play_card()` AGGREGATION | 总伤害 +amount（固定加成） |
+| `dexterity` | 敏捷 | 玩家 | `play_card()` EXECUTION | 获得护盾 +amount（固定加成） |
+
+#### 防御/减伤类
+
+| status_id | 显示名 | 目标 | 结算位置 | 公式 |
+|-----------|--------|------|----------|------|
+| `buffer` | 缓冲 | 玩家 | `_damage_player()` | hp_loss = 0（完全抵消一次伤害） |
+| `ethereal` | 虚化 | 玩家 | `_damage_player()` | 所有伤害 = 1（本回合） |
+| `damage_reduction` | 合金 | 玩家/敌人 | `damage_resolver.damage_player()` | dmg = max(0, dmg - amount）（永久减伤） |
+| `reflect` | 反震 | 双向 | `play_card()` EXECUTION / `_execute_enemy_intent()` attack | 受击后反伤 amount（以太属性） |
+
+#### 控制/特殊类
+
+| status_id | 显示名 | 目标 | 结算位置 | 公式 |
+|-----------|--------|------|----------|------|
+| `slow` | 减速 | 敌人 | `_execute_enemy_intent()` defend | 护盾获得 = 15 × 0.5 = 7 |
+| `stun_attack` | 阻截 | 敌人 | `_execute_enemy_intent()` attack | 跳过本次攻击意图（return） |
+| `retaliate_generate_fire` | 余烬 | 玩家 | `_damage_player()` | 受击后 element_fire += 1 |
+
+#### 状态同步伤害加成
+
+| status_id | 加成值 | 结算位置 | 公式 |
+|-----------|--------|----------|------|
+| `burn` | +3 | `play_card()` AGGREGATION | 敌人有灼烧时，玩家总伤害 +3 |
+| `bleed` | +2 | `play_card()` AGGREGATION | 敌人有流血时，玩家总伤害 +2 |
+
+> 定义在 `battle_manager.gd`: `const STATUS_DAMAGE_BONUSES = {"burn": 3, "bleed": 2}`
+
+### 4.4 ActionEffect（11 种特殊行动）
+
+> 定义在 `Data/KeywordSlot.gd` `@export_enum action_id`，执行在 `SpecialActionEffect.gd`
+
+| action_id | 显示名 | 效果 | 代码 |
+|-----------|--------|------|------|
+| `overload` | 过载 | 随机激活一个未激活的副槽卡牌 | `bm.overload_random_sub_slot()` |
+| `shield_break` | 破盾 | 破除敌人当前护盾 | `bm.break_shield()` |
+| `change_enemy_intent` | 撼地 | 强制将敌人下回合意图改为"防御" | `bm.enemy_intent_override = "defend"` |
+| `draw_card` | 抽牌 | 从牌池随机抽卡置入空副槽并激活 | `bm.draw_card_from_pool()` |
+| `charge` | 充能 | 随机激活一个卡槽，不进入冷却 | `bm.charge_random_slot()` |
+| `eject` | 弹出 | 将该槽位卡牌移回手牌包 | `bm.eject_card_from_slot()` |
+| `collapse` | 瓦解 | 激活后冷却直到战斗结束（999 回合） | `bm.collapse_card()` |
+| `reactivate` | 淬火 | 本回合内可再次激活该卡牌 | `bm.reactivate_current_card = true` |
+| `damage_multiplier` | 翻倍 | 本次伤害 ×2.0 | `dr.damage_multiplier = 2.0` |
+| `random_element_2` | 润泽 | 随机获得 2 单位非水元素 | `bm._grant_random_elements(2)` |
+| `workshop_discount` | 埋藏 | 下次车间打造消耗 -2 金元素 | `GameManager.workshop_discount_amount += 2` |
+
+### 4.5 Condition（8 种条件伤害触发）
+
+> 定义在 `Data/KeywordSlot.gd` `@export_enum condition`，评估在 `ConditionDamageEffect._check_condition()`
+
+| condition | 显示名 | 检查逻辑 |
+|-----------|--------|----------|
+| `prev_turn_active` | 上回合激活 | `context.get("prev_turn_active")` |
+| `player_has_shield` | 持有护盾 | `context.get("player_has_shield")` 或 `status_manager.has("reflect", "player")` |
+| `enemy_has_shield` | 敌人护盾 | `context.get("enemy_has_shield")` |
+| `enemy_has_burn` | 敌人灼烧 | `sm.has("burn", "enemy")` |
+| `enemy_has_bleed` | 敌人流血 | `sm.has("bleed", "enemy")` |
+| `enemy_has_slow` | 敌人减速 | `sm.has("slow", "enemy")` |
+| `enemy_has_frail` | 敌人脆化 | `sm.has("frail", "enemy")` |
+| `any_card_activated` | 任意激活 | `condition == ""`（始终为 true） |
+
+### 4.6 战斗管道完整流程
+
+#### 玩家攻击流程 (`play_card()`)
+
+```
+PRE_HIT (Phase 0)
+  └─ DormantEffect, ResonanceEffect, SpecialActionEffect
+
+AGGREGATION (Phase 1)
+  └─ DamageEffect, ShieldEffect, HealEffect, DamageAndShieldEffect
+     ConditionDamageEffect, MultiHitDamageEffect, AOEDamageEffect
+  └─ 动态加成: strength(+flat), vigor(+flat)
+     burn 在敌人(+3), bleed 在敌人(+2)
+
+REACTION_CHECK
+  └─ element_system.attach(card_element, layers)
+
+EXECUTION
+  └─ 护盾: player_shield += total_shield
+     (dexterity 加成)
+  └─ 伤害: get_final_damage() → take_damage()
+     (equip_bonus → frail ×1.5 → vulnerable ×(1+0.5×amount)
+      → damage_after_shield → enemy_hp - hp_loss)
+  └─ 真实伤害: enemy_hp -= true_damage
+  └─ 反震: 敌人 reflect → _damage_player(reflect_amount)
+
+POST_HIT (Phase 2)
+  └─ StatusEffect, GenerateElementEffect, HealEffect
+```
+
+#### 敌人回合流程 (`end_turn()`)
+
+```
+TURN_START 敌人词条执行
+  └─ _execute_enemy_slots(TriggerTiming.TURN_START)
+
+玩家护盾清空: player_shield = 0
+
+敌人 DOT 结算
+  └─ burn(amount|4), bleed(amount|5) → enemy_hp
+
+TURN_END 敌人词条执行
+  └─ _execute_enemy_slots(TriggerTiming.TURN_END)
+
+玩家 DOT 结算
+  └─ burn(amount|4), bleed(amount|5) → player_hp
+
+敌人意图执行
+  ├─ attack:
+  │   ├─ stun_attack? → 跳过
+  │   ├─ weak: dmg = dmg × max(0.25, 1-0.25×amount)
+  │   ├─ intent_elements → element_system.attach("player")
+  │   ├─ _damage_player(dmg)
+  │   │   ├─ equip_reduction, equip_vulnerability
+  │   │   ├─ ethereal: dmg=1
+  │   │   ├─ buffer: hp_loss=0
+  │   │   ├─ damage_reduction: dmg = max(0, dmg-amount)
+  │   │   ├─ shield → hp_loss
+  │   │   └─ retaliate_generate_fire: fire += 1
+  │   ├─ ON_ATTACK 敌人词条
+  │   └─ 玩家 reflect → take_damage on enemy
+  ├─ defend:
+  │   ├─ slow: shield = 7 (else 15)
+  │   └─ ON_DEFEND 敌人词条
+  └─ buff:
+       └─ enemy_atk_buff += 3
+
+DECAY: 所有 status duration - 1（≤0 则移除）
+```
+
+### 4.7 伤害计算完整公式
+
+**玩家 → 敌人 (`take_damage(amount, element)`)**:
+```
+actual_dmg = amount + equip_damage_bonus()
+if enemy has frail:    actual_dmg = floor(actual_dmg × 1.5)
+if enemy has vulnerable: actual_dmg = floor(actual_dmg × (1.0 + 0.5 × vuln_amount))
+result = damage_after_shield(actual_dmg, enemy_shield)
+  → hp_loss = max(0, actual_dmg - enemy_shield)
+  → shield_remaining = max(0, enemy_shield - actual_dmg)
+enemy_hp -= hp_loss
+→ ON_HURT 敌人词条
+```
+
+**敌人 → 玩家 (`_damage_player(amount, element)`)**:
+```
+modified = amount - equip_damage_reduction + equip_element_vulnerability
+modified = max(1, modified)
+if player has ethereal: modified = 1
+result = damage_player(modified, player_shield, player_damage_reduction)
+  → dmg = max(0, modified - player_damage_reduction)
+  → hp_loss = max(0, dmg - player_shield)
+  → shield_remaining = max(0, player_shield - dmg)
+if player has buffer: hp_loss = 0
+player_hp -= hp_loss
+if player has retaliate_generate_fire: fire += 1
+```
+
+### 4.8 卡牌类型词条
+
+#### CardData 字段
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `element` | enum(金/木/水/火/土/以太) | 卡牌五行属性，决定元素附着 |
+| `element_attachment_layers` | int | 元素附着层数（默认 1） |
+| `rarity` | enum(凡/稀/珍) | 卡牌稀有度（当前全为"凡"，阵法为"珍"） |
+| `is_formation` | bool | 五行阵法标记 |
+| `is_reaction` | bool | 元素反应标记 |
+| `is_carry` | bool | 携带：在 deck 中即生效（未实现） |
+| `is_embed` | bool | 嵌入：在副槽即生效（未实现） |
+| `is_initiate` | bool | 初动：在主槽即生效（未实现） |
+| `is_exhaust` | bool | 消耗：打出后从牌组永久移除 |
+| `single_use` | bool | 一次性：本场战斗仅可使用一次 |
+
+#### 元素消耗
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `cost_metal` / `cost_wood` / `cost_water` / `cost_fire` / `cost_earth` / `cost_aether` | int | 打出卡牌所需的各元素消耗量 |
+
+### 4.9 KeywordSlot 字段速查
+
+| 字段 | 类型 | 适用 SlotType | 说明 |
+|------|------|-------------|------|
+| `type` | SlotType enum | 全部 | 词条类型 |
+| `value` | int | 伤害/护盾/治疗/生成元素/条件伤害/多次伤害/全体伤害/施加状态/休眠 | 主数值（伤害量、护盾量、治疗量、元素量、状态层数等） |
+| `value2` | int | 伤害护盾/条件伤害/多次伤害 | 辅助数值（护盾量、条件加成、攻击次数） |
+| `element_type` | enum(金木水火土以太) | 生成元素 | 生成哪种元素 |
+| `status_id` | enum(15 种) | 施加状态 | 施加哪种状态 |
+| `duration` | int | 施加状态 | 状态持续回合数 |
+| `to_player` | bool | 施加状态 | true=作用于玩家，false=作用于敌人 |
+| `condition` | enum(8 种) | 条件伤害/共鸣 | 触发条件字符串 |
+| `action_id` | enum(11 种) | 行动 | 特殊行动 ID |
+| `trigger_timing` | TriggerTiming enum | 全部（敌人用） | 敌人词条触发时机 |
+| `display_name_override` | String | 全部（可选） | 覆盖自动生成的显示名 |
+| `description_override` | String | 全部（可选） | 覆盖自动生成的描述 |
+
+### 4.10 Effect 管线架构
+
+```
+KeywordSlot (Inspector 编辑)
+  └─ compile() → KeywordData
+       └─ .keyword_id: "kw_<type>_<params>"
+       └─ .display_name: 自动生成或覆盖
+       └─ .description: 自动生成或覆盖
+       └─ .category: ACTION / STATUS / MECHANIC
+       └─ .effect: EffectBase 子类实例
+
+CardData
+  └─ main_slots: Array[KeywordSlot] → main_keywords: Array[KeywordData]
+  └─ sub_slots: Array[KeywordSlot] → sub_keywords: Array[KeywordData]
+  └─ mechanic_slots: Array[KeywordSlot] → mechanic_keywords: Array[KeywordData]
+  └─ compile_slots() 一次性编译
+
+EnemyData
+  └─ enemy_keywords: Array[KeywordSlot]
+  └─ compile_keywords() → compiled_keywords: Array[KeywordData]
+  └─ _execute_enemy_slots(timing) 按 TriggerTiming 触发执行
+```

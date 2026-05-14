@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_kwslot"]
+[ext_resource type="Script" path="res://Data/EnemyData.gd" id="2_enemy"]
+
+[sub_resource type="Resource" id="Resource_kw10_0"]
+script = ExtResource("1_kwslot")
+type = 7
+trigger_timing = 1
+value = 2
+element_type = "以太"
+
+[sub_resource type="Resource" id="Resource_kw10_1"]
+script = ExtResource("1_kwslot")
+type = 10
+trigger_timing = 3
+value = 8
+value2 = 2
+
+[sub_resource type="Resource" id="Resource_kw10_2"]
+script = ExtResource("1_kwslot")
+type = 3
+trigger_timing = 2
+value = 10
+
+[resource]
+script = ExtResource("2_enemy")
+id = "element_aberration"
+enemy_name = "元素畸变体"
+element = "以太"
+max_hp = 150
+intent_base_dmg = 18
+initial_elements = Array[String](["以太", "以太"])
+intent_elements = Array[String](["火", "水", "木", "金", "土"])
+enemy_keywords = Array[ExtResource("1_kwslot")]([SubResource("Resource_kw10_0"), SubResource("Resource_kw10_1"), SubResource("Resource_kw10_2")])

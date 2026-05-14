@@ -1,11 +1,14 @@
 [gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://Data/EnemyData.gd" id="1_enemy"]
+[ext_resource type="Script" path="res://Data/EnemyData.gd" id="2_enemy"]
 
 [resource]
-script = ExtResource("1_enemy")
+script = ExtResource("2_enemy")
 id = "snake_wood"
 enemy_name = "竹叶青"
 element = "木"
 max_hp = 32
 intent_base_dmg = 8
+initial_elements = Array[String]([])
+intent_elements = Array[String]([])
+enemy_keywords = Array[ExtResource("1_kwslot")]([])

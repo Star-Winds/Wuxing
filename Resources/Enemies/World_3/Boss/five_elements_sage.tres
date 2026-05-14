@@ -1,0 +1,145 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=20 format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_kwslot"]
+[ext_resource type="Script" path="res://Data/EnemyData.gd" id="2_enemy"]
+
+[sub_resource type="Resource" id="Resource_kw15_0"]
+script = ExtResource("1_kwslot")
+type = 7
+trigger_timing = 1
+value = 1
+element_type = "金"
+
+[sub_resource type="Resource" id="Resource_kw15_1"]
+script = ExtResource("1_kwslot")
+type = 7
+trigger_timing = 1
+value = 1
+element_type = "木"
+
+[sub_resource type="Resource" id="Resource_kw15_2"]
+script = ExtResource("1_kwslot")
+type = 7
+trigger_timing = 1
+value = 1
+element_type = "水"
+
+[sub_resource type="Resource" id="Resource_kw15_3"]
+script = ExtResource("1_kwslot")
+type = 7
+trigger_timing = 1
+value = 1
+element_type = "火"
+
+[sub_resource type="Resource" id="Resource_kw15_4"]
+script = ExtResource("1_kwslot")
+type = 7
+trigger_timing = 1
+value = 1
+element_type = "土"
+
+[sub_resource type="Resource" id="Resource_kw15_5"]
+script = ExtResource("1_kwslot")
+type = 6
+trigger_timing = 1
+value = 2
+status_id = "strength"
+duration = 999
+to_player = false
+
+[sub_resource type="Resource" id="Resource_kw15_6"]
+script = ExtResource("1_kwslot")
+type = 6
+trigger_timing = 1
+value = 2
+status_id = "dexterity"
+duration = 999
+to_player = false
+
+[sub_resource type="Resource" id="Resource_kw15_7"]
+script = ExtResource("1_kwslot")
+type = 11
+trigger_timing = 3
+value = 10
+
+[sub_resource type="Resource" id="Resource_kw15_8"]
+script = ExtResource("1_kwslot")
+type = 6
+trigger_timing = 3
+value = 2
+status_id = "burn"
+duration = 2
+to_player = true
+
+[sub_resource type="Resource" id="Resource_kw15_9"]
+script = ExtResource("1_kwslot")
+type = 9
+trigger_timing = 3
+action_id = "collapse"
+
+[sub_resource type="Resource" id="Resource_kw15_10"]
+script = ExtResource("1_kwslot")
+type = 2
+trigger_timing = 4
+value = 20
+
+[sub_resource type="Resource" id="Resource_kw15_11"]
+script = ExtResource("1_kwslot")
+type = 6
+trigger_timing = 4
+value = 2
+status_id = "damage_reduction"
+duration = 999
+to_player = false
+
+[sub_resource type="Resource" id="Resource_kw15_12"]
+script = ExtResource("1_kwslot")
+type = 3
+trigger_timing = 2
+value = 15
+
+[sub_resource type="Resource" id="Resource_kw15_13"]
+script = ExtResource("1_kwslot")
+type = 7
+trigger_timing = 6
+value = 5
+element_type = "金"
+
+[sub_resource type="Resource" id="Resource_kw15_14"]
+script = ExtResource("1_kwslot")
+type = 7
+trigger_timing = 6
+value = 5
+element_type = "木"
+
+[sub_resource type="Resource" id="Resource_kw15_15"]
+script = ExtResource("1_kwslot")
+type = 7
+trigger_timing = 6
+value = 5
+element_type = "水"
+
+[sub_resource type="Resource" id="Resource_kw15_16"]
+script = ExtResource("1_kwslot")
+type = 7
+trigger_timing = 6
+value = 5
+element_type = "火"
+
+[sub_resource type="Resource" id="Resource_kw15_17"]
+script = ExtResource("1_kwslot")
+type = 7
+trigger_timing = 6
+value = 5
+element_type = "土"
+
+[resource]
+script = ExtResource("2_enemy")
+id = "five_elements_sage"
+enemy_name = "五行真君"
+element = "以太"
+max_hp = 200
+intent_base_dmg = 20
+initial_elements = Array[String](["以太", "以太", "以太"])
+intent_elements = Array[String](["火", "水", "金", "木", "土"])
+enemy_keywords = Array[ExtResource("1_kwslot")]([SubResource("Resource_kw15_0"), SubResource("Resource_kw15_1"), SubResource("Resource_kw15_2"), SubResource("Resource_kw15_3"), SubResource("Resource_kw15_4"), SubResource("Resource_kw15_5"), SubResource("Resource_kw15_6"), SubResource("Resource_kw15_7"), SubResource("Resource_kw15_8"), SubResource("Resource_kw15_9"), SubResource("Resource_kw15_10"), SubResource("Resource_kw15_11"), SubResource("Resource_kw15_12"), SubResource("Resource_kw15_13"), SubResource("Resource_kw15_14"), SubResource("Resource_kw15_15"), SubResource("Resource_kw15_16"), SubResource("Resource_kw15_17")])

@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_kwslot"]
 [ext_resource type="Script" path="res://Data/EnemyData.gd" id="2_enemy"]
 
-[sub_resource type="Resource" id="Resource_kw1_0"]
+[sub_resource type="Resource" id="Resource_kw6_0"]
 script = ExtResource("1_kwslot")
 type = 6
 trigger_timing = 3
@@ -14,11 +14,11 @@ to_player = true
 
 [resource]
 script = ExtResource("2_enemy")
-id = "fire_spirit"
-enemy_name = "赤炎灵"
-element = "火"
-max_hp = 35
-intent_base_dmg = 10
-initial_elements = Array[String]([])
-intent_elements = Array[String]([])
-enemy_keywords = Array[ExtResource("1_kwslot")]([SubResource("Resource_kw1_0")])
+id = "frost_bat"
+enemy_name = "霜火蝠"
+element = "水"
+max_hp = 45
+intent_base_dmg = 11
+initial_elements = Array[String](["水", "火"])
+intent_elements = Array[String](["火", "水"])
+enemy_keywords = Array[ExtResource("1_kwslot")]([SubResource("Resource_kw6_0")])

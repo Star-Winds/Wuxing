@@ -1,11 +1,21 @@
-[gd_resource type="Resource" script_class="EnemyData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="EnemyData" load_steps=3 format=3]
 
-[ext_resource type="Script" path="res://Data/EnemyData.gd" id="1_enemy"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_kwslot"]
+[ext_resource type="Script" path="res://Data/EnemyData.gd" id="2_enemy"]
+
+[sub_resource type="Resource" id="Resource_kw3_0"]
+script = ExtResource("1_kwslot")
+type = 2
+trigger_timing = 1
+value = 5
 
 [resource]
-script = ExtResource("1_enemy")
+script = ExtResource("2_enemy")
 id = "earth_golem"
 enemy_name = "厚土傀儡"
 element = "土"
-max_hp = 85
-intent_base_dmg = 15
+max_hp = 80
+intent_base_dmg = 12
+initial_elements = Array[String]([])
+intent_elements = Array[String]([])
+enemy_keywords = Array[ExtResource("1_kwslot")]([SubResource("Resource_kw3_0")])

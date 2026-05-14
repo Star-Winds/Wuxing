@@ -3,29 +3,28 @@
 [ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_kwslot"]
 [ext_resource type="Script" path="res://Data/EnemyData.gd" id="2_enemy"]
 
-[sub_resource type="Resource" id="Resource_kw5_0"]
+[sub_resource type="Resource" id="Resource_extra_0"]
 script = ExtResource("1_kwslot")
-type = 7
+type = 2
 trigger_timing = 1
-value = 2
-element_type = "木"
+value = 8
 
-[sub_resource type="Resource" id="Resource_kw5_1"]
+[sub_resource type="Resource" id="Resource_extra_1"]
 script = ExtResource("1_kwslot")
 type = 6
-trigger_timing = 3
-value = 2
-status_id = "bleed"
-duration = 2
-to_player = true
+trigger_timing = 1
+value = 1
+status_id = "damage_reduction"
+duration = 999
+to_player = false
 
 [resource]
 script = ExtResource("2_enemy")
-id = "tree_boss"
-enemy_name = "百年树妖"
-element = "木"
-max_hp = 120
-intent_base_dmg = 12
+id = "mud_turtle"
+enemy_name = "泥石龟"
+element = "土"
+max_hp = 48
+intent_base_dmg = 9
 initial_elements = Array[String]([])
 intent_elements = Array[String]([])
-enemy_keywords = Array[ExtResource("1_kwslot")]([SubResource("Resource_kw5_0"), SubResource("Resource_kw5_1")])
+enemy_keywords = Array[ExtResource("1_kwslot")]([SubResource("Resource_extra_0"), SubResource("Resource_extra_1")])

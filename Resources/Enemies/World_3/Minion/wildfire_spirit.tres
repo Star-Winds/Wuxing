@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="EnemyData" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_kwslot"]
+[ext_resource type="Script" path="res://Data/EnemyData.gd" id="2_enemy"]
+
+[sub_resource type="Resource" id="Resource_kw12_0"]
+script = ExtResource("1_kwslot")
+type = 6
+trigger_timing = 3
+value = 2
+status_id = "burn"
+duration = 2
+to_player = true
+
+[sub_resource type="Resource" id="Resource_kw12_1"]
+script = ExtResource("1_kwslot")
+type = 6
+trigger_timing = 3
+value = 1
+status_id = "bleed"
+duration = 2
+to_player = true
+
+[sub_resource type="Resource" id="Resource_kw12_2"]
+script = ExtResource("1_kwslot")
+type = 6
+trigger_timing = 6
+value = 3
+status_id = "burn"
+duration = 3
+to_player = true
+
+[resource]
+script = ExtResource("2_enemy")
+id = "wildfire_spirit"
+enemy_name = "燎原火灵"
+element = "火"
+max_hp = 50
+intent_base_dmg = 14
+initial_elements = Array[String](["火", "木"])
+intent_elements = Array[String]([])
+enemy_keywords = Array[ExtResource("1_kwslot")]([SubResource("Resource_kw12_0"), SubResource("Resource_kw12_1"), SubResource("Resource_kw12_2")])

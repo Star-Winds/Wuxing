@@ -32,6 +32,19 @@ func execute(context: Dictionary) -> Dictionary:
 			bm.eject_card_from_slot()
 		"collapse":
 			bm.collapse_card()
+		"reactivate":
+			bm.reactivate_current_card = true
+			print("  [特殊效果] 淬火 — 卡牌可再次激活！")
+		"damage_multiplier":
+			var dr = context.get("damage_resolver")
+			if dr:
+				dr.damage_multiplier = 2.0
+				print("  [特殊效果] 伤害翻倍 (x2.0)！")
+		"random_element_2":
+			bm._grant_random_elements(2)
+		"workshop_discount":
+			GameManager.workshop_discount_amount += 2
+			print("  [特殊效果] 埋藏 — 车间折扣 +2")
 		_:
 			print("  [特殊效果] 未知 action_id: ", action_id)
 

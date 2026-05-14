@@ -17,7 +17,7 @@ func run() -> void:
 	# 1. 确保目录存在
 	for d in [CARDS_DIR + "Fire/", CARDS_DIR + "Earth/",
 			CARDS_DIR + "Water/", CARDS_DIR + "Metal/", CARDS_DIR + "Wood/",
-			CARDS_DIR + "Aether/"]:
+			CARDS_DIR + "Aether/", CARDS_DIR + "Reactions/", CARDS_DIR + "Formations/"]:
 		if not DirAccess.dir_exists_absolute(d):
 			DirAccess.make_dir_recursive_absolute(d)
 
@@ -107,8 +107,16 @@ static func _build_card_slots(entries: Array) -> Array[KeywordSlot]:
 
 func _generate_card(card: Dictionary) -> bool:
 	var el_cn = card.get("el", "火")
-	var el_en = _el_to_en(el_cn)
-	var dir_path = CARDS_DIR + el_en + "/"
+	var is_reaction = card.get("is_reaction", false)
+	var is_formation = card.get("is_formation", false)
+	var dir_path: String
+	if is_reaction:
+		dir_path = CARDS_DIR + "Reactions/"
+	elif is_formation:
+		dir_path = CARDS_DIR + "Formations/"
+	else:
+		var el_en = _el_to_en(el_cn)
+		dir_path = CARDS_DIR + el_en + "/"
 	var save_path = dir_path + card["id"].to_lower() + ".tres"
 
 	var cd = CardData.new()
@@ -992,6 +1000,220 @@ func _define_all_cards() -> Array[Dictionary]:
 		 "display": "生以太3", "desc": "获得 3 点以太"}
 	]
 },
+
+# ═══════════════════════════════════════════
+#  元素反应卡牌 (20张) — is_reaction=true
+# ═══════════════════════════════════════════
+
+	{
+		"id": "Reaction_Fire_Water", "name": "蒸腾", "el": "火",
+		"is_reaction": true,
+		"desc": "提供烧伤效果，每回合按层数结算扣血",
+		"main_kw": [
+			{"type": "status", "status_id": "burn", "value": 4, "duration": 2, "to_player": false,
+			 "display": "灼烧4x2", "desc": "赋予敌人 4 层灼烧，持续 2 回合"}
+		]
+	},
+	{
+		"id": "Reaction_Water_Fire", "name": "熄灭", "el": "水",
+		"is_reaction": true,
+		"desc": "为目标赋予虚弱（造成伤害x0.75）2回合",
+		"main_kw": [
+			{"type": "status", "status_id": "weak", "value": 1, "duration": 2, "to_player": false,
+			 "display": "虚弱1x2", "desc": "赋予敌人 1 层虚弱，持续 2 回合"}
+		]
+	},
+	{
+		"id": "Reaction_Fire_Earth", "name": "烧制", "el": "火",
+		"is_reaction": true,
+		"desc": "敌方获得脆化（受伤x1.5）2回合，主控获得1点土元素",
+		"main_kw": [
+			{"type": "status", "status_id": "frail", "value": 1, "duration": 2, "to_player": false,
+			 "display": "脆化1x2", "desc": "赋予敌人 1 层脆化，持续 2 回合"},
+			{"type": "gen", "element_type": "土", "value": 1,
+			 "display": "生土1", "desc": "获得 1 点土元素"}
+		]
+	},
+	{
+		"id": "Reaction_Earth_Fire", "name": "余烬", "el": "土",
+		"is_reaction": true,
+		"desc": "本回合每受到伤害一次，则返还主控1火元素",
+		"main_kw": [
+			{"type": "status", "status_id": "retaliate_generate_fire", "value": 1, "duration": 1, "to_player": true,
+			 "display": "余烬", "desc": "本回合每受击一次返还1火元素"}
+		]
+	},
+	{
+		"id": "Reaction_Fire_Wood", "name": "焚烬", "el": "火",
+		"is_reaction": true,
+		"desc": "本次火元素伤害翻倍",
+		"main_kw": [
+			{"type": "action", "action_id": "damage_multiplier",
+			 "display": "伤害翻倍", "desc": "本次伤害翻倍 (x2.0)"}
+		]
+	},
+	{
+		"id": "Reaction_Wood_Fire", "name": "添柴", "el": "木",
+		"is_reaction": true,
+		"desc": "主控获得3点火元素",
+		"main_kw": [
+			{"type": "gen", "element_type": "火", "value": 3,
+			 "display": "生火3", "desc": "获得 3 点火元素"}
+		]
+	},
+	{
+		"id": "Reaction_Fire_Metal", "name": "熔炼", "el": "火",
+		"is_reaction": true,
+		"desc": "如果目标有护盾，则破除目标的护盾，再结算伤害",
+		"main_kw": [
+			{"type": "action", "action_id": "shield_break",
+			 "display": "破盾", "desc": "破除敌人护盾"}
+		]
+	},
+	{
+		"id": "Reaction_Metal_Fire", "name": "过载", "el": "金",
+		"is_reaction": true,
+		"desc": "随机激活一个当前未激活的副槽卡牌",
+		"main_kw": [
+			{"type": "action", "action_id": "overload",
+			 "display": "过载", "desc": "触发一次过载"}
+		]
+	},
+	{
+		"id": "Reaction_Water_Wood", "name": "润泽", "el": "水",
+		"is_reaction": true,
+		"desc": "主控随机获得2单位非水元素",
+		"main_kw": [
+			{"type": "action", "action_id": "random_element_2",
+			 "display": "润泽", "desc": "随机获得2单位非水元素"}
+		]
+	},
+	{
+		"id": "Reaction_Wood_Water", "name": "吸纳", "el": "木",
+		"is_reaction": true,
+		"desc": "从目标处偷取1点以太",
+		"main_kw": [
+			{"type": "gen", "element_type": "以太", "value": 1,
+			 "display": "生以太1", "desc": "获得 1 点以太"}
+		]
+	},
+	{
+		"id": "Reaction_Water_Earth", "name": "泥沼", "el": "水",
+		"is_reaction": true,
+		"desc": "为目标赋予减速2回合",
+		"main_kw": [
+			{"type": "status", "status_id": "slow", "value": 1, "duration": 2, "to_player": false,
+			 "display": "减速1x2", "desc": "赋予敌人 1 层减速，持续 2 回合"}
+		]
+	},
+	{
+		"id": "Reaction_Earth_Water", "name": "阻截", "el": "土",
+		"is_reaction": true,
+		"desc": "禁锢目标，若其行动是攻击则推迟到下回合",
+		"main_kw": [
+			{"type": "status", "status_id": "stun_attack", "value": 1, "duration": 1, "to_player": false,
+			 "display": "阻截", "desc": "禁锢目标攻击1回合"}
+		]
+	},
+	{
+		"id": "Reaction_Water_Metal", "name": "淬火", "el": "水",
+		"is_reaction": true,
+		"desc": "触发该反应的卡牌可以在本回合内再次激活",
+		"main_kw": [
+			{"type": "action", "action_id": "reactivate",
+			 "display": "淬火", "desc": "本回合内可再次激活该卡牌"}
+		]
+	},
+	{
+		"id": "Reaction_Metal_Water", "name": "涌泉", "el": "金",
+		"is_reaction": true,
+		"desc": "激活后，立即补充2单位水元素",
+		"main_kw": [
+			{"type": "gen", "element_type": "水", "value": 2,
+			 "display": "生水2", "desc": "获得 2 点水元素"}
+		]
+	},
+	{
+		"id": "Reaction_Wood_Earth", "name": "破土", "el": "木",
+		"is_reaction": true,
+		"desc": "无视目标护盾，直接造成5木元素伤害（真实伤害）",
+		"main_kw": [
+			{"type": "damage", "value": 5,
+			 "display": "真实伤害5", "desc": "造成5点真实伤害（无视护盾）"}
+		]
+	},
+	{
+		"id": "Reaction_Earth_Wood", "name": "固本", "el": "土",
+		"is_reaction": true,
+		"desc": "恢复4点生命值",
+		"main_kw": [
+			{"type": "heal", "value": 4,
+			 "display": "治疗4", "desc": "回复 4 点生命"}
+		]
+	},
+	{
+		"id": "Reaction_Wood_Metal", "name": "坚韧", "el": "木",
+		"is_reaction": true,
+		"desc": "主控获得反震（受击时回敬3伤）",
+		"main_kw": [
+			{"type": "status", "status_id": "reflect", "value": 3, "duration": 2, "to_player": true,
+			 "display": "反震3x2", "desc": "赋予自身 3 层反震，持续 2 回合"}
+		]
+	},
+	{
+		"id": "Reaction_Metal_Wood", "name": "伐断", "el": "金",
+		"is_reaction": true,
+		"desc": "施加流血效果（动作时扣血），持续2回合",
+		"main_kw": [
+			{"type": "status", "status_id": "bleed", "value": 5, "duration": 2, "to_player": false,
+			 "display": "流血5x2", "desc": "赋予敌人 5 层流血，持续 2 回合"}
+		]
+	},
+	{
+		"id": "Reaction_Metal_Earth", "name": "合金", "el": "金",
+		"is_reaction": true,
+		"desc": "主控获得合金，提供1点减伤，直到本次对局结束",
+		"main_kw": [
+			{"type": "status", "status_id": "damage_reduction", "value": 1, "duration": 999, "to_player": true,
+			 "display": "合金1", "desc": "自身永久获得 1 点伤害减免"}
+		]
+	},
+	{
+		"id": "Reaction_Earth_Metal", "name": "埋藏", "el": "土",
+		"is_reaction": true,
+		"desc": "下次在车间节点打造装备时，消耗减少2点金元素",
+		"main_kw": [
+			{"type": "action", "action_id": "workshop_discount",
+			 "display": "埋藏", "desc": "下次车间打造消耗-2金元素"}
+		]
+	},
+
+# ═══════════════════════════════════════════
+#  五行阵法卡牌 (1张) — is_formation=true
+# ═══════════════════════════════════════════
+
+	{
+		"id": "Formation_Base", "name": "五行归元阵", "el": "以太",
+		"is_formation": true, "rarity": "珍",
+		"desc": "消耗所有槽位的激活状态，对敌方造成 15 点真实伤害，获得 10 点护盾，全基础元素 +3",
+		"main_kw": [
+			{"type": "damage", "value": 15,
+			 "display": "真实伤害15", "desc": "造成15点真实伤害（无视护盾）"},
+			{"type": "shield", "value": 10,
+			 "display": "护盾10", "desc": "获得 10 点护盾"},
+			{"type": "gen", "element_type": "金", "value": 3,
+			 "display": "生金3", "desc": "获得 3 点金元素"},
+			{"type": "gen", "element_type": "木", "value": 3,
+			 "display": "生木3", "desc": "获得 3 点木元素"},
+			{"type": "gen", "element_type": "水", "value": 3,
+			 "display": "生水3", "desc": "获得 3 点水元素"},
+			{"type": "gen", "element_type": "火", "value": 3,
+			 "display": "生火3", "desc": "获得 3 点火元素"},
+			{"type": "gen", "element_type": "土", "value": 3,
+			 "display": "生土3", "desc": "获得 3 点土元素"}
+		]
+	},
+
 
 # ═══════════════════════════════════════════
 #  末尾哨兵（不要删除此行）

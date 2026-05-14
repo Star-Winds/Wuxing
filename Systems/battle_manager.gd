@@ -138,13 +138,13 @@ func play_card(main_card: CardData, sub_cards: Array, target: Node = null) -> vo
 			_run_phase(eff, EFFECT_BASE.Phase.AGGREGATION, context)
 
 	# Dynamic modifiers from enemy statuses
+	const STATUS_DAMAGE_BONUSES = {"burn": 3, "bleed": 2}
 	var total_damage_ref = damage_resolver.total_damage
-	if status_manager.has("burn", "enemy") and total_damage_ref > 0:
-		damage_resolver.add_damage(3)
-		print("  [动态加成] 敌人处于灼烧 (burn) 状态 -> 最终伤害 +3")
-	if status_manager.has("bleed", "enemy") and total_damage_ref > 0:
-		damage_resolver.add_damage(2)
-		print("  [动态加成] 敌人处于流血 (bleed) 状态 -> 最终伤害 +2")
+	for status_id in STATUS_DAMAGE_BONUSES:
+		if status_manager.has(status_id, "enemy") and total_damage_ref > 0:
+			var bonus = STATUS_DAMAGE_BONUSES[status_id]
+			damage_resolver.add_damage(bonus)
+			print("  [动态加成] 敌人处于 %s 状态 -> 最终伤害 +%d" % [status_id, bonus])
 	if status_manager.has("strength", "player") and total_damage_ref > 0:
 		var str_amt = status_manager.get_data("strength", "player").get("amount", 0)
 		damage_resolver.add_damage(str_amt)
@@ -175,13 +175,9 @@ func play_card(main_card: CardData, sub_cards: Array, target: Node = null) -> vo
 			# combo_key returned -- trigger reaction
 			print("  [元素反应] 反应触发: ", attach_result)
 			if GameManager.equipped_reactions.has(attach_result):
-				var reaction = GameManager.equipped_reactions[attach_result]
-				if reaction is ReactionData:
-					var mods = _trigger_reaction(reaction, main_card)
-					if mods.has("damage_multiplier"):
-						damage_resolver.damage_multiplier = mods["damage_multiplier"]
-					if mods.has("true_damage"):
-						damage_resolver.true_damage = mods["true_damage"]
+				var reaction_card = GameManager.equipped_reactions[attach_result]
+				if reaction_card is CardData:
+					_trigger_reaction(reaction_card)
 			else:
 				print("  [元素反应] 未装备对应元素反应 (", attach_result, ")")
 			if element_system.enemy_element == "":
@@ -313,101 +309,28 @@ func _find_card_slots_recursive(node: Node, list: Array) -> void:
 # ============================================================
 #  REACTION EXECUTION
 # ============================================================
-func _trigger_reaction(reaction: ReactionData, _current_card: CardData) -> Dictionary:
-	if reaction == null: return {}
-	var reaction_name = reaction.reaction_name
+## 数据驱动反应执行 — 通过反应卡牌的 main_keywords Effect 管线执行效果
+func _trigger_reaction(card: CardData) -> void:
+	if card == null: return
+	card._ensure_compiled()
+	var reaction_name = card.card_name
 	print("  >>> [五行反应触发] 反应名称: ", reaction_name, " <<<")
 	EventBus.reaction_triggered.emit(reaction_name, "")
-	_aq().enqueue(ActionQueue.ActionType.REACTION, {"name": reaction_name, "color": reaction.reaction_color})
+	# Use a gold-tinted color for the reaction animation
+	_aq().enqueue(ActionQueue.ActionType.REACTION, {"name": reaction_name, "color": Color("#FFD700")})
 
-	var modifiers: Dictionary = {}
-
-	match reaction_name:
-		"蒸腾":
-			_apply_status_effect("burn", 4, 2)
-
-		"烧制":
-			_apply_status_effect("frail", 1, 2)
-			GameManager.element_earth += 1
-			print("  [烧制反应] 敌人脆化，玩家获得 1 土元素")
-
-		"焚烬":
-			modifiers["damage_multiplier"] = 2.0
-			print("  [焚烬反应] 本次伤害翻倍 (x2.0)！")
-
-		"熔炼":
-			break_shield()
-			print("  [熔炼反应] 敌人护盾已被破除！")
-
-		"润泽":
-			var possible_elements = ["金", "木", "火", "土"]
-			for i in range(2):
-				var el = possible_elements[RNGService.randi() % possible_elements.size()]
-				match el:
-					"金": GameManager.element_metal += 1
-					"木": GameManager.element_wood += 1
-					"火": GameManager.element_fire += 1
-					"土": GameManager.element_earth += 1
-				print("  [润泽反应] 随机获得元素: ", el, " +1")
-
-		"熄灭":
-			_apply_status_effect("weak", 1, 2)
-
-		"泥沼":
-			_apply_status_effect("slow", 1, 2)
-
-		"淬火":
-			reactivate_current_card = true
-			print("  [淬火反应] 卡牌重新激活标记已设置！")
-
-		"添柴":
-			GameManager.element_fire += 3
-			print("  [添柴反应] 玩家获得 3 点火元素")
-
-		"破土":
-			modifiers["true_damage"] = 5
-			print("  [破土反应] 追加 5 点真实伤害！")
-
-		"吸纳":
-			GameManager.aether += 1
-			print("  [吸纳反应] 玩家获得 1 点以太")
-
-		"坚韧":
-			_apply_status_effect("reflect", 3, 2)
-
-		"涌泉":
-			GameManager.element_water += 2
-			print("  [涌泉反应] 玩家获得 2 点水元素")
-
-		"伐断":
-			_apply_status_effect("bleed", 5, 2)
-
-		"合金":
-			player_damage_reduction += 1
-			print("  [合金反应] 玩家永久获得 1 点伤害减免 (当前总减免: ", player_damage_reduction, ")")
-
-		"过载":
-			overload_random_sub_slot()
-			print("  [过载反应] 触发过载")
-
-		"埋藏":
-			GameManager.workshop_discount_amount += 2
-			print("  [埋藏反应] 车间折扣 +2（当前折扣: ", GameManager.workshop_discount_amount, "）")
-
-		"阻截":
-			_apply_status_effect("stun_attack", 1, 1)
-
-		"余烬":
-			_apply_status_effect("retaliate_generate_fire", 1, 1)
-
-		"固本":
-			GameManager.current_health = mini(GameManager.current_health + 4, GameManager.max_health)
-			print("  [固本反应] 恢复 4 点生命值")
-
-		_:
-			printerr("  [未实现的元素反应]: ", reaction_name)
-
-	return modifiers
+	# 走统一 Effect 管线 — 按阶段分三遍执行: PRE_HIT -> AGGREGATION -> POST_HIT
+	var ctx = {
+		"battle_manager": self,
+		"target": self,
+		"damage_resolver": damage_resolver,
+		"status_manager": status_manager,
+		"context": {}
+	}
+	for phase in [EFFECT_BASE.Phase.PRE_HIT, EFFECT_BASE.Phase.AGGREGATION, EFFECT_BASE.Phase.POST_HIT]:
+		for kw in card.main_keywords:
+			if kw and kw.effect and kw.effect.phase == phase:
+				kw.effect.execute(ctx)
 
 
 # ============================================================
@@ -607,7 +530,13 @@ func overload_random_sub_slot() -> void:
 
 func draw_card_from_pool() -> void:
 	if GameManager.card_pool.is_empty():
-		print("  [DrawCard] Pool is empty!")
+		print("  [DrawCard] Pool empty, granting 2 aether instead.")
+		GameManager.element_metal += 2
+		GameManager.element_wood += 2
+		GameManager.element_water += 2
+		GameManager.element_fire += 2
+		GameManager.element_earth += 2
+		GameManager.update_player_stats()
 		return
 	var tree = Engine.get_main_loop() as SceneTree
 	if not tree or not tree.current_scene:
@@ -679,6 +608,17 @@ func collapse_card() -> void:
 				return
 		print("  [Collapse] No activated sub-slot found")
 
+func _grant_random_elements(amount: int) -> void:
+	var possible = ["金", "木", "火", "土"]
+	for i in range(amount):
+		var el = possible[RNGService.randi() % possible.size()]
+		match el:
+			"金": GameManager.element_metal += 1
+			"木": GameManager.element_wood += 1
+			"火": GameManager.element_fire += 1
+			"土": GameManager.element_earth += 1
+		print("  [润泽] 随机获得元素: ", el, " +1")
+
 #  TARGET API (battle_manager acts as the enemy target)
 # ============================================================
 func take_damage(amount: int, element: String = "") -> void:
@@ -749,13 +689,22 @@ func activate_formation() -> void:
 		print("【五行阵法】未拥有任何阵法！")
 		return
 
-	print("【五行阵法】发动: ", formation.formation_name)
-	formation_activated.emit(formation.formation_name)
+	print("【五行阵法】发动: ", formation.card_name)
+	formation_activated.emit(formation.card_name)
 
-	# 阵法效果：15 点真实伤害
-	enemy_hp = max(0, enemy_hp - 15)
-	print("  -> 敌方受到 15 点真实伤害 (剩余 HP: ", enemy_hp, ")")
+	# 走统一 Effect 管线
+	formation._ensure_compiled()
+	for kw in formation.main_keywords:
+		if kw and kw.effect:
+			kw.effect.execute({
+				"battle_manager": self,
+				"target": self,
+				"damage_resolver": damage_resolver,
+				"status_manager": status_manager,
+				"context": {}
+			})
 
+	# 检查阵法伤害是否击杀了敌人
 	if enemy_hp <= 0:
 		print("敌人被阵法击杀，战斗胜利！")
 		_aq().enqueue(ActionQueue.ActionType.HP_CHANGE, {"target": "enemy", "hp": enemy_hp, "shield": enemy_shield})
@@ -763,18 +712,6 @@ func activate_formation() -> void:
 		battle_ended.emit(true)
 		EventBus.battle_won.emit()
 		return
-
-	# 阵法效果：10 点护盾
-	player_shield += 10
-	print("  -> 玩家获得 10 点护盾 (当前: ", player_shield, ")")
-
-	# 阵法效果：全基础元素 +3
-	GameManager.element_metal += 3
-	GameManager.element_wood += 3
-	GameManager.element_water += 3
-	GameManager.element_fire += 3
-	GameManager.element_earth += 3
-	print("  -> 全基础元素 +3")
 
 	formation_ready = false
 	formation_readiness_changed.emit(false)

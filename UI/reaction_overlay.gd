@@ -105,9 +105,9 @@ func _populate_reactions() -> void:
 		info_vbox.add_child(status_hbox)
 		
 		var combo_key = reaction.get_combo_key()
-		var currently_equipped = GameManager.equipped_reactions.get(combo_key)
-		var is_equipped = currently_equipped == reaction
-		
+		var currently_equipped: CardData = GameManager.equipped_reactions.get(combo_key)
+		var is_equipped = currently_equipped != null and reaction.card_data != null and currently_equipped.id == reaction.card_data.id
+
 		var status_badge = PanelContainer.new()
 		var sb_style = StyleBoxFlat.new()
 		sb_style.set_corner_radius_all(4)
@@ -115,10 +115,10 @@ func _populate_reactions() -> void:
 		sb_style.content_margin_right = 10
 		sb_style.content_margin_top = 3
 		sb_style.content_margin_bottom = 3
-		
+
 		var sb_lbl = Label.new()
 		sb_lbl.add_theme_font_size_override("font_size", 12)
-		
+
 		if is_equipped:
 			sb_style.bg_color = Color(0.1, 0.4, 0.15, 0.3)
 			sb_style.border_width_left = 1
@@ -135,9 +135,9 @@ func _populate_reactions() -> void:
 			sb_style.border_width_right = 1
 			sb_style.border_width_bottom = 1
 			sb_style.border_color = Color(0.5, 0.5, 0.6, 0.4)
-			
+
 			if currently_equipped != null:
-				sb_lbl.text = "未装配 - 槽位已被【" + currently_equipped.reaction_name + "】占用"
+				sb_lbl.text = "未装配 - 槽位已被【" + currently_equipped.card_name + "】占用"
 				sb_lbl.add_theme_color_override("font_color", Color(0.8, 0.6, 0.3))
 			else:
 				sb_lbl.text = "闲置 (Available)"
@@ -188,8 +188,9 @@ func _populate_reactions() -> void:
 func _create_reaction_card(reaction: ReactionData) -> PanelContainer:
 	var card = PanelContainer.new()
 	var combo_key = reaction.get_combo_key()
-	var is_equipped = GameManager.equipped_reactions.get(combo_key) == reaction
-	
+	var ce: CardData = GameManager.equipped_reactions.get(combo_key)
+	var is_equipped = ce != null and reaction.card_data != null and ce.id == reaction.card_data.id
+
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color(0.08, 0.08, 0.1, 0.8) # Sleek charcoal glassmorphism
 	style.set_corner_radius_all(10)
@@ -197,7 +198,7 @@ func _create_reaction_card(reaction: ReactionData) -> PanelContainer:
 	style.content_margin_top = 15
 	style.content_margin_right = 20
 	style.content_margin_bottom = 15
-	
+
 	style.border_width_left = 2
 	style.border_width_top = 2
 	style.border_width_right = 2

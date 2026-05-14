@@ -12,11 +12,11 @@ enum SlotType { 无, 伤害, 护盾, 治疗, 伤害护盾, 施加状态, 生成�
 @export var value: int = 0
 @export var value2: int = 0  # 伤害护盾的护盾 / 条件伤害的附加 / 多次伤害的次数
 @export_enum("金","木","水","火","土","以太") var element_type: String = ""
-@export_enum("burn","bleed","slow","reflect","damage_reduction","vulnerable","weak","strength","dexterity","vigor","buffer","ethereal") var status_id: String = ""
+@export_enum("burn","bleed","slow","reflect","damage_reduction","vulnerable","weak","strength","dexterity","vigor","buffer","ethereal","frail","stun_attack","retaliate_generate_fire") var status_id: String = ""
 @export var duration: int = 0
 @export var to_player: bool = false
-@export_enum("prev_turn_active","enemy_has_burn","enemy_has_slow","enemy_has_bleed","enemy_has_shield","player_has_shield","any_card_activated") var condition: String = ""
-@export_enum("overload","shield_break","change_enemy_intent","draw_card","charge","eject","collapse") var action_id: String = ""
+@export_enum("prev_turn_active","enemy_has_burn","enemy_has_slow","enemy_has_bleed","enemy_has_shield","player_has_shield","any_card_activated","enemy_has_frail") var condition: String = ""
+@export_enum("overload","shield_break","change_enemy_intent","draw_card","charge","eject","collapse","reactivate","damage_multiplier","random_element_2","workshop_discount") var action_id: String = ""
 
 # === 显示覆盖（选填） ===
 @export_group("显示覆盖（选填）")
@@ -225,13 +225,16 @@ static func _status_display(sid: String, amount: int) -> String:
 		"vigor": return "活力%d" % amount
 		"buffer": return "缓冲%d" % amount
 		"ethereal": return "虚化"
+		"frail": return "脆化%d" % amount
+		"stun_attack": return "阻截"
+		"retaliate_generate_fire": return "余烬"
 	return "%s%d" % [sid, amount]
 
 static func _status_desc(sid: String, amount: int, dur: int, to_self: bool) -> String:
 	var who = "自身" if to_self else "敌人"
 	var sname = _status_display(sid, amount)
-	if sid == "ethereal":
-		return "赋予 %s 虚化，持续 %d 回合" % [who, dur]
+	if sid == "ethereal" or sid == "stun_attack" or sid == "retaliate_generate_fire":
+		return "赋予 %s %s，持续 %d 回合" % [who, sname, dur]
 	return "赋予 %s %d 层%s，持续 %d 回合" % [who, amount, sname, dur]
 
 static func _cond_display(c: String) -> String:
@@ -243,6 +246,7 @@ static func _cond_display(c: String) -> String:
 		"enemy_has_shield": return "敌人护盾"
 		"player_has_shield": return "持有护盾"
 		"any_card_activated": return "任意激活"
+		"enemy_has_frail": return "敌人脆化"
 	return c
 
 static func _action_display(aid: String) -> String:
@@ -254,6 +258,10 @@ static func _action_display(aid: String) -> String:
 		"charge": return "充能"
 		"eject": return "弹出"
 		"collapse": return "瓦解"
+		"reactivate": return "淬火"
+		"damage_multiplier": return "翻倍"
+		"random_element_2": return "润泽"
+		"workshop_discount": return "埋藏"
 	return aid
 
 static func _action_desc(aid: String) -> String:
@@ -265,4 +273,8 @@ static func _action_desc(aid: String) -> String:
 		"charge": return "立即激活目标卡牌，此次激活不进入冷却"
 		"eject": return "将该槽位中的牌移回手牌包，槽位变空"
 		"collapse": return "卡牌打出后冷却直到战斗结束"
+		"reactivate": return "本回合内可再次激活当前卡牌"
+		"damage_multiplier": return "本次伤害翻倍 (x2.0)"
+		"random_element_2": return "随机获得2单位非水元素"
+		"workshop_discount": return "下次车间打造消耗-2金元素"
 	return aid

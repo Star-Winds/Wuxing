@@ -1,5 +1,8 @@
 extends BaseScreen
 
+const HEAL_AMOUNT: int = 30
+const RANDOM_ELEMENT_COUNT: int = 10
+
 @onready var status_label: Label = $VBoxContainer/StatusLabel
 @onready var heal_button: Button = $VBoxContainer/HBoxContainer/HealButton
 @onready var nature_button: Button = $VBoxContainer/HBoxContainer/NatureButton
@@ -27,14 +30,13 @@ func _update_ui() -> void:
 		status_label.text = "Current HP: %d / %d | Wood Element: %d" % [GameManager.current_health, GameManager.max_health, GameManager.element_wood]
 
 func _on_heal_selected() -> void:
-	var heal_amount = 30
-	GameManager.current_health = min(GameManager.max_health, GameManager.current_health + heal_amount)
+	GameManager.current_health = min(GameManager.max_health, GameManager.current_health + HEAL_AMOUNT)
 	# 调用 GlobalHUD 更新顶部显示（如果有此方法）
 	_leave_rest()
 
 func _on_nature_selected() -> void:
 	# 优化：直接循环增加
-	for i in range(10):
+	for i in range(RANDOM_ELEMENT_COUNT):
 		var choice = RNGService.randi() % 5
 		match choice:
 			0: GameManager.element_metal += 1

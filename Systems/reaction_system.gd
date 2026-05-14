@@ -1,60 +1,118 @@
 class_name ReactionSystem
 extends RefCounted
 
+const RegenerateAllCards = preload("res://Data/RegenerateAllCards.gd")
+
 var owned_reactions: Array[ReactionData] = []
-var equipped_reactions: Dictionary = {} # combo_key -> ReactionData
+## combo_key -> CardData (效果由 card_data.main_keywords 驱动)
+var equipped_reactions: Dictionary = {}
 
 signal reactions_updated
 signal reaction_equipped(reaction: ReactionData)
 signal reaction_discarded(reaction: ReactionData)
 
+# 20 种反应的 combo --> CardData path 映射（与 RegenerateAllCards 中定义一致）
+const REACTION_CARD_PATHS: Dictionary = {
+	"火_水": "res://Resources/Cards/Reactions/reaction_fire_water.tres",
+	"水_火": "res://Resources/Cards/Reactions/reaction_water_fire.tres",
+	"火_土": "res://Resources/Cards/Reactions/reaction_fire_earth.tres",
+	"土_火": "res://Resources/Cards/Reactions/reaction_earth_fire.tres",
+	"火_木": "res://Resources/Cards/Reactions/reaction_fire_wood.tres",
+	"木_火": "res://Resources/Cards/Reactions/reaction_wood_fire.tres",
+	"火_金": "res://Resources/Cards/Reactions/reaction_fire_metal.tres",
+	"金_火": "res://Resources/Cards/Reactions/reaction_metal_fire.tres",
+	"水_木": "res://Resources/Cards/Reactions/reaction_water_wood.tres",
+	"木_水": "res://Resources/Cards/Reactions/reaction_wood_water.tres",
+	"水_土": "res://Resources/Cards/Reactions/reaction_water_earth.tres",
+	"土_水": "res://Resources/Cards/Reactions/reaction_earth_water.tres",
+	"水_金": "res://Resources/Cards/Reactions/reaction_water_metal.tres",
+	"金_水": "res://Resources/Cards/Reactions/reaction_metal_water.tres",
+	"木_土": "res://Resources/Cards/Reactions/reaction_wood_earth.tres",
+	"土_木": "res://Resources/Cards/Reactions/reaction_earth_wood.tres",
+	"木_金": "res://Resources/Cards/Reactions/reaction_wood_metal.tres",
+	"金_木": "res://Resources/Cards/Reactions/reaction_metal_wood.tres",
+	"金_土": "res://Resources/Cards/Reactions/reaction_metal_earth.tres",
+	"土_金": "res://Resources/Cards/Reactions/reaction_earth_metal.tres",
+}
+
 func initialize_defaults() -> void:
 	owned_reactions.clear()
 	equipped_reactions.clear()
 
-	var default_list = [
-		{"name": "蒸腾", "combo": ["火", "水"], "color": Color("#FF5252"), "desc": "提供烧伤效果，每回合按层数结算扣血"},
-		{"name": "熄灭", "combo": ["水", "火"], "color": Color("#29B6F6"), "desc": "为目标赋予“虚弱”（造成伤害x0.75）2回合"},
-		{"name": "烧制", "combo": ["火", "土"], "color": Color("#FF8A65"), "desc": "敌方获得脆化（受伤x1.5）2回合，主控获得1点土元素"},
-		{"name": "余烬", "combo": ["土", "火"], "color": Color("#FF7043"), "desc": "本回合每受到伤害一次，则返还主控1火元素"},
-		{"name": "焚烬", "combo": ["火", "木"], "color": Color("#FF3D00"), "desc": "本次火元素伤害翻倍"},
-		{"name": "添柴", "combo": ["木", "火"], "color": Color("#66BB6A"), "desc": "主控获得3点火元素"},
-		{"name": "熔炼", "combo": ["火", "金"], "color": Color("#FF7043"), "desc": "如果目标有护盾，则破除目标的护盾，再结算伤害"},
-		{"name": "过载", "combo": ["金", "火"], "color": Color("#FF8F00"), "desc": "随机激活一个当前未激活的副槽卡牌"},
-		{"name": "润泽", "combo": ["水", "木"], "color": Color("#4FC3F7"), "desc": "主控随机获得2单位非水元素"},
-		{"name": "吸纳", "combo": ["木", "水"], "color": Color("#26A69A"), "desc": "从目标处偷取1点以太 (直接增加1点以太)"},
-		{"name": "泥沼", "combo": ["水", "土"], "color": Color("#8D6E63"), "desc": "为目标赋予“减速”（获得护盾量x0.5）2回合"},
-		{"name": "阻截", "combo": ["土", "水"], "color": Color("#8D6E63"), "desc": "禁锢目标，若其行动是攻击则推迟到下回合"},
-		{"name": "淬火", "combo": ["水", "金"], "color": Color("#26C6DA"), "desc": "触发该反应的卡牌可以在本回合内再次“激活”"},
-		{"name": "涌泉", "combo": ["金", "水"], "color": Color("#FFD54F"), "desc": "激活后，立即补充2单位水元素"},
-		{"name": "破土", "combo": ["木", "土"], "color": Color("#8D6E63"), "desc": "无视目标护盾，直接造成5木元素伤害 (真实伤害)"},
-		{"name": "固本", "combo": ["土", "木"], "color": Color("#81C784"), "desc": "恢复4点生命值"},
-		{"name": "坚韧", "combo": ["木", "金"], "color": Color("#9CCC65"), "desc": "主控获得“反震”（受击时回敬3伤）"},
-		{"name": "伐断", "combo": ["金", "木"], "color": Color("#A1887F"), "desc": "施加流血效果（动作时扣血），持续2回合"},
-		{"name": "合金", "combo": ["金", "土"], "color": Color("#FFCA28"), "desc": "主控获得“合金”，提供1点减伤，直到本次对局结束"},
-		{"name": "埋藏", "combo": ["土", "金"], "color": Color("#BCAAA4"), "desc": "下次在“车间”节点打造装备时，消耗减少2点金元素"}
-	]
+	for combo_key in REACTION_CARD_PATHS:
+		var card_path: String = REACTION_CARD_PATHS[combo_key]
+		var card_data: CardData
 
-	for data in default_list:
+		if ResourceLoader.exists(card_path):
+			card_data = load(card_path)
+		else:
+			# 降级：直接从 RegenerateAllCards 的内存定义构建卡牌
+			card_data = _build_card_in_memory(combo_key)
+			if card_data == null:
+				printerr("[ReactionSystem] Cannot load or build reaction: ", combo_key)
+				continue
+
 		var reaction = ReactionData.new()
-		reaction.reaction_name = data["name"]
+		reaction.reaction_name = card_data.card_name
+		reaction.card_data = card_data
+		var parts = combo_key.split("_")
 		var combo_arr: Array[String] = []
-		for elem in data["combo"]:
-			combo_arr.append(elem)
+		for p in parts:
+			combo_arr.append(p)
 		reaction.combination = combo_arr
-		reaction.reaction_color = data["color"]
-		reaction.description = data["desc"]
+		reaction.description = card_data.description
+		# color from card element
+		if card_data.element == "火": reaction.reaction_color = Color("#FF5252")
+		elif card_data.element == "水": reaction.reaction_color = Color("#29B6F6")
+		elif card_data.element == "木": reaction.reaction_color = Color("#66BB6A")
+		elif card_data.element == "金": reaction.reaction_color = Color("#FFCA28")
+		elif card_data.element == "土": reaction.reaction_color = Color("#8D6E63")
+		else: reaction.reaction_color = Color("#FFFFFF")
+
 		owned_reactions.append(reaction)
 
-		var key = reaction.get_combo_key()
-		if not equipped_reactions.has(key):
-			equipped_reactions[key] = reaction
+		if not equipped_reactions.has(combo_key):
+			equipped_reactions[combo_key] = card_data
+
+
+## 从 RegenerateAllCards 定义中构建内存卡牌（无需 .tres 文件）
+var _fallback_cards: Dictionary = {}  # combo_key -> CardData (lazy init)
+
+func _build_card_in_memory(combo_key: String) -> CardData:
+	if _fallback_cards.is_empty():
+		var gen = RegenerateAllCards.new()
+		var cards: Array = gen._define_all_cards()
+		for entry in cards:
+			var cid: String = entry.get("id", "")
+			if cid.begins_with("Reaction_"):
+				# Derive combo_key from id: Reaction_Fire_Water -> 火_水
+				var parts = cid.trim_prefix("Reaction_").split("_")
+				if parts.size() >= 2:
+					var ek = parts[0] + "_" + parts[1]
+					var elems = {
+						"Fire": "火", "Earth": "土", "Water": "水",
+						"Metal": "金", "Wood": "木"
+					}
+					var e1 = elems.get(parts[0], parts[0])
+					var e2 = elems.get(parts[1], parts[1])
+					ek = e1 + "_" + e2
+
+					var cd = CardData.new()
+					cd.id = cid
+					cd.card_name = entry["name"]
+					cd.element = entry["el"]
+					cd.is_reaction = true
+					cd.description = entry.get("desc", "")
+					cd.main_slots = RegenerateAllCards._build_card_slots(entry.get("main_kw", []))
+					cd.compile_slots()
+					_fallback_cards[ek] = cd
+	return _fallback_cards.get(combo_key)
 
 func equip_reaction(reaction: ReactionData) -> void:
 	if reaction == null: return
 	var key = reaction.get_combo_key()
 	if key == "": return
-	equipped_reactions[key] = reaction
+	equipped_reactions[key] = reaction.card_data
 	reaction_equipped.emit(reaction)
 	reactions_updated.emit()
 	print("Equipped reaction: ", reaction.reaction_name, " for ", key)
@@ -62,7 +120,7 @@ func equip_reaction(reaction: ReactionData) -> void:
 func discard_reaction(reaction: ReactionData) -> void:
 	if reaction == null: return
 	var key = reaction.get_combo_key()
-	if key != "" and equipped_reactions.get(key) == reaction:
+	if key != "" and equipped_reactions.get(key) == reaction.card_data:
 		equipped_reactions.erase(key)
 		print("Unequipped reaction on discard: ", reaction.reaction_name)
 	owned_reactions.erase(reaction)
@@ -70,7 +128,8 @@ func discard_reaction(reaction: ReactionData) -> void:
 	reactions_updated.emit()
 	print("Discarded reaction: ", reaction.reaction_name)
 
-func get_equipped(combo_key: String) -> ReactionData:
+## 返回装备的 CardData（效果由 card_data.main_keywords 驱动）
+func get_equipped(combo_key: String) -> CardData:
 	return equipped_reactions.get(combo_key)
 
 func has_reaction(reaction_name: String) -> bool:
@@ -96,8 +155,9 @@ func to_dict() -> Dictionary:
 
 	var equipped_data: Dictionary = {}
 	for key in equipped_reactions:
-		var r = equipped_reactions[key]
-		equipped_data[key] = r.reaction_name
+		var card: CardData = equipped_reactions[key]
+		if card:
+			equipped_data[key] = card.id
 
 	return {
 		"owned_reactions": owned_data,
@@ -120,13 +180,22 @@ func from_dict(d: Dictionary) -> void:
 		var hex: String = item.get("color_hex", "#FFFFFF")
 		r.reaction_color = Color(hex)
 		r.description = item.get("desc", "")
+		# Try to reassociate card_data by loading from path
+		var key = r.get_combo_key()
+		if REACTION_CARD_PATHS.has(key) and ResourceLoader.exists(REACTION_CARD_PATHS[key]):
+			r.card_data = load(REACTION_CARD_PATHS[key])
 		owned_reactions.append(r)
 
 	equipped_reactions.clear()
 	var equipped_data: Dictionary = d.get("equipped_reactions", {})
 	for key in equipped_data:
-		var rxn_name: String = equipped_data[key]
+		var card_id: String = equipped_data[key]
+		# Find card_data from owned reactions
 		for r in owned_reactions:
-			if r.reaction_name == rxn_name:
-				equipped_reactions[key] = r
+			if r.card_data and r.card_data.id == card_id:
+				equipped_reactions[key] = r.card_data
 				break
+		# Fallback: try direct load
+		if not equipped_reactions.has(key) and REACTION_CARD_PATHS.has(key):
+			if ResourceLoader.exists(REACTION_CARD_PATHS[key]):
+				equipped_reactions[key] = load(REACTION_CARD_PATHS[key])

@@ -28,14 +28,23 @@ var deck_overlay_instance: Node = null
 var reaction_overlay_instance: Node = null
 
 func _ready() -> void:
-	visible = false 
+	visible = false
 	settings_btn.pressed.connect(_on_settings_pressed)
 	map_btn.pressed.connect(_on_map_peek_pressed)
 	deck_btn.pressed.connect(_on_deck_peek_pressed)
 	reaction_btn.pressed.connect(_on_reaction_peek_pressed)
+
+	# Connect update_display to EventBus signals (avoids polling _process every frame)
+	EventBus.damage_taken.connect(_on_event_relay)
+	EventBus.player_hp_changed.connect(_on_event_relay)
+	EventBus.aether_changed.connect(_on_event_relay)
+	EventBus.element_generated.connect(_on_event_relay)
+
 	update_display()
 
-func _process(_delta: float) -> void:
+func _on_event_relay(_a = null, _b = null, _c = null, _d = null) -> void:
+	## Relay for any EventBus signal that should trigger a HUD refresh.
+	## Uses default args to accommodate varying signal signatures.
 	update_display()
 
 func update_display() -> void:

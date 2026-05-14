@@ -1,5 +1,26 @@
 extends BaseScreen
 
+const SHOP_ITEMS: Array[Dictionary] = [
+	{
+		name = "Buy Aether",
+		cost = 50,
+		desc = "Payment Element: 以太Aether +5",
+		rewards = {"aether": 5}
+	},
+	{
+		name = "Buy Elements",
+		cost = 40,
+		desc = "Payment Element: 五行各五行各+2",
+		rewards = {"element_metal": 2, "element_wood": 2, "element_water": 2, "element_fire": 2, "element_earth": 2}
+	},
+	{
+		name = "Buy Card",
+		cost = 30,
+		desc = "Payment Card: 随机卡牌",
+		rewards = {"card": 1}
+	}
+]
+
 @onready var status_label: Label = $VBoxContainer/StatusLabel
 @onready var buy_aether_button: Button = $VBoxContainer/ButtonsContainer/BuyAetherButton
 @onready var buy_elements_button: Button = $VBoxContainer/ButtonsContainer/BuyElementsButton
@@ -83,33 +104,36 @@ func _update_ui() -> void:
 
 func _check_affordability() -> void:
 	# 若余额不足且按钮尚未因购买被禁用，则置灰文字
-	if GameManager.gold < 50 and not buy_aether_button.disabled:
+	if GameManager.gold < SHOP_ITEMS[0].cost and not buy_aether_button.disabled:
 		buy_aether_button.add_theme_color_override("font_color", Color("#888888"))
-	if GameManager.gold < 40 and not buy_elements_button.disabled:
+	if GameManager.gold < SHOP_ITEMS[1].cost and not buy_elements_button.disabled:
 		buy_elements_button.add_theme_color_override("font_color", Color("#888888"))
-	if GameManager.gold < 30 and not buy_card_button.disabled:
+	if GameManager.gold < SHOP_ITEMS[2].cost and not buy_card_button.disabled:
 		buy_card_button.add_theme_color_override("font_color", Color("#888888"))
 
 func _on_buy_aether_pressed() -> void:
-	if GameManager.gold >= 50:
-		GameManager.gold -= 50
-		GameManager.aether += 5
+	var item = SHOP_ITEMS[0]
+	if GameManager.gold >= item.cost:
+		GameManager.gold -= item.cost
+		GameManager.aether += item.rewards["aether"]
 		buy_aether_button.disabled = true
 		_update_ui()
 
 func _on_buy_elements_pressed() -> void:
-	if GameManager.gold >= 40:
-		GameManager.gold -= 40
-		GameManager.element_metal += 2
-		GameManager.element_wood += 2
-		GameManager.element_water += 2
-		GameManager.element_fire += 2
-		GameManager.element_earth += 2
+	var item = SHOP_ITEMS[1]
+	if GameManager.gold >= item.cost:
+		GameManager.gold -= item.cost
+		GameManager.element_metal += item.rewards["element_metal"]
+		GameManager.element_wood += item.rewards["element_wood"]
+		GameManager.element_water += item.rewards["element_water"]
+		GameManager.element_fire += item.rewards["element_fire"]
+		GameManager.element_earth += item.rewards["element_earth"]
 		buy_elements_button.disabled = true
 		_update_ui()
 
 func _on_buy_card_pressed() -> void:
-	if GameManager.gold >= 30:
+	var item = SHOP_ITEMS[2]
+	if GameManager.gold >= item.cost:
 		var card_res = ResourceManager.get_card_data("fire_law_001")
 		if not card_res:
 			var all_keys = ResourceManager.all_cards.keys()
@@ -120,7 +144,7 @@ func _on_buy_card_pressed() -> void:
 
 		if GameManager.card_pool.size() < DeckManager.MAX_DECK_SIZE:
 			# 牌包未满，直接添加
-			GameManager.gold -= 30
+			GameManager.gold -= item.cost
 			GameManager.card_pool.append(card_res)
 			buy_card_button.disabled = true
 			_update_ui()
@@ -144,7 +168,7 @@ func _show_buy_swap_menu() -> void:
 	_swap_overlay.show()
 
 func _confirm_shop_swap(index: int) -> void:
-	GameManager.gold -= 30
+	GameManager.gold -= SHOP_ITEMS[2].cost
 	GameManager.card_pool.remove_at(index)
 	GameManager.card_pool.append(_pending_shop_card)
 	buy_card_button.disabled = true

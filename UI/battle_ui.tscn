@@ -64,7 +64,7 @@ anchor_right = 1.0
 offset_top = 4.0
 offset_bottom = 24.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Main Slot 1"
 horizontal_alignment = 1
 
@@ -78,7 +78,7 @@ offset_top = -2.0
 offset_bottom = 28.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Cost: 1  |  Dmg: 12  |  Shd: 6"
 horizontal_alignment = 1
 
@@ -113,7 +113,7 @@ anchor_right = 1.0
 offset_top = 4.0
 offset_bottom = 24.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Sub 1"
 horizontal_alignment = 1
 
@@ -127,7 +127,7 @@ offset_top = -2.0
 offset_bottom = 23.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Atk: +4"
 horizontal_alignment = 1
 
@@ -163,7 +163,7 @@ anchor_right = 1.0
 offset_top = 4.0
 offset_bottom = 24.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Sub 2"
 horizontal_alignment = 1
 
@@ -177,7 +177,7 @@ offset_top = -2.0
 offset_bottom = 23.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Atk: +5"
 horizontal_alignment = 1
 
@@ -218,7 +218,7 @@ anchor_right = 1.0
 offset_top = 4.0
 offset_bottom = 24.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Main Slot 2"
 horizontal_alignment = 1
 
@@ -232,7 +232,7 @@ offset_top = -2.0
 offset_bottom = 28.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Cost: 2  |  Dmg: 14  |  Shd: 7"
 horizontal_alignment = 1
 
@@ -267,7 +267,7 @@ anchor_right = 1.0
 offset_top = 4.0
 offset_bottom = 24.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Sub 1"
 horizontal_alignment = 1
 
@@ -281,7 +281,7 @@ offset_top = -2.0
 offset_bottom = 23.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Atk: +4"
 horizontal_alignment = 1
 
@@ -317,7 +317,7 @@ anchor_right = 1.0
 offset_top = 4.0
 offset_bottom = 24.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Sub 2"
 horizontal_alignment = 1
 
@@ -331,7 +331,7 @@ offset_top = -2.0
 offset_bottom = 23.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Atk: +5"
 horizontal_alignment = 1
 
@@ -372,7 +372,7 @@ anchor_right = 1.0
 offset_top = 4.0
 offset_bottom = 24.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Main Slot 3"
 horizontal_alignment = 1
 
@@ -386,7 +386,7 @@ offset_top = -2.0
 offset_bottom = 28.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Cost: 3  |  Dmg: 16  |  Shd: 8"
 horizontal_alignment = 1
 
@@ -421,7 +421,7 @@ anchor_right = 1.0
 offset_top = 4.0
 offset_bottom = 24.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Sub 1"
 horizontal_alignment = 1
 
@@ -435,7 +435,7 @@ offset_top = -2.0
 offset_bottom = 23.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Atk: +4"
 horizontal_alignment = 1
 
@@ -471,7 +471,7 @@ anchor_right = 1.0
 offset_top = 4.0
 offset_bottom = 24.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Sub 2"
 horizontal_alignment = 1
 
@@ -485,7 +485,7 @@ offset_top = -2.0
 offset_bottom = 23.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Atk: +5"
 horizontal_alignment = 1
 
@@ -526,7 +526,7 @@ anchor_right = 1.0
 offset_top = 4.0
 offset_bottom = 24.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Main Slot 4"
 horizontal_alignment = 1
 
@@ -540,7 +540,7 @@ offset_top = -2.0
 offset_bottom = 28.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Cost: 4  |  Dmg: 18  |  Shd: 9"
 horizontal_alignment = 1
 
@@ -575,7 +575,7 @@ anchor_right = 1.0
 offset_top = 4.0
 offset_bottom = 24.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Sub 1"
 horizontal_alignment = 1
 
@@ -589,7 +589,7 @@ offset_top = -2.0
 offset_bottom = 23.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Atk: +4"
 horizontal_alignment = 1
 
@@ -625,7 +625,7 @@ anchor_right = 1.0
 offset_top = 4.0
 offset_bottom = 24.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Sub 2"
 horizontal_alignment = 1
 
@@ -639,7 +639,7 @@ offset_top = -2.0
 offset_bottom = 23.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Atk: +5"
 horizontal_alignment = 1
 
@@ -679,7 +679,7 @@ anchor_right = 1.0
 offset_top = 4.0
 offset_bottom = 24.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Main Slot 5"
 horizontal_alignment = 1
 
@@ -693,7 +693,7 @@ offset_top = -2.0
 offset_bottom = 28.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Cost: 5  |  Dmg: 20  |  Shd: 10"
 horizontal_alignment = 1
 
@@ -728,7 +728,7 @@ anchor_right = 1.0
 offset_top = 4.0
 offset_bottom = 24.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Sub 1"
 horizontal_alignment = 1
 
@@ -742,7 +742,7 @@ offset_top = -2.0
 offset_bottom = 23.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Atk: +4"
 horizontal_alignment = 1
 
@@ -778,7 +778,7 @@ anchor_right = 1.0
 offset_top = 4.0
 offset_bottom = 24.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Sub 2"
 horizontal_alignment = 1
 
@@ -792,7 +792,7 @@ offset_top = -2.0
 offset_bottom = 23.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
 text = "Atk: +5"
 horizontal_alignment = 1
 

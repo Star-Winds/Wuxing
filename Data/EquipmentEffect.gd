@@ -7,5 +7,5 @@ extends Resource
 ##   "element_vulnerability" — 受到指定元素伤害 +value
 ##   "workshop_discount"    — 车间打造消耗 -value 金元素
 @export var effect_type: String = ""
-@export var value: float = 0.0
+@export var value: int = 0
 @export var element: String = ""

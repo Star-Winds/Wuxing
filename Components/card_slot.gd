@@ -76,15 +76,34 @@ func _update_visuals() -> void:
 		elif "ELEMENT_COLORS" in GameManager: # 备选方案
 			element_color = GameManager.ELEMENT_COLORS.get(card_data.element, element_color)
 
+	var target_color: Color
 	match current_state:
 		SlotState.INACTIVE:
-			background.color = Color(element_color, 0.2)
+			target_color = Color(element_color, 0.2)
 		SlotState.ACTIVATED:
-			background.color = element_color
+			target_color = element_color
 		SlotState.PLAYED:
-			background.color = Color(0.05, 0.05, 0.05)
+			target_color = Color(0.05, 0.05, 0.05)
 		SlotState.COOLDOWN:
-			background.color = Color(0.08, 0.08, 0.18)
+			target_color = Color(0.08, 0.08, 0.18)
+
+	# Modulate tween (0.15s transition, dim on COOLDOWN)
+	var tween = create_tween()
+	tween.set_parallel(true)
+	if current_state == SlotState.COOLDOWN:
+		tween.tween_property(self, "modulate", Color(0.6, 0.6, 0.6), 0.15)
+	else:
+		tween.tween_property(self, "modulate", Color.WHITE, 0.15)
+	# Background color tween
+	tween.tween_property(background, "color", target_color, 0.15)
+	# Scale pulse for ACTIVATED (1.0 -> 1.05 -> 1.0)
+	if current_state == SlotState.ACTIVATED:
+		var scale_tween = create_tween()
+		scale_tween.tween_property(self, "scale", Vector2(1.05, 1.05), 0.075)
+		scale_tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.075)
+	else:
+		var scale_tween = create_tween()
+		scale_tween.tween_property(self, "scale", Vector2(1.0, 1.0), 0.075)
 
 # --- 其余逻辑 ---
 func _on_button_pressed() -> void:

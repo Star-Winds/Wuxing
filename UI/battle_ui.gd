@@ -96,6 +96,9 @@ func _ready() -> void:
 		payment_panel.hide()
 
 	_action_queue = GameManager.action_queue
+	_action_queue.auto_process = true
+	if not _action_queue.action_started.is_connected(_play_action):
+		_action_queue.action_started.connect(_play_action)
 	_initialize_slots()
 
 	# 连接回合结束按钮
@@ -442,11 +445,8 @@ func _replenish_elements() -> void:
 # --- ActionQueue 动画系统 ---
 
 func _process(_delta):
-	if _is_animating:
-		return
-	var action = _action_queue.consume()
-	if action:
-		_play_action(action)
+	# No manual queue polling — ActionQueue drives itself via signals.
+	pass
 
 func _play_action(action: ActionQueue.Action) -> void:
 	_is_animating = true
@@ -456,6 +456,7 @@ func _play_action(action: ActionQueue.Action) -> void:
 		ActionQueue.ActionType.HP_CHANGE:
 			_update_hp_display(action.data)
 			_is_animating = false
+			_action_queue.mark_current_finished()
 		ActionQueue.ActionType.REACTION:
 			_animate_reaction(action.data)
 		ActionQueue.ActionType.SHIELD_BREAK:
@@ -463,14 +464,16 @@ func _play_action(action: ActionQueue.Action) -> void:
 		ActionQueue.ActionType.STATUS_APPLY:
 			_refresh_status_icons(action.data)
 			_is_animating = false
+			_action_queue.mark_current_finished()
 		_:
 			_is_animating = false
-
+			_action_queue.mark_current_finished()
 func _animate_damage(data: Dictionary) -> void:
 	var target = data.get("target", "enemy")
 	var amount = data.get("amount", 0)
 	if amount <= 0:
 		_is_animating = false
+		_action_queue.mark_current_finished()
 		return
 
 	var label = Label.new()

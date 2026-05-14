@@ -106,7 +106,7 @@ var equipped_reactions: Dictionary:
 		if reaction_system: reaction_system.equipped_reactions = v
 
 # --- 五行阵法（Boss 掉落，World 1 后获得）---
-var active_formation: FormationData = null
+var active_formation: CardData = null
 var has_formation: bool:
 	get: return active_formation != null
 
@@ -273,8 +273,14 @@ func from_dict(d: Dictionary) -> void:
 	if d.is_empty(): return
 	current_world = d.get("current_world", current_world)
 	current_node_index = d.get("current_node_index", current_node_index)
-	if d.has("current_map_path"): current_map_path = d["current_map_path"]
+	if d.has("current_map_path"):
+		current_map_path.clear()
+		for p in d["current_map_path"]:
+			current_map_path.append(str(p))
 	var formation_path: String = d.get("active_formation", "")
+	# Migrate old FormationData path to new CardData path
+	if formation_path == "res://Resources/Formations/base_formation.tres":
+		formation_path = "res://Resources/Cards/Formations/formation_base.tres"
 	if formation_path != "" and ResourceLoader.exists(formation_path):
 		active_formation = load(formation_path)
 	else:

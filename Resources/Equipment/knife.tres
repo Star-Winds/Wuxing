@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="EquipmentData" format=3 uid="uid://cc0nju0viyqyw"]
+
+[ext_resource type="Script" uid="uid://c5e2cllnherfu" path="res://Data/EquipmentData.gd" id="1_eqdata"]
+[ext_resource type="Script" uid="uid://bk3kem2lcmphi" path="res://Data/EquipmentEffect.gd" id="2_eqeff"]
+
+[sub_resource type="Resource" id="Resource_eff1"]
+script = ExtResource("2_eqeff")
+effect_type = "damage_bonus"
+value = 3.0
+
+[resource]
+script = ExtResource("1_eqdata")
+equipment_id = "knife"
+equipment_name = "小刀"
+description = "所有卡牌最终伤害 +3"
+effects = Array[ExtResource("2_eqeff")]([SubResource("Resource_eff1")])
+required_card_id = "Metal_022"
+cost_metal = 17

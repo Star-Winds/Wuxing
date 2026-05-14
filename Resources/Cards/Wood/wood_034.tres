@@ -1,14 +1,18 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_n5lnv"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_lok2p"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="2_t7acl"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_heal_2.tres" id="3_b0p1b"]
+
+[sub_resource type="Resource" id="Resource_n5lnv"]
+script = ExtResource("1_lok2p")
+type = 3
+value = 2
 
 [resource]
 script = ExtResource("2_t7acl")
+element = "木"
 id = "Wood_034"
 card_name = "枯木逢春"
-element = "木"
 description = "治疗效果+50%。"
 cost_wood = 1
-sub_keywords = Array[ExtResource("1_n5lnv")]([ExtResource("3_b0p1b")])
+sub_slots = Array[ExtResource("1_lok2p")]([SubResource("Resource_n5lnv")])

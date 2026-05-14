@@ -1,14 +1,21 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_mi51f"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_reflect_2_2.tres" id="2_fbc42"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_u7ayx"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="3_0cv8d"]
+
+[sub_resource type="Resource" id="Resource_mi51f"]
+script = ExtResource("1_u7ayx")
+type = 5
+value = 2
+status_id = "reflect"
+duration = 2
+to_player = true
 
 [resource]
 script = ExtResource("3_0cv8d")
+element = "土"
 id = "Earth_009"
 card_name = "戌土甲"
-element = "土"
 description = "获得6点护盾，获得反震2持续2回合。"
 cost_earth = 3
-main_keywords = Array[ExtResource("1_mi51f")]([ExtResource("2_fbc42")])
+main_slots = Array[ExtResource("1_u7ayx")]([SubResource("Resource_mi51f")])

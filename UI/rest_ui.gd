@@ -1,4 +1,4 @@
-extends Control
+extends BaseScreen
 
 @onready var status_label: Label = $VBoxContainer/StatusLabel
 @onready var heal_button: Button = $VBoxContainer/HBoxContainer/HealButton
@@ -6,10 +6,7 @@ extends Control
 @onready var leave_button: Button = $VBoxContainer/HBoxContainer/LeaveButton
 
 func _ready() -> void:
-	GlobalHUD.set_scene_name("聚气歇息 (Rest)")
-	var vbox = get_node_or_null("VBoxContainer")
-	if vbox:
-		vbox.offset_top = 100
+	set_scene_title("聚气歇息 (Rest)")
 	_update_ui()
 	
 	heal_button.pressed.connect(_on_heal_selected)
@@ -53,12 +50,7 @@ func _on_leave_selected() -> void:
 
 # --- 核心修改部分 ---
 func _leave_rest() -> void:
-	# 1. 推进地图索引
-	GameManager.current_node_index += 1
-	
-	# 2. 使用重构后的全局引用跳转回地图
-	# 确保在 GameManager 的 Inspector 中已将 map_ui.tscn 拖入 map_scene 槽位
-	GameManager.switch_to_scene(GameManager.map_scene)
+	return_to_map()
 
 func _on_save_quit_pressed() -> void:
 	SaveManager.save_game(0)

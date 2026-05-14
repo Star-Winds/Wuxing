@@ -1,16 +1,24 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_jcuix"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_shield_15.tres" id="2_lkcsm"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_61fm3"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="3_41rod"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_shield_5.tres" id="4_unbxs"]
+
+[sub_resource type="Resource" id="Resource_dy43n"]
+script = ExtResource("1_61fm3")
+type = 2
+value = 15
+
+[sub_resource type="Resource" id="Resource_jcuix"]
+script = ExtResource("1_61fm3")
+type = 2
+value = 5
 
 [resource]
 script = ExtResource("3_41rod")
+element = "土"
 id = "Earth_016"
 card_name = "不动如山"
-element = "土"
 description = "获得15点护盾。"
 cost_earth = 5
-main_keywords = Array[ExtResource("1_jcuix")]([ExtResource("2_lkcsm")])
-sub_keywords = Array[ExtResource("1_jcuix")]([ExtResource("4_unbxs")])
+main_slots = Array[ExtResource("1_61fm3")]([SubResource("Resource_dy43n")])
+sub_slots = Array[ExtResource("1_61fm3")]([SubResource("Resource_jcuix")])

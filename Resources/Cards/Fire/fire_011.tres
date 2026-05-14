@@ -1,9 +1,19 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_3hvd7"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_cond_burn_12_5.tres" id="2_lc0f1"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_xa8y1"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="3_hlvx6"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_5.tres" id="4_6o31w"]
+
+[sub_resource type="Resource" id="Resource_66iv0"]
+script = ExtResource("1_xa8y1")
+type = 7
+value = 12
+value2 = 5
+condition = "enemy_has_burn"
+
+[sub_resource type="Resource" id="Resource_3hvd7"]
+script = ExtResource("1_xa8y1")
+type = 1
+value = 5
 
 [resource]
 script = ExtResource("3_hlvx6")
@@ -11,5 +21,5 @@ id = "Fire_011"
 card_name = "焚心"
 description = "造成12点火伤。若敌人有灼烧，额外+5。"
 cost_fire = 5
-main_keywords = Array[ExtResource("1_3hvd7")]([ExtResource("2_lc0f1")])
-sub_keywords = Array[ExtResource("1_3hvd7")]([ExtResource("4_6o31w")])
+main_slots = Array[ExtResource("1_xa8y1")]([SubResource("Resource_66iv0")])
+sub_slots = Array[ExtResource("1_xa8y1")]([SubResource("Resource_3hvd7")])

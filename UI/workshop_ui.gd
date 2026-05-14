@@ -1,100 +1,114 @@
-# workshop_ui.gd
-extends Control
+extends BaseScreen
 
-var _recipes = {
-	"knife": {
-		"equipment_name": "小刀",
-		"required_card_id": "Metal_022",
-		"required_card_name": "小刀制造",
-		"cost_metal": 17,
-		"cost_wood": 0,
-		"description": "所有卡牌最终伤害 +3"
-	},
-	"armor": {
-		"equipment_name": "藤甲",
-		"required_card_id": "Wood_028",
-		"required_card_name": "藤甲制造",
-		"cost_metal": 15,
-		"cost_wood": 2,
-		"description": "抵挡 4 点伤害（火属性弱点 +4 点）"
-	}
-}
+@export var recipes: Array[EquipmentData] = []
 
 @onready var resource_label: Label = $VBoxContainer/ResourceLabel
-@onready var btn_craft_knife: Button = $VBoxContainer/HBoxContainer/PanelA/BtnCraftKnife
-@onready var btn_craft_armor: Button = $VBoxContainer/HBoxContainer/PanelB/BtnCraftArmor
-@onready var panel_a: Node = $VBoxContainer/HBoxContainer/PanelA
-@onready var panel_b: Node = $VBoxContainer/HBoxContainer/PanelB
-var label_knife_req: Label
-var label_armor_req: Label
+@onready var recipes_container: VBoxContainer = $VBoxContainer/RecipesContainer
+
 
 func _ready() -> void:
-	GlobalHUD.set_scene_name("造化炼坊 (Workshop)")
+	set_scene_title("造化炼坊 (Workshop)")
 
-	var vbox = get_node_or_null("VBoxContainer")
-	if vbox:
-		vbox.offset_top = 100
+	if recipes_container:
+		_build_recipe_ui()
 
-		# 清理旧的冗余节点
-		for node_name in ["BtnLeave", "Spacer", "BottomSpacer"]:
-			var node = vbox.get_node_or_null(node_name)
-			if node: node.queue_free()
-
-		# 创建底部占位空间
-		var bottom_spacer = Control.new()
-		bottom_spacer.name = "BottomSpacer"
-		bottom_spacer.custom_minimum_size = Vector2(0, 180)
-		bottom_spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		vbox.add_child(bottom_spacer)
-
-	# Create requirement labels if not in scene
-	label_knife_req = panel_a.get_node_or_null("RequirementLabel") if panel_a else null
-	if not label_knife_req:
-		label_knife_req = _create_requirement_label(panel_a) if panel_a else null
-	label_armor_req = panel_b.get_node_or_null("RequirementLabel") if panel_b else null
-	if not label_armor_req:
-		label_armor_req = _create_requirement_label(panel_b) if panel_b else null
-
-	_update_ui()
-
-	btn_craft_knife.pressed.connect(_on_btn_craft_pressed.bind("knife"))
-	btn_craft_armor.pressed.connect(_on_btn_craft_pressed.bind("armor"))
-
-	# 创建悬浮层用于放置离开按钮
-	var emergency_layer = CanvasLayer.new()
-	emergency_layer.layer = 128
-	add_child(emergency_layer)
-
-	var leave_btn = Button.new()
-	leave_btn.text = "【返回地图】离开车间"
-	leave_btn.name = "ForceLeaveBtn"
-	leave_btn.add_theme_font_size_override("font_size", 24)
-	emergency_layer.add_child(leave_btn)
-
-	# 按钮布局数学计算
-	var btn_width = 300
-	var btn_height = 80
-	leave_btn.custom_minimum_size = Vector2(btn_width, btn_height)
-
-	await get_tree().process_frame
-	var screen_size = get_viewport_rect().size
-	leave_btn.position = Vector2((screen_size.x - btn_width) / 2.0, screen_size.y - btn_height - 40.0)
-
-	# 连接重构后的离开逻辑
-	leave_btn.pressed.connect(_on_btn_leave_pressed)
+	_create_leave_button()
 
 
-func _create_requirement_label(parent: Node) -> Label:
-	var lbl = Label.new()
-	lbl.name = "RequirementLabel"
-	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl.add_theme_font_size_override("font_size", 13)
-	lbl.modulate = Color(0.7, 0.7, 0.7)
-	parent.add_child(lbl)
-	return lbl
+func _build_recipe_ui() -> void:
+	for child in recipes_container.get_children():
+		child.queue_free()
+
+	for eq in recipes:
+		if not eq is EquipmentData:
+			continue
+		var panel = _create_recipe_panel(eq)
+		recipes_container.add_child(panel)
+
+
+func _create_recipe_panel(eq: EquipmentData) -> Panel:
+	var panel = Panel.new()
+	var margin = MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 12)
+	margin.add_theme_constant_override("margin_top", 8)
+	margin.add_theme_constant_override("margin_right", 12)
+	margin.add_theme_constant_override("margin_bottom", 8)
+	panel.add_child(margin)
+
+	var vbox = VBoxContainer.new()
+	margin.add_child(vbox)
+
+	var name_lbl = Label.new()
+	name_lbl.text = eq.equipment_name
+	name_lbl.add_theme_font_size_override("font_size", 20)
+	name_lbl.add_theme_color_override("font_color", Color("#FFD54F"))
+	vbox.add_child(name_lbl)
+
+	var desc_lbl = Label.new()
+	desc_lbl.text = eq.description
+	desc_lbl.add_theme_font_size_override("font_size", 14)
+	desc_lbl.modulate = Color(0.85, 0.85, 0.85)
+	vbox.add_child(desc_lbl)
+
+	var cost_effective = _effective_metal_cost(eq)
+	var cost_lbl = Label.new()
+	if GameManager.workshop_discount_amount > 0 and cost_effective < eq.cost_metal:
+		cost_lbl.text = "材料：%d 金（已折扣） | %d 木" % [cost_effective, eq.cost_wood]
+	else:
+		cost_lbl.text = "材料：%d 金 | %d 木" % [eq.cost_metal, eq.cost_wood]
+	cost_lbl.add_theme_font_size_override("font_size", 13)
+	cost_lbl.modulate = Color(0.7, 0.7, 0.7)
+	vbox.add_child(cost_lbl)
+
+	var btn = Button.new()
+	btn.text = "打造"
+	btn.custom_minimum_size = Vector2(200, 40)
+	vbox.add_child(btn)
+
+	_update_button_state(btn, eq)
+	btn.pressed.connect(_on_craft_pressed.bind(eq, btn))
+
+	return panel
+
+
+func _update_button_state(btn: Button, eq: EquipmentData) -> void:
+	var already_owned = _is_equipment_owned(eq)
+	var has_card = _has_crafting_card(eq.required_card_id)
+	var cost_effective = _effective_metal_cost(eq)
+	var discount_active = GameManager.workshop_discount_amount > 0 and cost_effective < eq.cost_metal
+	var enough_resources = (
+		GameManager.element_metal >= cost_effective
+		and GameManager.element_wood >= eq.cost_wood
+	)
+
+	if already_owned:
+		btn.disabled = true
+		btn.text = "已打造"
+		return
+
+	if not has_card:
+		btn.disabled = true
+		btn.text = "缺失材料"
+		return
+
+	if not enough_resources:
+		btn.disabled = true
+		btn.text = "资源不足"
+	else:
+		btn.disabled = false
+		btn.text = "打造（折扣中）" if discount_active else "打造"
+
+
+func _is_equipment_owned(eq: EquipmentData) -> bool:
+	for owned in GameManager.acquired_equipment:
+		if owned is EquipmentData and owned.equipment_id == eq.equipment_id:
+			return true
+	return false
 
 
 func _has_crafting_card(card_id: String) -> bool:
+	if card_id.is_empty():
+		return false
 	for card in GameManager.card_pool:
 		if card is CardData and card.id == card_id:
 			return true
@@ -110,71 +124,55 @@ func _remove_crafting_card(card_id: String) -> void:
 			return
 
 
-func _update_ui() -> void:
-	if resource_label:
-		resource_label.text = "当前 金: %d | 木: %d" % [GameManager.element_metal, GameManager.element_wood]
-
-	_update_craft_button("knife", btn_craft_knife, label_knife_req)
-	_update_craft_button("armor", btn_craft_armor, label_armor_req)
+func _effective_metal_cost(eq: EquipmentData) -> int:
+	return max(0, eq.cost_metal - GameManager.workshop_discount_amount)
 
 
-func _update_craft_button(recipe_key: String, btn: Button, req_label: Label) -> void:
-	var recipe = _recipes[recipe_key]
-	var equip_name = recipe["equipment_name"]
-	var has_card = _has_crafting_card(recipe["required_card_id"])
-	var already_owned = GameManager.acquired_equipment.has(equip_name)
-	var enough_resources = (GameManager.element_metal >= recipe["cost_metal"]
-		and GameManager.element_wood >= recipe["cost_wood"])
-
-	if already_owned:
-		btn.disabled = true
-		btn.text = "已打造"
-		req_label.text = ""
+func _on_craft_pressed(eq: EquipmentData, btn: Button) -> void:
+	if _is_equipment_owned(eq):
+		return
+	if not _has_crafting_card(eq.required_card_id):
 		return
 
-	if not has_card:
-		btn.disabled = true
-		btn.text = "缺失材料"
-		req_label.text = "需要卡牌：" + recipe["required_card_name"]
+	var cost_effective = _effective_metal_cost(eq)
+	if GameManager.element_metal < cost_effective or GameManager.element_wood < eq.cost_wood:
 		return
 
-	# Has the card
-	req_label.text = "材料：%d 金 | %d 木" % [recipe["cost_metal"], recipe["cost_wood"]]
+	GameManager.element_metal -= cost_effective
+	GameManager.element_wood -= eq.cost_wood
+	_remove_crafting_card(eq.required_card_id)
+	GameManager.acquired_equipment.append(eq)
 
-	if not enough_resources:
-		btn.disabled = true
-		btn.text = "资源不足"
-	else:
-		btn.disabled = false
-		btn.text = "打造"
+	var consumed = GameManager.workshop_discount_amount
+	if consumed > 0 and cost_effective < eq.cost_metal:
+		GameManager.workshop_discount_amount = 0
+		print("车间：使用了埋藏折扣，节省 %d 金" % consumed)
+
+	print("车间：成功打造 [", eq.equipment_name, "]！")
+	_update_button_state(btn, eq)
 
 
-func _on_btn_craft_pressed(recipe_key: String) -> void:
-	var recipe = _recipes[recipe_key]
-	var equip_name = recipe["equipment_name"]
+func _create_leave_button() -> void:
+	var emergency_layer = CanvasLayer.new()
+	emergency_layer.layer = 128
+	add_child(emergency_layer)
 
-	# Double-check
-	if GameManager.acquired_equipment.has(equip_name):
-		return
-	if not _has_crafting_card(recipe["required_card_id"]):
-		return
-	if GameManager.element_metal < recipe["cost_metal"] or GameManager.element_wood < recipe["cost_wood"]:
-		return
+	var leave_btn = Button.new()
+	leave_btn.text = "【返回地图】离开车间"
+	leave_btn.name = "ForceLeaveBtn"
+	leave_btn.add_theme_font_size_override("font_size", 24)
+	emergency_layer.add_child(leave_btn)
 
-	# Deduct resources
-	GameManager.element_metal -= recipe["cost_metal"]
-	GameManager.element_wood -= recipe["cost_wood"]
+	var btn_width = 300
+	var btn_height = 80
+	leave_btn.custom_minimum_size = Vector2(btn_width, btn_height)
 
-	# Remove the crafting card from pool
-	_remove_crafting_card(recipe["required_card_id"])
+	await get_tree().process_frame
+	var screen_size = get_viewport_rect().size
+	leave_btn.position = Vector2((screen_size.x - btn_width) / 2.0, screen_size.y - btn_height - 40.0)
 
-	# Grant equipment
-	GameManager.acquired_equipment.append(equip_name)
-
-	print("车间：成功打造 [", equip_name, "]！")
-	_update_ui()
+	leave_btn.pressed.connect(_on_btn_leave_pressed)
 
 
 func _on_btn_leave_pressed() -> void:
-	GameManager.current_node_index += 1
-	GameManager.switch_to_scene(GameManager.map_scene)
+	return_to_map()

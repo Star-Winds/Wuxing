@@ -1,16 +1,26 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_3sab8"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_cond_enemy_shield_5_5.tres" id="2_ek4s0"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_364pq"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="3_5p3oq"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_3.tres" id="4_etpt3"]
+
+[sub_resource type="Resource" id="Resource_qah3b"]
+script = ExtResource("1_364pq")
+type = 7
+value = 5
+value2 = 5
+condition = "enemy_has_shield"
+
+[sub_resource type="Resource" id="Resource_3sab8"]
+script = ExtResource("1_364pq")
+type = 1
+value = 3
 
 [resource]
 script = ExtResource("3_5p3oq")
+element = "金"
 id = "Metal_021"
 card_name = "破甲符"
-element = "金"
 description = "造成5点金伤。若敌人护盾翻倍。"
 cost_metal = 2
-main_keywords = Array[ExtResource("1_3sab8")]([ExtResource("2_ek4s0")])
-sub_keywords = Array[ExtResource("1_3sab8")]([ExtResource("4_etpt3")])
+main_slots = Array[ExtResource("1_364pq")]([SubResource("Resource_qah3b")])
+sub_slots = Array[ExtResource("1_364pq")]([SubResource("Resource_3sab8")])

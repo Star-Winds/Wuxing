@@ -75,8 +75,8 @@ var element_earth: int:
 	set(v):
 		if player_state: player_state.element_earth = v
 
-var acquired_equipment: Array[String]:
-	get: return player_state.acquired_equipment if player_state else ([] as Array[String])
+var acquired_equipment: Array[EquipmentData]:
+	get: return player_state.acquired_equipment if player_state else ([] as Array[EquipmentData])
 	set(v):
 		if player_state: player_state.acquired_equipment = v
 
@@ -109,6 +109,9 @@ var equipped_reactions: Dictionary:
 var active_formation: FormationData = null
 var has_formation: bool:
 	get: return active_formation != null
+
+# --- 车间折扣（由"埋藏"反应触发）---
+var workshop_discount_amount: int = 0
 
 # --- 数据仓库 ---
 var all_cards: Dictionary:
@@ -262,6 +265,7 @@ func to_dict() -> Dictionary:
 		"current_node_index": current_node_index,
 		"current_map_path": current_map_path.duplicate(),
 		"active_formation": active_formation.resource_path if active_formation else "",
+		"workshop_discount_amount": workshop_discount_amount,
 	}
 
 
@@ -275,3 +279,4 @@ func from_dict(d: Dictionary) -> void:
 		active_formation = load(formation_path)
 	else:
 		active_formation = null
+	workshop_discount_amount = d.get("workshop_discount_amount", 0)

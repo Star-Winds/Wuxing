@@ -1,16 +1,24 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_x2wrd"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_8.tres" id="2_qiub8"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_u4wab"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="3_bf6ub"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_heal_4.tres" id="4_34iws"]
+
+[sub_resource type="Resource" id="Resource_fti7u"]
+script = ExtResource("1_u4wab")
+type = 1
+value = 8
+
+[sub_resource type="Resource" id="Resource_x2wrd"]
+script = ExtResource("1_u4wab")
+type = 3
+value = 4
 
 [resource]
 script = ExtResource("3_bf6ub")
+element = "木"
 id = "Wood_033"
 card_name = "生命汲取"
-element = "木"
 description = "造成8点木伤，回复等量生命。"
 cost_wood = 4
-main_keywords = Array[ExtResource("1_x2wrd")]([ExtResource("2_qiub8")])
-sub_keywords = Array[ExtResource("1_x2wrd")]([ExtResource("4_34iws")])
+main_slots = Array[ExtResource("1_u4wab")]([SubResource("Resource_fti7u")])
+sub_slots = Array[ExtResource("1_u4wab")]([SubResource("Resource_x2wrd")])

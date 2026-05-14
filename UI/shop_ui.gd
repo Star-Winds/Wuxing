@@ -1,4 +1,4 @@
-extends Control
+extends BaseScreen
 
 @onready var status_label: Label = $VBoxContainer/StatusLabel
 @onready var buy_aether_button: Button = $VBoxContainer/ButtonsContainer/BuyAetherButton
@@ -11,10 +11,7 @@ var _swap_overlay: Panel
 var _swap_grid: GridContainer
 
 func _ready() -> void:
-	GlobalHUD.set_scene_name("奇珍异宝阁 (Shop)")
-	var vbox = get_node_or_null("VBoxContainer")
-	if vbox:
-		vbox.offset_top = 100
+	set_scene_title("奇珍异宝阁 (Shop)")
 
 	_setup_shop_swap_overlay()
 	_update_ui()
@@ -156,9 +153,4 @@ func _confirm_shop_swap(index: int) -> void:
 
 # --- 核心修改部分 ---
 func _leave_shop() -> void:
-	# 1. 推进地图索引
-	GameManager.current_node_index += 1
-
-	# 2. 调用重构后的全局场景切换逻辑
-	# 确保 GameManager 的 map_scene 已在编辑器中赋值
-	GameManager.switch_to_scene(GameManager.map_scene)
+	return_to_map()

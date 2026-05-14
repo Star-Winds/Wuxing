@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_qd783"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_qd783"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="2_fpx7o"]
 
 [resource]
 script = ExtResource("2_fpx7o")
+element = "水"
 id = "Water_012"
 card_name = "如水"
-element = "水"
 description = "本回合已释放卡牌可重新激活。"
 cost_water = 3

@@ -31,6 +31,7 @@ func _scan_folder_for_cards(path: String) -> void:
 			var card = load(path + file_name)
 			if card is CardData:
 				if card.id != "":
+					card.compile_slots()
 					all_cards[card.id] = card
 				else:
 					printerr("警告: 卡牌资源缺失 ID: ", file_name)

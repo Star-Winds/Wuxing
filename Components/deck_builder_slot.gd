@@ -59,7 +59,7 @@ func _update_display() -> void:
 		if not auto_desc.is_empty():
 			stats_label.text = auto_desc
 		else:
-			stats_label.text = card_data.main_description if slot_type == "main" else card_data.sub_description
+			stats_label.text = card_data.description
 		
 		# Set aesthetic color according to element
 		var color = Color(0.3, 0.3, 0.4, 1)

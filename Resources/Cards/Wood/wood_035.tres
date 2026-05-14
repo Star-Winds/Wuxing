@@ -1,17 +1,30 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_j2kyh"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_10.tres" id="2_d17lh"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_cond_bleed_0_8.tres" id="3_wrinj"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_b7o5h"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="4_mgnsd"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_4_wd.tres" id="5_od3hj"]
+
+[sub_resource type="Resource" id="Resource_6tfhp"]
+script = ExtResource("1_b7o5h")
+type = 1
+value = 10
+
+[sub_resource type="Resource" id="Resource_3nq7o"]
+script = ExtResource("1_b7o5h")
+type = 7
+value2 = 8
+condition = "enemy_has_bleed"
+
+[sub_resource type="Resource" id="Resource_j2kyh"]
+script = ExtResource("1_b7o5h")
+type = 1
+value = 4
 
 [resource]
 script = ExtResource("4_mgnsd")
+element = "木"
 id = "Wood_035"
 card_name = "腐生"
-element = "木"
 description = "造成10点木伤。流血时追加。"
 cost_wood = 5
-main_keywords = Array[ExtResource("1_j2kyh")]([ExtResource("2_d17lh"), ExtResource("3_wrinj")])
-sub_keywords = Array[ExtResource("1_j2kyh")]([ExtResource("5_od3hj")])
+main_slots = Array[ExtResource("1_b7o5h")]([SubResource("Resource_6tfhp"), SubResource("Resource_3nq7o")])
+sub_slots = Array[ExtResource("1_b7o5h")]([SubResource("Resource_j2kyh")])

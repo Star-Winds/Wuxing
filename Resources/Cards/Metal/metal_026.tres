@@ -1,14 +1,19 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_d2uh7"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_xmom2"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="2_nipbi"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_gen_metal_1.tres" id="3_lvjhs"]
+
+[sub_resource type="Resource" id="Resource_d2uh7"]
+script = ExtResource("1_xmom2")
+type = 6
+value = 1
+element_type = "金"
 
 [resource]
 script = ExtResource("2_nipbi")
+element = "金"
 id = "Metal_026"
 card_name = "共鸣"
-element = "金"
 description = "辅助效果。"
 cost_metal = 2
-sub_keywords = Array[ExtResource("1_d2uh7")]([ExtResource("3_lvjhs")])
+sub_slots = Array[ExtResource("1_xmom2")]([SubResource("Resource_d2uh7")])

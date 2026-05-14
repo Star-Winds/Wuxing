@@ -1,16 +1,24 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_i6efn"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_4.tres" id="2_swuma"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_8rcfy"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="3_tlkj5"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_2.tres" id="4_u6omv"]
+
+[sub_resource type="Resource" id="Resource_3i37n"]
+script = ExtResource("1_8rcfy")
+type = 1
+value = 4
+
+[sub_resource type="Resource" id="Resource_i6efn"]
+script = ExtResource("1_8rcfy")
+type = 1
+value = 2
 
 [resource]
 script = ExtResource("3_tlkj5")
+element = "金"
 id = "Metal_027"
 card_name = "万剑诀"
-element = "金"
 description = "造成4点伤害，重复多次。"
 cost_metal = 5
-main_keywords = Array[ExtResource("1_i6efn")]([ExtResource("2_swuma")])
-sub_keywords = Array[ExtResource("1_i6efn")]([ExtResource("4_u6omv")])
+main_slots = Array[ExtResource("1_8rcfy")]([SubResource("Resource_3i37n")])
+sub_slots = Array[ExtResource("1_8rcfy")]([SubResource("Resource_i6efn")])

@@ -1,17 +1,42 @@
 extends Resource
 class_name CardData
 
+# ════════════════════════════════════════════════════════════════
+#  卡牌类型词条 — 定义卡牌的"是什么"
+# ════════════════════════════════════════════════════════════════
+
+@export_group("卡牌类型")
+
+# 元素属性
+@export_enum("金", "木", "水", "火", "土", "以太") var element: String = "火"
+@export var element_attachment_layers: int = 1
+
+# 稀有度：凡(常见)、稀(少见)、珍(最少见)
+@export_enum("凡", "稀", "珍") var rarity: String = "凡"
+
+# 类型标签
+@export var is_formation: bool = false    # 五行阵法
+@export var is_reaction: bool = false     # 元素反应
+@export var is_carry: bool = false        # 携带：在 deck 中即生效
+@export var is_embed: bool = false        # 嵌入：在副槽即生效
+@export var is_initiate: bool = false     # 初动：在主槽即生效
+
+# 卡牌生命周期
+@export var is_exhaust: bool = false      # 消耗：打出后从牌组移除
+@export var single_use: bool = false      # 一次性：本场战斗仅可使用一次
+
 # 基础信息
 @export_group("基础信息")
 @export var id: String = ""
 @export var card_name: String = ""
 @export var icon: Texture2D
-@export_enum("金", "木", "水", "火", "土", "以太") var element: String = "火"
-@export var element_attachment_layers: int = 1
 @export_multiline var description: String = ""
 
-# 消耗系统：使用明确的变量而非 Dictionary，方便在编辑器中直接输入数值
-@export_group("消耗 (Cost)")
+# ════════════════════════════════════════════════════════════════
+#  消耗系统
+# ════════════════════════════════════════════════════════════════
+
+@export_group("消耗")
 @export var cost_metal: int = 0
 @export var cost_wood: int = 0
 @export var cost_water: int = 0
@@ -19,34 +44,54 @@ class_name CardData
 @export var cost_earth: int = 0
 @export var cost_aether: int = 0
 
-# ── 词条系统（Phase 3） ──
-# 优先使用 keywords 数组；fallback 到 main_effect/sub_effect
-@export_group("词条系统 (Keyword System)")
-@export var main_keywords: Array[KeywordData] = []
-@export var sub_keywords: Array[KeywordData] = []
+# ════════════════════════════════════════════════════════════════
+#  词条槽位 — 在 Inspector 中编辑，运行时编译为 KeywordData
+# ════════════════════════════════════════════════════════════════
 
-# ── Effect 系统（Phase 2，向后兼容） ──
-@export_group("效果系统 (Effect System, 旧)")
-@export var main_effect: EffectBase
-@export var sub_effect: EffectBase
+@export_group("词条槽位")
+@export var main_slots: Array[KeywordSlot] = []
+@export var sub_slots: Array[KeywordSlot] = []
+@export var mechanic_slots: Array[KeywordSlot] = []
 
-# ── 旧字段（遗留，仅用于运行时兼容，新卡请勿使用） ──
-var main_type: String = "damage"
-var main_value: int = 0
-var main_description: String = ""
+# ════════════════════════════════════════════════════════════════
+#  编译后的运行态词条（不导出，由 compile_slots() 生成）
+# ════════════════════════════════════════════════════════════════
 
-var sub_type: String = "damage"
-var sub_value: int = 0
-var sub_element_type: String = "none"
-var sub_description: String = ""
+var main_keywords: Array[KeywordData] = []
+var sub_keywords: Array[KeywordData] = []
+var mechanic_keywords: Array[KeywordData] = []
+var _needs_compile: bool = true
 
-var status_id: String = ""
-var status_amount: int = 0
-var status_duration: int = 0
-@export var is_exhaust: bool = false
-@export var single_use: bool = false
 
-# 辅助函数：方便 BattleManager 获取总消耗
+# ════════════════════════════════════════════════════════════════
+#  编译系统
+# ════════════════════════════════════════════════════════════════
+
+## 将 main_slots/sub_slots/mechanic_slots 编译为 KeywordData 数组
+func compile_slots() -> void:
+	main_keywords = _compile_list(main_slots)
+	sub_keywords = _compile_list(sub_slots)
+	mechanic_keywords = _compile_list(mechanic_slots)
+	_needs_compile = false
+
+static func _compile_list(slots: Array[KeywordSlot]) -> Array[KeywordData]:
+	var result: Array[KeywordData] = []
+	for slot in slots:
+		if slot and slot.type != KeywordSlot.SlotType.无:
+			var kw = slot.compile()
+			if kw:
+				result.append(kw)
+	return result
+
+func _ensure_compiled() -> void:
+	if _needs_compile:
+		compile_slots()
+
+
+# ════════════════════════════════════════════════════════════════
+#  辅助方法（自动编译后访问）
+# ════════════════════════════════════════════════════════════════
+
 func get_total_cost() -> Dictionary:
 	var total = {}
 	if cost_metal > 0: total["金"] = cost_metal
@@ -57,51 +102,69 @@ func get_total_cost() -> Dictionary:
 	if cost_aether > 0: total["以太"] = cost_aether
 	return total
 
-# ── 词条系统辅助方法 ──
-
-# 返回主槽效果列表（优先词条->旧Effect->空）
+## 返回主槽行动效果列表
 func get_main_effects() -> Array:
-	if not main_keywords.is_empty():
-		var effects: Array = []
-		for kw in main_keywords:
-			if kw and kw.effect:
-				effects.append(kw.effect)
-		return effects
-	if main_effect:
-		return [main_effect]
-	return []
+	_ensure_compiled()
+	var effects: Array = []
+	for kw in main_keywords:
+		if kw and kw.effect:
+			effects.append(kw.effect)
+	return effects
 
-# 返回副槽效果列表（优先词条->旧Effect->空）
+## 返回副槽行动效果列表
 func get_sub_effects() -> Array:
-	if not sub_keywords.is_empty():
-		var effects: Array = []
-		for kw in sub_keywords:
-			if kw and kw.effect:
-				effects.append(kw.effect)
-		return effects
-	if sub_effect:
-		return [sub_effect]
-	return []
+	_ensure_compiled()
+	var effects: Array = []
+	for kw in sub_keywords:
+		if kw and kw.effect:
+			effects.append(kw.effect)
+	return effects
 
-# 自动生成卡牌描述（组合词条显示名）
+## 返回所有词条（供遍历用）
+func get_all_keywords() -> Array[KeywordData]:
+	_ensure_compiled()
+	return main_keywords + sub_keywords + mechanic_keywords
+
+## 获取指定分类的词条列表
+func get_keywords_by_category(cat: int) -> Array[KeywordData]:
+	_ensure_compiled()
+	var result: Array[KeywordData] = []
+	for kw in main_keywords + sub_keywords + mechanic_keywords:
+		if kw and kw.category == cat:
+			result.append(kw)
+	return result
+
+## 检查是否携带指定机制词条
+func has_mechanic(mechanic_id: String) -> bool:
+	_ensure_compiled()
+	for kw in mechanic_keywords:
+		if kw and kw.keyword_id == mechanic_id:
+			return true
+	return false
+
+## 自动生成卡牌描述
 func get_auto_description(is_sub: bool = false) -> String:
+	_ensure_compiled()
 	var kws = sub_keywords if is_sub else main_keywords
 	var parts: Array[String] = []
 	for kw in kws:
 		if kw and not kw.description.is_empty():
 			parts.append(kw.description)
-	if parts.is_empty():
-		var fallback = sub_description if is_sub else main_description
-		return fallback if not fallback.is_empty() else ""
+	for kw in mechanic_keywords:
+		if kw and not kw.description.is_empty():
+			parts.append(kw.description)
 	return "\n".join(parts)
 
-# Effect 系统辅助方法
 func get_main_display_value() -> int:
-	if main_effect:
-		return main_effect.get_display_value()
-	return main_value
+	_ensure_compiled()
+	for kw in main_keywords:
+		if kw and kw.effect:
+			return kw.effect.get_display_value()
+	return 0
 
 func get_sub_display_value() -> int:
-	if sub_effect:
-		return sub_effect.get_display_value()
-	return sub_value
+	_ensure_compiled()
+	for kw in sub_keywords:
+		if kw and kw.effect:
+			return kw.effect.get_display_value()
+	return 0

@@ -1,16 +1,24 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_5vnqw"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_10.tres" id="2_myqrn"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_l8mwl"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="3_jcbqa"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_3.tres" id="4_8f4n8"]
+
+[sub_resource type="Resource" id="Resource_xoa16"]
+script = ExtResource("1_l8mwl")
+type = 1
+value = 10
+
+[sub_resource type="Resource" id="Resource_5vnqw"]
+script = ExtResource("1_l8mwl")
+type = 1
+value = 3
 
 [resource]
 script = ExtResource("3_jcbqa")
+element = "以太"
 id = "Aether_035"
 card_name = "虚无"
-element = "以太"
 description = "造成10点伤害。"
 cost_aether = 3
-main_keywords = Array[ExtResource("1_5vnqw")]([ExtResource("2_myqrn")])
-sub_keywords = Array[ExtResource("1_5vnqw")]([ExtResource("4_8f4n8")])
+main_slots = Array[ExtResource("1_l8mwl")]([SubResource("Resource_xoa16")])
+sub_slots = Array[ExtResource("1_l8mwl")]([SubResource("Resource_5vnqw")])

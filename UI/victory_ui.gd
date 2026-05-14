@@ -1,4 +1,4 @@
-extends Control
+extends BaseScreen
 
 const CARD_DATA_CONST = preload("res://Data/Card_data.gd")
 
@@ -125,8 +125,7 @@ func _on_card_reward_selected(card_data: CardData, btn: Button) -> void:
 		_show_swap_menu()
 
 func _return_to_map() -> void:
-	GameManager.current_node_index += 1
-	GameManager.switch_to_scene(GameManager.map_scene)
+	return_to_map()
 
 func _setup_swap_overlay() -> void:
 	swap_overlay = Panel.new()

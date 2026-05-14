@@ -34,7 +34,7 @@ var element_earth: int:
 	set(v): elements["土"] = v
 
 # 装备
-var acquired_equipment: Array[String] = []
+var acquired_equipment: Array[EquipmentData] = []
 
 func reset_run() -> void:
 	current_health = max_health
@@ -72,7 +72,7 @@ func to_dict() -> Dictionary:
 		"aether": aether,
 		"gold": gold,
 		"elements": elements.duplicate(),
-		"acquired_equipment": acquired_equipment.duplicate(),
+		"acquired_equipment": _equipment_paths(),
 	}
 
 
@@ -83,4 +83,21 @@ func from_dict(d: Dictionary) -> void:
 	aether = d.get("aether", aether)
 	gold = d.get("gold", gold)
 	if d.has("elements"): elements = d["elements"]
-	if d.has("acquired_equipment"): acquired_equipment = d["acquired_equipment"]
+	if d.has("acquired_equipment"): _load_equipment_paths(d["acquired_equipment"])
+
+
+func _equipment_paths() -> Array:
+	var paths: Array[String] = []
+	for eq in acquired_equipment:
+		if eq is EquipmentData:
+			paths.append(eq.resource_path)
+	return paths
+
+
+func _load_equipment_paths(paths: Array) -> void:
+	acquired_equipment.clear()
+	for p in paths:
+		if typeof(p) == TYPE_STRING and ResourceLoader.exists(p):
+			var res := load(p)
+			if res is EquipmentData:
+				acquired_equipment.append(res)

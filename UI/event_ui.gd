@@ -1,13 +1,10 @@
-extends Control
+extends BaseScreen
 
 @onready var desc_label: RichTextLabel = $VBoxContainer/DescLabel
 @onready var choices_container: VBoxContainer = $VBoxContainer/ChoicesContainer
 
 func _ready() -> void:
-	GlobalHUD.set_scene_name("机缘奇遇 (Event)")
-	var vbox = get_node_or_null("VBoxContainer")
-	if vbox:
-		vbox.offset_top = 100
+	set_scene_title("机缘奇遇 (Event)")
 	
 	# 设置描述文本
 	if desc_label:
@@ -37,20 +34,12 @@ func _add_choice(text: String, callback: Callable, is_disabled: bool = false) ->
 func _on_absorb_selected() -> void:
 	GameManager.current_health -= 10
 	GameManager.element_fire += 8
-	_leave_event()
+	return_to_map()
 
 func _on_scavenge_selected() -> void:
 	GameManager.aether += 2
-	_leave_event()
+	return_to_map()
 
 func _on_leave_selected() -> void:
-	_leave_event()
+	return_to_map()
 
-# --- 核心修改部分 ---
-func _leave_event() -> void:
-	# 1. 仅仅递增节点索引（因为 Boss 之后才会重置，Event 不会是结束点）
-	GameManager.current_node_index += 1
-	
-	# 2. 使用重构后的全局变量进行跳转
-	# 确保你在 GameManager 的 Inspector 面板中已将 map_ui.tscn 拖入 map_scene 槽位
-	GameManager.switch_to_scene(GameManager.map_scene)

@@ -1,14 +1,19 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_23lai"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_d185w"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="2_1nbas"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_gen_aether_2.tres" id="3_66p7x"]
+
+[sub_resource type="Resource" id="Resource_23lai"]
+script = ExtResource("1_d185w")
+type = 6
+value = 2
+element_type = "以太"
 
 [resource]
 script = ExtResource("2_1nbas")
+element = "以太"
 id = "Aether_034"
 card_name = "调和"
-element = "以太"
 description = "元素转化。"
 cost_aether = 2
-sub_keywords = Array[ExtResource("1_23lai")]([ExtResource("3_66p7x")])
+sub_slots = Array[ExtResource("1_d185w")]([SubResource("Resource_23lai")])

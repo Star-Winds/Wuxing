@@ -1,16 +1,24 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_e05vm"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_action_change_intent.tres" id="2_s12ku"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_un13c"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="3_0hujy"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_shield_3.tres" id="4_wngge"]
+
+[sub_resource type="Resource" id="Resource_j1k3w"]
+script = ExtResource("1_un13c")
+type = 8
+action_id = "change_enemy_intent"
+
+[sub_resource type="Resource" id="Resource_e05vm"]
+script = ExtResource("1_un13c")
+type = 2
+value = 3
 
 [resource]
 script = ExtResource("3_0hujy")
+element = "土"
 id = "Earth_008"
 card_name = "撼地"
-element = "土"
 description = "改变敌方意图。"
 cost_earth = 4
-main_keywords = Array[ExtResource("1_e05vm")]([ExtResource("2_s12ku")])
-sub_keywords = Array[ExtResource("1_e05vm")]([ExtResource("4_wngge")])
+main_slots = Array[ExtResource("1_un13c")]([SubResource("Resource_j1k3w")])
+sub_slots = Array[ExtResource("1_un13c")]([SubResource("Resource_e05vm")])

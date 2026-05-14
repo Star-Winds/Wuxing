@@ -1,14 +1,18 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_ggjme"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_rmw7b"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="2_daek8"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_3_w.tres" id="3_0vreh"]
+
+[sub_resource type="Resource" id="Resource_ggjme"]
+script = ExtResource("1_rmw7b")
+type = 1
+value = 3
 
 [resource]
 script = ExtResource("2_daek8")
+element = "水"
 id = "Water_021"
 card_name = "镜湖"
-element = "水"
 description = "复制上一张卡牌效果。"
 cost_water = 2
-sub_keywords = Array[ExtResource("1_ggjme")]([ExtResource("3_0vreh")])
+sub_slots = Array[ExtResource("1_rmw7b")]([SubResource("Resource_ggjme")])

@@ -1,17 +1,33 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_cq3kq"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_6_w2.tres" id="2_pyrjc"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_slow_2_2.tres" id="3_calb8"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_akdk1"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="4_2a4co"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_cond_slow_4_4.tres" id="5_hemhi"]
+
+[sub_resource type="Resource" id="Resource_m3ngy"]
+script = ExtResource("1_akdk1")
+type = 1
+value = 6
+
+[sub_resource type="Resource" id="Resource_grwn6"]
+script = ExtResource("1_akdk1")
+type = 5
+value = 2
+status_id = "slow"
+duration = 2
+
+[sub_resource type="Resource" id="Resource_cq3kq"]
+script = ExtResource("1_akdk1")
+type = 7
+value = 4
+value2 = 4
+condition = "enemy_has_slow"
 
 [resource]
 script = ExtResource("4_2a4co")
+element = "水"
 id = "Water_022"
 card_name = "极寒"
-element = "水"
 description = "造成6点水伤，减速2。"
 cost_water = 4
-main_keywords = Array[ExtResource("1_cq3kq")]([ExtResource("2_pyrjc"), ExtResource("3_calb8")])
-sub_keywords = Array[ExtResource("1_cq3kq")]([ExtResource("5_hemhi")])
+main_slots = Array[ExtResource("1_akdk1")]([SubResource("Resource_m3ngy"), SubResource("Resource_grwn6")])
+sub_slots = Array[ExtResource("1_akdk1")]([SubResource("Resource_cq3kq")])

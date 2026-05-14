@@ -1,16 +1,25 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_u88yd"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_20.tres" id="2_3bhs4"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_6txkm"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="3_1mo77"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_gen_water_3.tres" id="4_qu1c4"]
+
+[sub_resource type="Resource" id="Resource_8ib2l"]
+script = ExtResource("1_6txkm")
+type = 1
+value = 20
+
+[sub_resource type="Resource" id="Resource_u88yd"]
+script = ExtResource("1_6txkm")
+type = 6
+value = 3
+element_type = "水"
 
 [resource]
 script = ExtResource("3_1mo77")
+element = "水"
 id = "Water_024"
 card_name = "万流归宗"
-element = "水"
 description = "造成20点水伤。"
 cost_water = 6
-main_keywords = Array[ExtResource("1_u88yd")]([ExtResource("2_3bhs4")])
-sub_keywords = Array[ExtResource("1_u88yd")]([ExtResource("4_qu1c4")])
+main_slots = Array[ExtResource("1_6txkm")]([SubResource("Resource_8ib2l")])
+sub_slots = Array[ExtResource("1_6txkm")]([SubResource("Resource_u88yd")])

@@ -1,16 +1,24 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_pr4ce"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_action_shield_break.tres" id="2_q00ym"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_n5xof"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="3_gcb2i"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_3.tres" id="4_a5pt3"]
+
+[sub_resource type="Resource" id="Resource_66w02"]
+script = ExtResource("1_n5xof")
+type = 8
+action_id = "shield_break"
+
+[sub_resource type="Resource" id="Resource_pr4ce"]
+script = ExtResource("1_n5xof")
+type = 1
+value = 3
 
 [resource]
 script = ExtResource("3_gcb2i")
+element = "金"
 id = "Metal_024"
 card_name = "破盾锥"
-element = "金"
 description = "破除敌人护盾。"
 cost_metal = 2
-main_keywords = Array[ExtResource("1_pr4ce")]([ExtResource("2_q00ym")])
-sub_keywords = Array[ExtResource("1_pr4ce")]([ExtResource("4_a5pt3")])
+main_slots = Array[ExtResource("1_n5xof")]([SubResource("Resource_66w02")])
+sub_slots = Array[ExtResource("1_n5xof")]([SubResource("Resource_pr4ce")])

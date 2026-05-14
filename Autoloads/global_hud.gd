@@ -56,11 +56,14 @@ func update_display() -> void:
 	gold_lbl.text = "金币: %d" % GameManager.gold
 
 	# Update equipment display
-	var equip_list = GameManager.acquired_equipment
+	var equip_list: Array[EquipmentData] = GameManager.acquired_equipment
 	if equip_list.is_empty():
 		equipment_row.visible = false
 	else:
-		equipment_label.text = "装备: " + " | ".join(equip_list)
+		var names: Array[String] = []
+		for eq in equip_list:
+			names.append(eq.equipment_name)
+		equipment_label.text = "装备: " + " | ".join(names)
 		equipment_row.visible = true
 
 func set_scene_name(scene_name: String) -> void:

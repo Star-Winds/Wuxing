@@ -6,6 +6,7 @@ const ENEMY_DATA_CONST = preload("res://Data/EnemyData.gd")
 
 # Effect system preloads (Phase 2)
 const EFFECT_BASE = preload("res://Data/Effects/EffectBase.gd")
+const EQUIPMENT_DATA_CLS = preload("res://Data/EquipmentData.gd")
 
 # -- Sub-systems ---------------------------------------------
 var status_manager: StatusManager
@@ -57,6 +58,33 @@ func _aq() -> ActionQueue:
 func _run_phase(effect: EffectBase, phase: int, context: Dictionary) -> void:
 	if effect and effect.phase == phase:
 		effect.execute(context)
+
+
+# ============================================================
+#  PASSIVE CARD SYSTEM
+#  处理 携带/嵌入/初动 等持续生效的卡牌效果
+# ============================================================
+
+# 战斗开始时扫描牌库，应用所有"携带"卡牌的被动效果
+func _apply_passive_card_effects() -> void:
+	for card in GameManager.card_pool:
+		if not card is CardData:
+			continue
+		if card.is_carry:
+			_process_carry_card(card)
+
+func _process_carry_card(card: CardData) -> void:
+	print("[被动] 携带卡牌生效: ", card.card_name)
+	for kw in card.get_all_keywords():
+		if kw and kw.effect:
+			_run_phase(kw.effect, kw.effect.phase, _make_passive_context())
+
+func _make_passive_context() -> Dictionary:
+	return {
+		"damage_resolver": damage_resolver,
+		"status_manager": status_manager,
+		"player_has_shield": player_shield > 0,
+	}
 
 
 # ============================================================
@@ -117,6 +145,14 @@ func play_card(main_card: CardData, sub_cards: Array, target: Node = null) -> vo
 	if status_manager.has("bleed", "enemy") and total_damage_ref > 0:
 		damage_resolver.add_damage(2)
 		print("  [动态加成] 敌人处于流血 (bleed) 状态 -> 最终伤害 +2")
+	if status_manager.has("strength", "player") and total_damage_ref > 0:
+		var str_amt = status_manager.get_data("strength", "player").get("amount", 0)
+		damage_resolver.add_damage(str_amt)
+		print("  [力量] 伤害 +", str_amt)
+	if status_manager.has("vigor", "player") and total_damage_ref > 0:
+		var vig_amt = status_manager.get_data("vigor", "player").get("amount", 0)
+		damage_resolver.add_damage(vig_amt)
+		print("  [活力] 下次攻击额外伤害 +", vig_amt)
 
 	print("  [计算结果] 总聚合伤害: ", damage_resolver.total_damage, ", 总聚合护盾: ", damage_resolver.total_shield)
 
@@ -155,6 +191,11 @@ func play_card(main_card: CardData, sub_cards: Array, target: Node = null) -> vo
 	print("[EXECUTION 阶段] 执行最终生命/护盾变更...")
 	var gained_shield = damage_resolver.total_shield
 	if gained_shield > 0:
+		# Dexterity: bonus shield
+		if status_manager.has("dexterity", "player"):
+			var dex_amt = status_manager.get_data("dexterity", "player").get("amount", 0)
+			gained_shield += dex_amt
+			print("  [敏捷] 格挡 +", dex_amt)
 		player_shield += gained_shield
 		EventBus.shield_gained.emit("player", gained_shield, player_shield)
 		print("  玩家获得护盾: ", gained_shield, " (当前护盾: ", player_shield, ")")
@@ -218,11 +259,23 @@ func _apply_status_effect(status_id: String, amount: int, duration: int) -> void
 # ============================================================
 #  PLAYER DAMAGE
 # ============================================================
-func _damage_player(amount: int) -> void:
+func _damage_player(amount: int, element: String = "") -> void:
 	if amount <= 0:
 		return
 
-	var result = damage_resolver.damage_player(amount, player_shield, player_damage_reduction)
+	# Equipment effects on incoming damage
+	var reduced = _equip_damage_reduction()
+	var vulnerable = _equip_element_vulnerability(element)
+	var modified_amount = max(1, amount - reduced + vulnerable)
+	# Ethereal: all damage this turn reduced to 1
+	if status_manager.has("ethereal", "player"):
+		modified_amount = 1
+		print("  [虚化] 本回合伤害降为 1 点")
+	var result = damage_resolver.damage_player(modified_amount, player_shield, player_damage_reduction)
+	# Buffer: prevent next life loss
+	if result.hp_loss > 0 and status_manager.has("buffer", "player"):
+		print("  [缓冲] 阻止了 ", result.hp_loss, " 点生命损失")
+		result.hp_loss = 0
 	if result.damage_reduced > 0:
 		print("  [合金效果] 伤害减免 ", result.damage_reduced, " 点")
 
@@ -334,24 +387,12 @@ func _trigger_reaction(reaction: ReactionData, _current_card: CardData) -> Dicti
 			print("  [合金反应] 玩家永久获得 1 点伤害减免 (当前总减免: ", player_damage_reduction, ")")
 
 		"过载":
-			var tree = Engine.get_main_loop() as SceneTree
-			if tree and tree.current_scene:
-				var all_slots = []
-				_find_card_slots_recursive(tree.current_scene, all_slots)
-				var inactive_slots = []
-				for slot in all_slots:
-					if slot.current_state == CardSlot.SlotState.INACTIVE and slot.card_data != null and slot.is_sub_slot:
-						inactive_slots.append(slot)
-				if not inactive_slots.is_empty():
-					var random_slot = inactive_slots[RNGService.randi() % inactive_slots.size()]
-					random_slot._activate_confirmed()
-					print("  [过载反应] 随机激活了副槽卡牌: ", random_slot.card_data.card_name)
-				else:
-					print("  [过载反应] 未找到可激活的未激活副槽卡牌")
+			overload_random_sub_slot()
+			print("  [过载反应] 触发过载")
 
 		"埋藏":
-			out_of_combat_reaction_triggered.emit("workshop_discount")
-			print("  [埋藏反应] 触发全球车间折扣信号！")
+			GameManager.workshop_discount_amount += 2
+			print("  [埋藏反应] 车间折扣 +2（当前折扣: ", GameManager.workshop_discount_amount, "）")
 
 		"阻截":
 			_apply_status_effect("stun_attack", 1, 1)
@@ -390,6 +431,8 @@ func start_battle(enemy_res: EnemyData) -> void:
 	reactivate_current_card = false
 	has_activated_card_this_turn = false
 	activated_card_prev_turn = false
+	# 处理携带类卡牌被动效果
+	_apply_passive_card_effects()
 	enemy_intent_override = ""
 
 	print("战斗初始化成功！敌人: ", enemy_res.enemy_name, " HP: ", enemy_hp,
@@ -513,10 +556,11 @@ func _execute_enemy_intent() -> void:
 
 			var dmg = current_enemy.intent_base_dmg + enemy_atk_buff
 			if status_manager.has("weak", "enemy"):
-				dmg = int(dmg * 0.75)
+				var weak_amt = status_manager.get_data("weak", "enemy").get("amount", 0)
+				dmg = int(dmg * max(0.25, 1.0 - 0.25 * weak_amt))
 
 			print("敌人发动攻击！造成伤害: ", dmg)
-			_damage_player(dmg)
+			_damage_player(dmg, current_enemy.element if current_enemy else "")
 
 			if status_manager.has("reflect", "player") or status_manager.has("反震", "player"):
 				var reflect_data = status_manager.get_data("reflect", "player")
@@ -540,12 +584,111 @@ func _execute_enemy_intent() -> void:
 
 
 # ============================================================
+
+
+# ============================================================
+#  OVERLOAD / DRAW CARD
+# ============================================================
+func overload_random_sub_slot() -> void:
+	var tree = Engine.get_main_loop() as SceneTree
+	if tree and tree.current_scene:
+		var all_slots = []
+		_find_card_slots_recursive(tree.current_scene, all_slots)
+		var inactive_slots = []
+		for slot in all_slots:
+			if slot.current_state == CardSlot.SlotState.INACTIVE and slot.card_data != null and slot.is_sub_slot:
+				inactive_slots.append(slot)
+		if not inactive_slots.is_empty():
+			var random_slot = inactive_slots[RNGService.randi() % inactive_slots.size()]
+			random_slot._activate_confirmed()
+			print("  [Overload] Activated sub-slot: ", random_slot.card_data.card_name)
+		else:
+			print("  [Overload] No inactive sub-slot found")
+
+func draw_card_from_pool() -> void:
+	if GameManager.card_pool.is_empty():
+		print("  [DrawCard] Pool is empty!")
+		return
+	var tree = Engine.get_main_loop() as SceneTree
+	if not tree or not tree.current_scene:
+		return
+	var all_slots = []
+	_find_card_slots_recursive(tree.current_scene, all_slots)
+	var empty_slots = []
+	for slot in all_slots:
+		if slot.is_sub_slot and slot.card_data == null:
+			empty_slots.append(slot)
+	if empty_slots.is_empty():
+		print("  [DrawCard] No empty sub-slot available")
+		return
+	var random_card = GameManager.card_pool[RNGService.randi() % GameManager.card_pool.size()]
+	var target_slot = empty_slots[RNGService.randi() % empty_slots.size()]
+	target_slot.set_card(random_card)
+	target_slot._activate_confirmed()
+	print("  [DrawCard] Drew: ", random_card.card_name, " -> sub-slot")
+
+# ============================================================
+
+func charge_random_slot() -> void:
+	var tree = Engine.get_main_loop() as SceneTree
+	if tree and tree.current_scene:
+		var all_slots = []
+		_find_card_slots_recursive(tree.current_scene, all_slots)
+		var inactive_slots = []
+		for slot in all_slots:
+			if slot.current_state == CardSlot.SlotState.INACTIVE and slot.card_data != null:
+				inactive_slots.append(slot)
+		if not inactive_slots.is_empty():
+			var target = inactive_slots[RNGService.randi() % inactive_slots.size()]
+			target._activate_confirmed()
+			# Skip cooldown after activation
+			target.current_state = CardSlot.SlotState.ACTIVATED
+			print("  [Charge] Activated without cooldown: ", target.card_data.card_name)
+		else:
+			print("  [Charge] No inactive slot found")
+
+func eject_card_from_slot() -> void:
+	var tree = Engine.get_main_loop() as SceneTree
+	if tree and tree.current_scene:
+		var all_slots = []
+		_find_card_slots_recursive(tree.current_scene, all_slots)
+		var filled_sub_slots = []
+		for slot in all_slots:
+			if slot.is_sub_slot and slot.card_data != null:
+				filled_sub_slots.append(slot)
+		if not filled_sub_slots.is_empty():
+			var target = filled_sub_slots[RNGService.randi() % filled_sub_slots.size()]
+			var card = target.card_data
+			target.set_card(null)
+			if GameManager.card_pool.size() < 30:
+				GameManager.card_pool.append(card)
+			print("  [Eject] Returned card to pool: ", card.card_name)
+		else:
+			print("  [Eject] No filled sub-slot found")
+
+func collapse_card() -> void:
+	var tree = Engine.get_main_loop() as SceneTree
+	if tree and tree.current_scene:
+		var all_slots = []
+		_find_card_slots_recursive(tree.current_scene, all_slots)
+		for slot in all_slots:
+			if slot.is_sub_slot and slot.card_data != null and slot.current_state == CardSlot.SlotState.ACTIVATED:
+				slot.current_state = CardSlot.SlotState.COOLDOWN
+				slot.cooldown_turns = 999
+				print("  [Collapse] Card cooldown until battle end: ", slot.card_data.card_name)
+				return
+		print("  [Collapse] No activated sub-slot found")
+
 #  TARGET API (battle_manager acts as the enemy target)
 # ============================================================
 func take_damage(amount: int, element: String = "") -> void:
-	var actual_dmg = amount
+	var actual_dmg = amount + _equip_damage_bonus()
 	if status_manager.has("frail", "enemy"):
 		actual_dmg = int(actual_dmg * 1.5)
+	if status_manager.has("vulnerable", "enemy"):
+		var vuln_amt = status_manager.get_data("vulnerable", "enemy").get("amount", 0)
+		actual_dmg = int(actual_dmg * (1.0 + 0.5 * vuln_amt))
+		print("  [易伤] 敌人受到额外伤害 x", 1.0 + 0.5 * vuln_amt)
 
 	var result = damage_resolver.damage_after_shield(actual_dmg, enemy_shield)
 	enemy_shield = result.shield_remaining
@@ -649,7 +792,8 @@ func get_enemy_intent_text() -> String:
 	var turn = enemy_turn_counter % 3
 	var dmg = current_enemy.intent_base_dmg + enemy_atk_buff
 	if status_manager.has("weak", "enemy"):
-		dmg = int(dmg * 0.75)
+		var weak_amt = status_manager.get_data("weak", "enemy").get("amount", 0)
+		dmg = int(dmg * max(0.25, 1.0 - 0.25 * weak_amt))
 
 	match turn:
 		0:
@@ -724,3 +868,46 @@ func from_dict(d: Dictionary) -> void:
 		status_manager.from_dict(d["status_manager"])
 	if d.has("element_system") and element_system:
 		element_system.from_dict(d["element_system"])
+
+
+# ============================================================
+#  EQUIPMENT EFFECTS
+# ============================================================
+
+# 所有装备的 damage_bonus 总和（玩家打出的伤害基础加值）。
+func _equip_damage_bonus() -> int:
+	var total := 0
+	for eq in GameManager.acquired_equipment:
+		if not eq is EQUIPMENT_DATA_CLS:
+			continue
+		for eff in eq.effects:
+			if eff is EquipmentEffect and eff.effect_type == "damage_bonus":
+				total += int(eff.value)
+	return total
+
+
+# 所有装备的 damage_reduction 总和（玩家受到的伤害减免）。
+func _equip_damage_reduction() -> int:
+	var total := 0
+	for eq in GameManager.acquired_equipment:
+		if not eq is EQUIPMENT_DATA_CLS:
+			continue
+		for eff in eq.effects:
+			if eff is EquipmentEffect and eff.effect_type == "damage_reduction":
+				total += int(eff.value)
+	return total
+
+
+# 针对指定元素的 element_vulnerability 总和（玩家受到的额外伤害）。
+func _equip_element_vulnerability(element: String) -> int:
+	if element.is_empty():
+		return 0
+	var total := 0
+	for eq in GameManager.acquired_equipment:
+		if not eq is EQUIPMENT_DATA_CLS:
+			continue
+		for eff in eq.effects:
+			if eff is EquipmentEffect and eff.effect_type == "element_vulnerability" \
+					and eff.element == element:
+				total += int(eff.value)
+	return total

@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_6grul"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_6grul"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="2_cqgs2"]
 
 [resource]
 script = ExtResource("2_cqgs2")
+element = "以太"
 id = "Aether_030"
 card_name = "流光"
-element = "以太"
 description = "取消「打出后不可再激活」限制。"
 cost_aether = 5

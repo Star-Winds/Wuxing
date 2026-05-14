@@ -114,9 +114,9 @@ func _ready() -> void:
 		_restore_battle_state(GameManager.restore_data)
 		GameManager.restore_data = {}
 	else:
-		var test_enemy = load("res://Resources/Enemies/World_1/Minion/snake_wood.tres")
-		if test_enemy and battle_manager:
-			battle_manager.start_battle(test_enemy)
+		var enemy := _select_enemy_for_current_node()
+		if enemy and battle_manager:
+			battle_manager.start_battle(enemy)
 
 # 初始化槽位并加载 GameManager 中的布局
 func _initialize_slots() -> void:
@@ -223,9 +223,9 @@ func _on_main_slot_activated(row_index: int) -> void:
 				target_pending_slot = null
 				print("取消瞄准")
 
-		CardSlot.SlotState.PLAYED:
-			# 3. 冷却中
-			print("此卡牌本回合已释放，处于冷却中！")
+		CardSlot.SlotState.PLAYED, CardSlot.SlotState.COOLDOWN:
+			# 冷却中
+			print("此卡牌处于冷却中！")
 
 func _show_payment_panel(card: CardData) -> void:
 	pending_main_card = card
@@ -748,3 +748,48 @@ func _sync_battle_ui() -> void:
 
 	# Update global HUD
 	GameManager.update_player_stats()
+
+
+## 根据当前节点类型和世界动态选择敌人。
+## 回退链: World_{n}/{category} → World_1/{category} → snake_wood
+func _select_enemy_for_current_node() -> EnemyData:
+	var node_type := ""
+	if GameManager.current_node_index < GameManager.current_map_path.size():
+		node_type = GameManager.current_map_path[GameManager.current_node_index]
+
+	var category := ""
+	if "Battle" in node_type:
+		category = "Minion"
+	elif "Elite" in node_type:
+		category = "Elite"
+	elif "Boss" in node_type:
+		category = "Boss"
+
+	if category.is_empty():
+		push_error("Unknown battle node type: %s" % node_type)
+		return _fallback_enemy()
+
+	return _load_random_enemy(GameManager.current_world, category)
+
+
+func _load_random_enemy(world: int, category: String) -> EnemyData:
+	for w in [world, 1]:
+		var dir_path := "res://Resources/Enemies/World_%d/%s/" % [w, category]
+		var dir := DirAccess.open(dir_path)
+		if not dir:
+			continue
+		var files := dir.get_files()
+		var tres_files := Array(files).filter(func(f): return f.ends_with(".tres"))
+		if tres_files.is_empty():
+			continue
+		RNGService.shuffle(tres_files)
+		var enemy := load(dir_path.path_join(tres_files[0]))
+		if enemy is EnemyData:
+			return enemy
+
+	push_error("No enemy data found for world=%d category=%s" % [world, category])
+	return _fallback_enemy()
+
+
+func _fallback_enemy() -> EnemyData:
+	return load("res://Resources/Enemies/World_1/Minion/snake_wood.tres")

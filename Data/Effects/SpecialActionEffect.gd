@@ -22,6 +22,16 @@ func execute(context: Dictionary) -> Dictionary:
 		"change_enemy_intent":
 			bm.enemy_intent_override = "defend"
 			print("  [特殊效果] 改变敌人意图为 [DEFEND]")
+		"overload":
+			bm.overload_random_sub_slot()
+		"draw_card":
+			bm.draw_card_from_pool()
+		"charge":
+			bm.charge_random_slot()
+		"eject":
+			bm.eject_card_from_slot()
+		"collapse":
+			bm.collapse_card()
 		_:
 			print("  [特殊效果] 未知 action_id: ", action_id)
 

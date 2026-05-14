@@ -1,14 +1,18 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_cb47k"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_8gma1"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="2_y6jse"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_heal_2.tres" id="3_1pxg4"]
+
+[sub_resource type="Resource" id="Resource_cb47k"]
+script = ExtResource("1_8gma1")
+type = 3
+value = 2
 
 [resource]
 script = ExtResource("2_y6jse")
+element = "水"
 id = "Water_023"
 card_name = "润物无声"
-element = "水"
 description = "引气增益。"
 cost_water = 2
-sub_keywords = Array[ExtResource("1_cb47k")]([ExtResource("3_1pxg4")])
+sub_slots = Array[ExtResource("1_8gma1")]([SubResource("Resource_cb47k")])

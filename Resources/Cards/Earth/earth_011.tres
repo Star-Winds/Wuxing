@@ -1,15 +1,26 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_mw4w0"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_cond_shield_0_3.tres" id="2_ykp4g"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_u61j1"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="3_n26h0"]
+
+[sub_resource type="Resource" id="Resource_mw4w0"]
+script = ExtResource("1_u61j1")
+type = 7
+value2 = 3
+condition = "player_has_shield"
+
+[sub_resource type="Resource" id="Resource_ykp4g"]
+script = ExtResource("1_u61j1")
+type = 7
+value2 = 3
+condition = "player_has_shield"
 
 [resource]
 script = ExtResource("3_n26h0")
+element = "土"
 id = "Earth_011"
 card_name = "泰山崩"
-element = "土"
 description = "消耗护盾造成伤害，每2点护盾造成3点土伤。"
 cost_earth = 5
-main_keywords = Array[ExtResource("1_mw4w0")]([ExtResource("2_ykp4g")])
-sub_keywords = Array[ExtResource("1_mw4w0")]([ExtResource("2_ykp4g")])
+main_slots = Array[ExtResource("1_u61j1")]([SubResource("Resource_mw4w0")])
+sub_slots = Array[ExtResource("1_u61j1")]([SubResource("Resource_ykp4g")])

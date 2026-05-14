@@ -1,16 +1,28 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_6m3yn"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_cond_slow_4_6.tres" id="2_bleby"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_ufwep"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="3_25yhf"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_slow_1_1.tres" id="4_gk3ck"]
+
+[sub_resource type="Resource" id="Resource_ghmt1"]
+script = ExtResource("1_ufwep")
+type = 7
+value = 4
+value2 = 6
+condition = "enemy_has_slow"
+
+[sub_resource type="Resource" id="Resource_6m3yn"]
+script = ExtResource("1_ufwep")
+type = 5
+value = 1
+status_id = "slow"
+duration = 1
 
 [resource]
 script = ExtResource("3_25yhf")
+element = "水"
 id = "Water_019"
 card_name = "霜刺"
-element = "水"
 description = "造成4点水伤。若敌人减速，伤害+6。"
 cost_water = 2
-main_keywords = Array[ExtResource("1_6m3yn")]([ExtResource("2_bleby")])
-sub_keywords = Array[ExtResource("1_6m3yn")]([ExtResource("4_gk3ck")])
+main_slots = Array[ExtResource("1_ufwep")]([SubResource("Resource_ghmt1")])
+sub_slots = Array[ExtResource("1_ufwep")]([SubResource("Resource_6m3yn")])

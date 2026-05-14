@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://cx4vjdwram7rn"]
 
 [ext_resource type="Script" uid="uid://chl16dce6ikri" path="res://UI/workshop_ui.gd" id="1_workshop_script"]
+[ext_resource type="Resource" uid="uid://djr8qhbutgguo" path="res://Resources/Equipment/knife.tres" id="2_knife"]
+[ext_resource type="Resource" uid="uid://bf0bw27pib2ub" path="res://Resources/Equipment/armor.tres" id="3_armor"]
 
 [node name="WorkshopUI" type="Control" unique_id=370823416]
 layout_mode = 3
@@ -10,6 +12,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_workshop_script")
+recipes = [ExtResource("2_knife"), ExtResource("3_armor")]
 
 [node name="Background" type="ColorRect" parent="." unique_id=1540081793]
 layout_mode = 1
@@ -48,68 +51,7 @@ theme_override_font_sizes/font_size = 18
 text = "当前 金: 0 | 木: 0"
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=857938861]
-layout_mode = 2
-theme_override_constants/separation = 60
-alignment = 1
-
-[node name="PanelA" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" unique_id=1326412242]
-custom_minimum_size = Vector2(300, 200)
+[node name="RecipesContainer" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 16
 alignment = 1
-
-[node name="LabelA" type="Label" parent="VBoxContainer/HBoxContainer/PanelA" unique_id=1187185159]
-layout_mode = 2
-theme_override_font_sizes/font_size = 22
-text = "小刀 (Cost: 17 金)"
-horizontal_alignment = 1
-
-[node name="BtnDescA" type="Label" parent="VBoxContainer/HBoxContainer/PanelA" unique_id=615475135]
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "所有卡牌最终伤害 +3"
-horizontal_alignment = 1
-
-[node name="BtnCraftKnife" type="Button" parent="VBoxContainer/HBoxContainer/PanelA" unique_id=1576489235]
-custom_minimum_size = Vector2(180, 50)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 18
-text = "打造"
-
-[node name="PanelB" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" unique_id=537453268]
-custom_minimum_size = Vector2(300, 200)
-layout_mode = 2
-theme_override_constants/separation = 16
-alignment = 1
-
-[node name="LabelB" type="Label" parent="VBoxContainer/HBoxContainer/PanelB" unique_id=121554824]
-layout_mode = 2
-theme_override_font_sizes/font_size = 22
-text = "藤甲 (Cost: 15 金, 2 木)"
-horizontal_alignment = 1
-
-[node name="BtnDescB" type="Label" parent="VBoxContainer/HBoxContainer/PanelB" unique_id=1836073912]
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "抵挡 4 点伤害（火属性弱点 +4 点）"
-horizontal_alignment = 1
-
-[node name="BtnCraftArmor" type="Button" parent="VBoxContainer/HBoxContainer/PanelB" unique_id=934601862]
-custom_minimum_size = Vector2(180, 50)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 18
-text = "打造"
-
-[node name="Spacer" type="Control" parent="VBoxContainer" unique_id=1819220567]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-
-[node name="BtnLeave" type="Button" parent="VBoxContainer" unique_id=1911325001]
-custom_minimum_size = Vector2(200, 60)
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 18
-text = "离开车间"

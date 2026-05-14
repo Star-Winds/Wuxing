@@ -1,8 +1,12 @@
 [gd_resource type="Resource" script_class="CardData" format=3]
 
-[ext_resource type="Script" path="res://Data/KeywordData.gd" id="1_qburr"]
-[ext_resource type="Resource" path="res://Resources/Keywords/kw_damage_6.tres" id="2_arpmh"]
+[ext_resource type="Script" path="res://Data/KeywordSlot.gd" id="1_vh115"]
 [ext_resource type="Script" path="res://Data/Card_data.gd" id="3_3nl5i"]
+
+[sub_resource type="Resource" id="Resource_qburr"]
+script = ExtResource("1_vh115")
+type = 1
+value = 6
 
 [resource]
 script = ExtResource("3_3nl5i")
@@ -10,4 +14,4 @@ id = "Fire_003"
 card_name = "烛龙引"
 description = "造成6点火伤。"
 cost_fire = 2
-main_keywords = Array[ExtResource("1_qburr")]([ExtResource("2_arpmh")])
+main_slots = Array[ExtResource("1_vh115")]([SubResource("Resource_qburr")])
